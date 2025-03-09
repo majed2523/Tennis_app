@@ -1,0 +1,17 @@
+How It Works
+Each route corresponds to a specific functionality in your app.
+
+The routes call the appropriate controller methods to handle the business logic.
+
+The controllers interact with the models to perform database operations.
+
+The routes return JSON responses to the client (e.g., success messages or error messages).
+
+
+
+
+
+
+
+TODO : LOCATION 
+REFUND WHEN RAIN 

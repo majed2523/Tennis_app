@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend  # ✅ Points to frontend directory
+      dockerfile: ../Dockerfile.front  # ✅ Uses correct path from root
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    networks:
+      - tennis-net
+
+  backend:
+    container_name: backend
+    build:
+      context: ./backend  # ✅ Points to backend directory
+      dockerfile: ../Dockerfile.back  # ✅ Uses correct path from root
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - database_data:/app/database  # Mount database volume
+    environment:
+      - PORT=5000
+      - DATABASE_URL=sqlite:///app/database/tennis_club.db  # Correct SQLite path
+    depends_on:
+      - database
+    networks:
+      - tennis-net
+
+  database:
+    container_name: database
+    build:
+      context: ./database  # ✅ Points to database directory
+      dockerfile: ../Dockerfile.database  # ✅ Uses correct path from root
+    volumes:
+      - database_data:/database
+    command: tail -f /dev/null  # Keeps the container running
+    networks:
+      - tennis-net
+
+networks:
+  tennis-net:
+
+volumes:
+  database_data:

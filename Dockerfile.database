@@ -1,0 +1,14 @@
+# Use a minimal Alpine image
+FROM alpine:latest
+
+# Set working directory
+WORKDIR /database
+
+# Install SQLite
+RUN apk add --no-cache sqlite
+
+# Copy existing SQLite database
+COPY tennis_club.db /database/tennis_club.db
+
+# Keep container running
+CMD ["tail", "-f", "/dev/null"]
