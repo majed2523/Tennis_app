@@ -17,19 +17,11 @@ interface LoginFormProps {
     phone_number: string;
   }) => void;
   onRegisterClick?: () => void;
-<<<<<<< HEAD
-=======
-  returnUrl?: string;
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
 }
 
 export default function LoginForm({
   onSuccess,
   onRegisterClick,
-<<<<<<< HEAD
-=======
-  returnUrl,
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
 }: LoginFormProps) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
@@ -51,45 +43,19 @@ export default function LoginForm({
       } else {
         // Save user data from API response
         const userData = {
-<<<<<<< HEAD
           firstName: result.first_name,
           lastName: result.last_name,
-=======
-          firstName: result.first_name || 'User', // Fallback to prevent undefined
-          lastName: result.last_name || '',
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
           phone_number: result.phone_number,
         };
 
         // Store user data in localStorage for persistence
         localStorage.setItem('userData', JSON.stringify(userData));
 
-<<<<<<< HEAD
         // Login successful
         if (onSuccess) {
           onSuccess(userData);
         }
         router.refresh();
-=======
-        // Dispatch custom event to notify other components
-        window.dispatchEvent(new Event('authChange'));
-
-        // Login successful
-        if (onSuccess) {
-          onSuccess(userData);
-        } else {
-          // If no onSuccess handler, handle navigation here
-          if (
-            returnUrl &&
-            returnUrl !== '/login' &&
-            returnUrl !== '/register'
-          ) {
-            router.push(returnUrl);
-          } else {
-            router.push('/profile'); // Changed from /dashboard to /profile
-          }
-        }
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
       }
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');

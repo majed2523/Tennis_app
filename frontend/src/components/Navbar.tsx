@@ -2,10 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-<<<<<<< HEAD
-import { useRouter } from 'next/navigation';
-import { Menu, User, LogOut, Calendar, Settings } from 'lucide-react';
-=======
 import { useRouter, usePathname } from 'next/navigation';
 import {
   Menu,
@@ -16,7 +12,6 @@ import {
   Trophy,
   Clock,
 } from 'lucide-react';
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
 import { Button } from '../components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '../components/ui/sheet';
 import { Dialog, DialogContent, DialogTrigger } from '../components/ui/dialog';
@@ -40,22 +35,6 @@ export default function Navbar() {
   const [userData, setUserData] = useState<{
     firstName: string;
     lastName: string;
-<<<<<<< HEAD
-  } | null>(null);
-  const router = useRouter();
-
-  // Check if user is authenticated on component mount
-  useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    const storedUserData = localStorage.getItem('userData');
-
-    if (token) {
-      setIsAuthenticated(true);
-      if (storedUserData) {
-        setUserData(JSON.parse(storedUserData));
-      }
-    }
-=======
     phone_number: string;
   } | null>(null);
   const router = useRouter();
@@ -116,26 +95,17 @@ export default function Navbar() {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('authChange', handleAuthChange);
     };
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
   }, []);
 
   const handleAuthSuccess = (userData?: {
     firstName: string;
     lastName: string;
-<<<<<<< HEAD
-=======
     phone_number: string;
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
   }) => {
     setIsAuthOpen(false);
     setIsAuthenticated(true);
     if (userData) {
       setUserData(userData);
-<<<<<<< HEAD
-      localStorage.setItem('userData', JSON.stringify(userData));
-    }
-    router.push('/');
-=======
     }
 
     // Dispatch custom event to notify other components
@@ -148,7 +118,6 @@ export default function Navbar() {
       // Stay on the current page (e.g., if logging in from reservation page)
       router.refresh();
     }
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
   };
 
   const handleLogout = () => {
@@ -156,18 +125,6 @@ export default function Navbar() {
     localStorage.removeItem('userData');
     setIsAuthenticated(false);
     setUserData(null);
-<<<<<<< HEAD
-    router.push('/');
-  };
-
-  // const getUserInitials = () => {
-  //   if (!userData) return '';
-  //   return `${userData.firstName.charAt(0)}${userData.lastName.charAt(0)}`;
-  // };
-
-  return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900/90 backdrop-blur-sm border-b border-gray-800">
-=======
 
     // Dispatch custom event to notify other components
     window.dispatchEvent(new Event('authChange'));
@@ -182,7 +139,6 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#1A1E2E]/90 backdrop-blur-sm border-b border-gray-800">
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
@@ -212,20 +168,12 @@ export default function Navbar() {
           >
             Home
           </Link>
-<<<<<<< HEAD
-          {/* <Link
-=======
           <Link
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
             href="/courts"
             className="text-gray-300 hover:text-green-400 transition-colors"
           >
             Courts
-<<<<<<< HEAD
-          </Link> */}
-=======
           </Link>
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
           <Link
             href="/coaches"
             className="text-gray-300 hover:text-green-400 transition-colors"
@@ -262,11 +210,7 @@ export default function Navbar() {
                   className="relative h-10 w-10 rounded-full"
                 >
                   <Avatar className="h-10 w-10 bg-green-600 hover:bg-green-500 transition-colors">
-<<<<<<< HEAD
-                    {/* <AvatarFallback>{getUserInitials()}</AvatarFallback> */}
-=======
                     <AvatarFallback>{getUserInitials()}</AvatarFallback>
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
@@ -291,17 +235,11 @@ export default function Navbar() {
                   className="text-gray-300 hover:text-white hover:bg-gray-800 cursor-pointer"
                   onClick={() => router.push('/schedule')}
                 >
-<<<<<<< HEAD
-                  <Calendar className="mr-2 h-4 w-4" />
-=======
                   <Clock className="mr-2 h-4 w-4" />
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
                   <span>Schedule</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="text-gray-300 hover:text-white hover:bg-gray-800 cursor-pointer"
-<<<<<<< HEAD
-=======
                   onClick={() => router.push('/coaches')}
                 >
                   <Trophy className="mr-2 h-4 w-4" />
@@ -309,7 +247,6 @@ export default function Navbar() {
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="text-gray-300 hover:text-white hover:bg-gray-800 cursor-pointer"
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
                   onClick={() => router.push('/profile')}
                 >
                   <User className="mr-2 h-4 w-4" />
@@ -349,19 +286,13 @@ export default function Navbar() {
                     <LoginForm
                       onSuccess={handleAuthSuccess}
                       onRegisterClick={() => setAuthMode('register')}
-<<<<<<< HEAD
-=======
                       returnUrl={pathname}
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
                     />
                   ) : (
                     <RegisterForm
                       onSuccess={handleAuthSuccess}
                       onLoginClick={() => setAuthMode('login')}
-<<<<<<< HEAD
-=======
                       returnUrl={pathname}
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
                     />
                   )}
                 </DialogContent>
@@ -383,11 +314,8 @@ export default function Navbar() {
             </>
           )}
         </div>
-<<<<<<< HEAD
-=======
 
         {/* Mobile Menu Button */}
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
         <Sheet>
           <SheetTrigger asChild>
             <Button
@@ -428,19 +356,11 @@ export default function Navbar() {
               {isAuthenticated && userData && (
                 <div className="flex items-center space-x-3 mb-6 p-4 bg-gray-800/50 rounded-lg">
                   <Avatar className="h-10 w-10 bg-green-600">
-<<<<<<< HEAD
-                    {/* <AvatarFallback>{getUserInitials()}</AvatarFallback> */}
-                  </Avatar>
-                  <div>
-                    <p className="text-sm font-medium text-white">
-                      {/* {userData.firstName} {userData.lastName} */}
-=======
                     <AvatarFallback>{getUserInitials()}</AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="text-sm font-medium text-white">
                       {userData.firstName} {userData.lastName}
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
                     </p>
                     <p className="text-xs text-gray-400">Member</p>
                   </div>
@@ -524,8 +444,6 @@ export default function Navbar() {
           </SheetContent>
         </Sheet>
       </div>
-<<<<<<< HEAD
-=======
 
       {/* Auth Dialog for Mobile */}
       <Dialog open={isAuthOpen} onOpenChange={setIsAuthOpen}>
@@ -545,7 +463,6 @@ export default function Navbar() {
           )}
         </DialogContent>
       </Dialog>
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
     </header>
   );
 }

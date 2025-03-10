@@ -17,19 +17,13 @@ interface RegisterFormProps {
     phone_number: string;
   }) => void;
   onLoginClick?: () => void;
-<<<<<<< HEAD
-=======
   returnUrl?: string;
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
 }
 
 export default function RegisterForm({
   onSuccess,
   onLoginClick,
-<<<<<<< HEAD
-=======
   returnUrl,
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
 }: RegisterFormProps) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -106,13 +100,6 @@ export default function RegisterForm({
 
           localStorage.setItem('userData', JSON.stringify(userData));
 
-<<<<<<< HEAD
-          if (onSuccess) {
-            onSuccess(userData);
-          }
-
-          router.refresh();
-=======
           // Dispatch custom event to notify other components
           window.dispatchEvent(new Event('authChange'));
 
@@ -130,7 +117,6 @@ export default function RegisterForm({
               router.push('/');
             }
           }
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
         }
       }
     } catch (err) {

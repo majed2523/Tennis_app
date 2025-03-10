@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Award, Calendar, MapPin } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
+import Link from 'next/link';
 
 const features = [
   {
@@ -11,48 +12,34 @@ const features = [
     description:
       'Train with our certified professional coaches who have experience working with players of all levels, from beginners to tournament competitors.',
     imgSrc:
-      '/assets/me.jpg',
+      'https://images.pexels.com/photos/1432035/pexels-photo-1432035.jpeg',
     icon: <Award className="h-6 w-6 text-green-400" />,
     position: 'right',
+    link: '/coaches',
   },
   {
     title: 'Court Reservations',
     description:
       'Book your preferred court with our easy-to-use online reservation system. Indoor and outdoor options available year-round.',
-    imgSrc:
-<<<<<<< HEAD
-      '/assets/court.jpg',
-=======
-      'assets/court.jpg',
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
+    imgSrc: '/assets/court.jpg',
     icon: <MapPin className="h-6 w-6 text-green-400" />,
     position: 'left',
+    link: '/reservation',
   },
   {
     title: 'Club Schedules',
     description:
       'Stay updated with our comprehensive calendar of tournaments, social events, and special training sessions for all members.',
-    imgSrc: '/assets/team.jpg',
+    imgSrc: 'assets/team.jpg',
     icon: <Calendar className="h-6 w-6 text-green-400" />,
     position: 'right',
+    link: '/schedule',
   },
 ];
 
 export default function FeatureCards() {
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center py-16 px-4">
-<<<<<<< HEAD
-      <motion.h2
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-4xl font-extrabold text-center mb-16 text-green-400"
-      >
-        Explore Our Features
-      </motion.h2>
-
-=======
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
       <div className="flex flex-col gap-16 w-full max-w-6xl">
         {features.map((feature, index) => (
           <FeatureCard key={index} feature={feature} index={index} />
@@ -88,11 +75,7 @@ function FeatureCard({ feature, index }) {
       variants={cardVariants}
     >
       <Card
-<<<<<<< HEAD
-        className={`overflow-hidden border-0 bg-gray-800/50 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300 group`}
-=======
         className="overflow-hidden border-0 bg-gray-800/50 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300 group"
->>>>>>> 7f77fe7 (fixed auth with no ball animation and messy reservation front)
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -135,14 +118,16 @@ function FeatureCard({ feature, index }) {
 
               <p className="text-gray-300">{feature.description}</p>
 
-              <motion.button
-                className="mt-4 flex items-center gap-2 text-green-400 font-medium group/btn"
-                whileHover={{ x: 5 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-              >
-                Learn More
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
-              </motion.button>
+              <Link href={feature.link}>
+                <motion.button
+                  className="mt-4 flex items-center gap-2 text-green-400 font-medium group/btn"
+                  whileHover={{ x: 5 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                >
+                  Learn More
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                </motion.button>
+              </Link>
             </div>
           </div>
         </CardContent>

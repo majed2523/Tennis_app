@@ -6,4 +6,6 @@ const config: Config = {
   plugins: [tailwindcssAnimate], // ✅ Add this
 };
 
+
+
 export default config;
