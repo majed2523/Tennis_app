@@ -4,14 +4,23 @@ import { motion } from 'framer-motion';
 
 export default function StaticTennisCourt() {
   return (
-    <div className="absolute right-[5%] top-[15%] w-[250px] h-[250px] md:w-[300px] md:h-[300px] pointer-events-none z-10">
+    <div className="absolute right-[5%] top-[15%] w-[300px] h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] pointer-events-none z-10">
       <motion.div
         className="w-full h-full"
+        whileHover={{
+          scale: 1.05, // Slightly scale up the court on hover
+          rotateY: 10, // Apply a slight Y-axis rotation for interaction effect
+        }}
+        whileTap={{
+          scale: 0.98, // Slightly scale down when clicked
+        }}
         animate={{
-          y: [-10, 10, -10],
+          rotateY: [0, 15, 0], // Adds dynamic rotation effect to the court
+          scale: [1, 1.05, 1], // Adds slight scaling for depth effect
+          y: [-10, 10, -10], // Adds a bouncing effect for a more dynamic feel
         }}
         transition={{
-          duration: 3,
+          duration: 6,
           ease: 'easeInOut',
           repeat: Number.POSITIVE_INFINITY,
           repeatType: 'loop',

@@ -13,19 +13,24 @@ CREATE TABLE courts (
     court_type TEXT NOT NULL
 );
 
--- Create Reservations Table (Fix: Use `client_phone` instead of `client_id`)
-CREATE TABLE reservations (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    client_phone TEXT NOT NULL,  -- ✅ Changed from `client_id`
+-- Ensure the reservations table has proper constraints
+CREATE TABLE IF NOT EXISTS reservations (
+    reservation_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    client_id INTEGER NOT NULL,
     court_id INTEGER NOT NULL,
     reservation_time DATETIME NOT NULL,
-    FOREIGN KEY (client_phone) REFERENCES clients(phone_number) ON DELETE CASCADE,
-    FOREIGN KEY (court_id) REFERENCES courts(id) ON DELETE CASCADE
+    booked_by_admin INTEGER,  -- This allows an admin to book on behalf of someone
+    FOREIGN KEY (client_id) REFERENCES clients(client_id),
+    FOREIGN KEY (court_id) REFERENCES courts(court_id),
+    FOREIGN KEY (booked_by_admin) REFERENCES admins(admin_id) ON DELETE SET NULL
 );
 
+
 -- Create Admins Table
-CREATE TABLE admins (
+-- Ensure the admins table exists
+CREATE TABLE IF NOT EXISTS admins (
     admin_id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    role TEXT CHECK(role IN ('schedule_manager', 'booking_manager')) NOT NULL
 );

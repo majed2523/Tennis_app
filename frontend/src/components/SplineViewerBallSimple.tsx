@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 
 export default function SplineViewerBallSimple() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -9,39 +10,47 @@ export default function SplineViewerBallSimple() {
     // Only run on client side
     if (typeof window === 'undefined') return;
 
-    // Load the Spline viewer script
+    // Load the Spline viewer script only once
     const script = document.createElement('script');
     script.type = 'module';
     script.src =
       'https://unpkg.com/@splinetool/viewer@1.9.75/build/spline-viewer.js';
     document.head.appendChild(script);
 
-    // Create the spline-viewer element
+    // Create and configure the spline-viewer element after the script loads
     script.onload = () => {
       if (containerRef.current) {
         const splineViewer = document.createElement('spline-viewer');
         splineViewer.setAttribute(
           'url',
-          'https://prod.spline.design/jx47xrmQ67Y9uvGG/scene.splinecode'
+          'https://prod.spline.design/jx47xrmQ67Y9uvGG/scene.splinecode' // Replace this with your scene URL
         );
-        // Clear container and append the viewer
+        splineViewer.setAttribute('camera', 'true'); // Enables camera control in the viewer
+        splineViewer.setAttribute('background', 'transparent'); // Optional: Set background transparency
         containerRef.current.innerHTML = '';
-        containerRef.current.appendChild(splineViewer);
+        containerRef.current.appendChild(splineViewer); // Attach the viewer to the container
       }
     };
 
     return () => {
-      // Clean up
       if (script.parentNode) {
-        script.parentNode.removeChild(script);
+        script.parentNode.removeChild(script); // Clean up after component unmount
       }
     };
   }, []);
 
   return (
-    <div
+    <motion.div
       ref={containerRef}
-      className="absolute right-[5%] top-[15%] w-[250px] h-[250px] md:w-[300px] md:h-[300px] pointer-events-none z-10"
+      className="absolute right-[5%] top-[15%] w-[300px] h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] pointer-events-none z-10"
+      whileHover={{
+        scale: 1.05, // Slightly scale the court on hover
+        rotateY: 15, // Apply a slight Y-axis rotation for interaction effect
+      }}
+      transition={{
+        duration: 0.3,
+        ease: 'easeInOut',
+      }}
     />
   );
 }

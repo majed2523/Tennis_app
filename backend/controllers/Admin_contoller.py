@@ -1,42 +1,44 @@
-from backend.models.Admin import Admin
+from flask import jsonify, request
+from models.Admin import Admin
+from controllers.Reservation_controller import ReservationController
+import jwt
+from datetime import datetime, timedelta
+
+SECRET_KEY = "your_secret_key"
 
 class AdminController:
     @staticmethod
     def admin_login():
-        """Handles admin login process."""
-        username = input("Enter admin username: ")
-        password = input("Enter admin password: ")
+        """Handles admin authentication and token issuance."""
+        data = request.get_json()
+        username = data.get("username")
+        password = data.get("password")
 
         admin = Admin.authenticate_admin(username, password)
         if admin:
-            print(f"Welcome, {admin.username}! You have admin privileges.")
-            return admin
-        else:
-            print("Invalid credentials.")
-            return None
+            payload = {
+                "admin_id": admin.admin_id,
+                "username": admin.username,
+                "role": admin.role,
+                "exp": datetime.utcnow() + timedelta(hours=24)
+            }
+            token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+            return jsonify({"token": token, "role": admin.role}), 200
+        return jsonify({"error": "Invalid credentials"}), 401
 
     @staticmethod
-    def manage_reservations():
-        """Allows admin to approve/reject reservations."""
-        reservations = Admin.view_reservations()
-        if not reservations:
-            print("No reservations found.")
-            return
-        
-        print("\nPending Reservations:")
-        for res in reservations:
-            print(f"ID: {res[0]}, Client: {res[1]}, Court: {res[2]}, Status: {res[3]}")
+    def manage_court_bookings(admin_role):
+        """Admin 2 can create court bookings."""
+        if admin_role == "booking_manager":
+            data = request.get_json()
+            return ReservationController.create_reservation(
+                data["client_phone"], data["court_id"], data["reservation_time"]
+            )
+        return jsonify({"error": "Unauthorized"}), 403
 
-        action = input("\nApprove (A) / Reject (R) a reservation? (Enter ID or 'exit' to quit): ")
-        if action.lower() == "exit":
-            return
-        
-        res_id = int(action)
-        decision = input("Approve (A) or Reject (R)? ").strip().lower()
-
-        if decision == "a":
-            Admin.update_reservation_status(res_id, "approved")
-        elif decision == "r":
-            Admin.update_reservation_status(res_id, "rejected")
-        else:
-            print("Invalid input.")
+    @staticmethod
+    def fetch_bookings(admin_role):
+        """Fetch all bookings (Admin 2 only)."""
+        if admin_role == "booking_manager":
+            return jsonify(ReservationController.get_all_reservations()), 200
+        return jsonify({"error": "Unauthorized"}), 403

@@ -29,6 +29,7 @@ import RegisterForm from './register-form';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -45,19 +46,20 @@ export default function Navbar() {
     const checkAuth = () => {
       const token = localStorage.getItem('authToken');
       const storedUserData = localStorage.getItem('userData');
+      const role = localStorage.getItem('admin_role'); // Check for admin role
 
       if (token) {
         setIsAuthenticated(true);
+
         if (storedUserData) {
           try {
             const parsedData = JSON.parse(storedUserData);
-            // Ensure we have the required fields
+            // Ensure user data has required fields
             if (parsedData && parsedData.firstName && parsedData.lastName) {
               setUserData(parsedData);
               console.log('🔹 Navbar loaded user data:', parsedData);
             } else {
               console.error('❌ Invalid user data format:', parsedData);
-              // If data is invalid, clear it
               localStorage.removeItem('userData');
               setIsAuthenticated(false);
               setUserData(null);
@@ -69,18 +71,30 @@ export default function Navbar() {
             setUserData(null);
           }
         }
+
+        // ✅ Check if the user is Admin1 (schedule_manager)
+        if (role === 'schedule_manager') {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
       } else {
         setIsAuthenticated(false);
         setUserData(null);
+        setIsAdmin(false);
       }
     };
 
-    // Check auth on mount
+    // Check authentication on mount
     checkAuth();
 
-    // Set up storage event listener to detect changes from other components
+    // Listen for localStorage changes from other components
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'authToken' || e.key === 'userData') {
+      if (
+        e.key === 'authToken' ||
+        e.key === 'userData' ||
+        e.key === 'admin_role'
+      ) {
         checkAuth();
       }
     };
@@ -96,6 +110,7 @@ export default function Navbar() {
       window.removeEventListener('authChange', handleAuthChange);
     };
   }, []);
+
 
   const handleAuthSuccess = (userData?: {
     firstName: string;
@@ -169,10 +184,10 @@ export default function Navbar() {
             Home
           </Link>
           <Link
-            href="/courts"
+            href="/registration"
             className="text-gray-300 hover:text-green-400 transition-colors"
           >
-            Courts
+            Registration
           </Link>
           <Link
             href="/coaches"
@@ -198,6 +213,15 @@ export default function Navbar() {
           >
             About
           </Link>
+          {/* ✅ Show Admin Schedule only if user is Admin1 */}
+          {isAdmin && (
+            <Link
+              href="/admin/schedule"
+              className="text-red-400 hover:text-red-500 font-bold transition-colors"
+            >
+              Admin Schedule
+            </Link>
+          )}
         </nav>
 
         {/* Auth Buttons or User Menu */}
@@ -375,10 +399,10 @@ export default function Navbar() {
                   Home
                 </Link>
                 <Link
-                  href="/courts"
+                  href="/registration"
                   className="py-2 text-gray-300 hover:text-green-400 transition-colors"
                 >
-                  Courts
+                  Registration
                 </Link>
                 <Link
                   href="/coaches"
@@ -466,3 +490,4 @@ export default function Navbar() {
     </header>
   );
 }
+

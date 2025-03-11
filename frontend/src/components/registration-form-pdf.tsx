@@ -1,8 +1,6 @@
 'use client';
 
-import React from 'react';
-
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Document,
   Page,
@@ -30,24 +28,29 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     marginBottom: 20,
+    alignItems: 'center',
   },
   logo: {
     width: 80,
     height: 80,
+    borderRadius: 10,
+    border: '2px solid #FF5733', // Adding border for visual appeal
+    marginRight: 15,
   },
   title: {
-    fontSize: 18,
+    fontSize: 22,
     fontFamily: 'Roboto',
     marginBottom: 10,
-    color: '#333333',
+    color: '#FF5733', // Using USMA branding color
+    fontWeight: 'bold',
   },
   subtitle: {
     fontSize: 16,
     fontFamily: 'Roboto',
     marginBottom: 20,
-    color: '#666666',
+    color: '#4CAF50', // Another color from the logo
   },
   photoBox: {
     width: 100,
@@ -80,6 +83,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     fontSize: 11,
     lineHeight: 1.5,
+    color: '#444444',
   },
   signature: {
     marginTop: 20,
@@ -100,6 +104,36 @@ const styles = StyleSheet.create({
     height: 100,
     opacity: 0.2,
   },
+  backgroundLogo: {
+    position: 'absolute',
+    top: 50,
+    left: 50,
+    width: 100,
+    height: 100,
+    opacity: 0.1,
+  },
+  medicalSection: {
+    marginTop: 30,
+    padding: 10,
+    borderTop: '2px solid #FF5733',
+    marginBottom: 30,
+  },
+  medicalLabel: {
+    fontSize: 12,
+    color: '#333333',
+    marginBottom: 5,
+  },
+  medicalInput: {
+    height: 25,
+    borderBottom: '1px dotted #999999',
+    fontSize: 12,
+    marginBottom: 5,
+  },
+  pageContent: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    height: '100%',
+  },
 });
 
 // PDF Document component
@@ -108,7 +142,7 @@ const RegistrationForm = () => (
     <Page size="A4" style={styles.page}>
       {/* Header */}
       <View style={styles.header}>
-        <Image src="/placeholder.svg?height=80&width=80" style={styles.logo} />
+        <Image src="/assets/download.jpeg" style={styles.logo} />
         <View>
           <Text style={styles.title}>CLUB DE TENNIS USMA ANNABA</Text>
           <Text style={styles.subtitle}>
@@ -163,9 +197,21 @@ const RegistrationForm = () => (
         <View style={styles.input} />
         <Text>
           à s'inscrire à l'USMA tennis et à participer aux diverses activités
-          sportives et competitions pour la saison sportive 2024/2025 et
-          m'engage à respecter le reglement interieur du club.
+          sportives et compétitions pour la saison sportive 2024/2025 et
+          m'engage à respecter le règlement intérieur du club.
         </Text>
+      </View>
+
+      {/* Medical Certification Section */}
+      <View style={styles.medicalSection}>
+        <Text style={styles.medicalLabel}>CERTIFICAT MEDICAL :</Text>
+        <Text>
+          Le certificat médical est requis pour participer aux activités
+          sportives.
+        </Text>
+        <View style={styles.medicalInput} />
+        <Text style={styles.medicalLabel}>Date de validité :</Text>
+        <View style={styles.medicalInput} />
       </View>
 
       {/* Signature */}
@@ -176,7 +222,7 @@ const RegistrationForm = () => (
 
       {/* Decorative Tennis Ball */}
       <Image
-        src="/placeholder.svg?height=100&width=100"
+        src="/path_to_decorative_image.png"
         style={styles.decorativeImage}
       />
     </Page>

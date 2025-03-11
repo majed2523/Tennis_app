@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from datetime import datetime
+from controllers.Admin_contoller import AdminController
 from controllers.Client_controller import ClientController
 from controllers.Reservation_controller import ReservationController
 from controllers.Court_controller import CourtController
@@ -198,18 +199,47 @@ def get_client_details():
     }), 200
 
 # ---------------------
-# Authentication Decorator
+# Admin Authentication Decorator
 # ---------------------
-def authenticate(f):
+
+import functools
+
+def authenticate_admin(f):
+    """Ensures only authorized admins can access certain routes."""
+    @functools.wraps(f)  # Fix: This preserves the function name
     def wrapper(*args, **kwargs):
         token = request.headers.get("Authorization")
         if not token:
             return jsonify({"error": "Missing token"}), 401
         try:
             payload = jwt.decode(token.split(" ")[1], SECRET_KEY, algorithms=["HS256"])
-            return f(payload["phone_number"], *args, **kwargs)
+            admin_role = payload["role"]
+            if admin_role not in ["schedule_manager", "booking_manager"]:
+                return jsonify({"error": "Unauthorized role"}), 403
+            return f(admin_role, *args, **kwargs)
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "Token expired"}), 401
         except jwt.InvalidTokenError:
             return jsonify({"error": "Invalid token"}), 401
     return wrapper
+
+# --------------------
+# Admin Routes
+# --------------------
+
+@routes_app.route("/admin/login", methods=["POST"])
+def admin_login_route():  # Renamed function to avoid conflicts
+    """Handles admin login."""
+    return AdminController.admin_login()
+
+@routes_app.route("/admin/booking", methods=["POST"])
+@authenticate_admin
+def admin_manage_booking(admin_role):  # Renamed function
+    """Admin 2 manages court bookings."""
+    return AdminController.manage_court_bookings(admin_role)
+
+@routes_app.route("/admin/bookings", methods=["GET"])
+@authenticate_admin
+def admin_fetch_bookings(admin_role):  # Renamed function
+    """Admin 2 fetches all bookings."""
+    return AdminController.fetch_bookings(admin_role)

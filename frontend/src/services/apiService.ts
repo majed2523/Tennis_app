@@ -2,6 +2,25 @@
 
 import clientService from './ClientService';
 import reservationService from './reservationService';
+import {
+  adminLogin,
+  manageSchedule,
+  manageCourtBookings,
+  fetchSchedule,
+  fetchBookings,
+  fetchAdminRole,
+} from './AdminService';
+
+export {
+  adminLogin,
+  manageSchedule,
+  manageCourtBookings,
+  fetchSchedule,
+  fetchBookings,
+  fetchAdminRole,
+};
+
+
 
 export { clientService, reservationService };
 
