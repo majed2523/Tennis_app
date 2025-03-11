@@ -1,88 +1,87 @@
-'use client';
+"use client"
 
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { Calendar, Award, Clock, ChevronRight } from 'lucide-react';
-import { Button } from '../components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '../components/ui/card';
-import FeatureCards from '../components/FeatureCard';
-import dynamic from 'next/dynamic';
+import { useEffect, useState } from "react"
+import { Calendar, Award, Clock, ChevronRight } from "lucide-react"
+import { Button } from "../components/ui/button"
+import Link from "next/link"
+import { motion } from "framer-motion"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card"
+import FeatureCards from "../components/FeatureCard"
+import dynamic from "next/dynamic"
 
-// Dynamically import the 3D component to avoid SSR issues with Three.js
-const TennisBallAnimation = dynamic(
-  // () => import('../components/TennisBallModel'),
-  {
-    ssr: false,
-    loading: () => <div className="w-[300px] h-[300px] opacity-0"></div>,
-  }
-);
+// Dynamically import the SplineViewerBall component with no SSR
+const StaticTennisCourt = dynamic(() => import("../components/StaticTennisCourt"), {
+  ssr: false,
+})
+
+// Fallback tennis ball in case the Spline viewer doesn't work
+const FallbackTennisBall = dynamic(() => import("../components/FallBackTennis"), {
+  ssr: false,
+})
 
 export default function HomePage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userData, setUserData] = useState<{
-    firstName: string;
-    lastName: string;
-  } | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [userData, setUserData] = useState<{ firstName: string; lastName: string } | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [splineError, setSplineError] = useState(false)
 
   // Check if user is authenticated on component mount
   useEffect(() => {
     const checkAuth = () => {
-      const token = localStorage.getItem('authToken');
-      const storedUserData = localStorage.getItem('userData');
+      const token = localStorage.getItem("authToken")
+      const storedUserData = localStorage.getItem("userData")
 
       if (token) {
-        setIsAuthenticated(true);
+        setIsAuthenticated(true)
         if (storedUserData) {
           try {
-            const parsedData = JSON.parse(storedUserData);
-            setUserData(parsedData);
-            console.log('🔹 Home loaded user data:', parsedData);
+            const parsedData = JSON.parse(storedUserData)
+            setUserData(parsedData)
+            console.log("🔹 Home loaded user data:", parsedData)
           } catch (error) {
-            console.error('Error parsing userData:', error);
+            console.error("Error parsing userData:", error)
           }
         }
       } else {
-        setIsAuthenticated(false);
-        setUserData(null);
+        setIsAuthenticated(false)
+        setUserData(null)
       }
-      setIsLoading(false);
-    };
+      setIsLoading(false)
+    }
 
-    checkAuth();
+    checkAuth()
 
     // Listen for auth changes
-    window.addEventListener('authChange', checkAuth);
-    window.addEventListener('storage', (e) => {
-      if (e.key === 'authToken' || e.key === 'userData') {
-        checkAuth();
+    window.addEventListener("authChange", checkAuth)
+    window.addEventListener("storage", (e) => {
+      if (e.key === "authToken" || e.key === "userData") {
+        checkAuth()
       }
-    });
+    })
+
+    // Handle potential Spline errors
+    const handleError = () => {
+      setSplineError(true)
+    }
+    window.addEventListener("error", handleError)
 
     return () => {
-      window.removeEventListener('authChange', checkAuth);
-      window.removeEventListener('storage', (e) => {
-        if (e.key === 'authToken' || e.key === 'userData') {
-          checkAuth();
+      window.removeEventListener("authChange", checkAuth)
+      window.removeEventListener("storage", (e) => {
+        if (e.key === "authToken" || e.key === "userData") {
+          checkAuth()
         }
-      });
-    };
-  }, []);
+      })
+      window.removeEventListener("error", handleError)
+    }
+  }, [])
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-400"></div>
       </div>
-    );
+    )
   }
 
   return (
@@ -92,8 +91,11 @@ export default function HomePage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="flex flex-col justify-center items-center text-center px-6 pt-24 md:pt-32 relative overflow-hidden"
+        className="flex flex-col justify-center items-center text-center px-6 pt-24 md:pt-32 pb-16 relative overflow-hidden"
       >
+        {/* Tennis Ball - positioned to the side */}
+        {splineError ? <FallbackTennisBall /> : <StaticTennisCourt />}
+
         <motion.h1
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -111,8 +113,7 @@ export default function HomePage() {
             className="mt-6 z-10"
           >
             <h2 className="text-2xl font-bold text-white">
-              Welcome back,{' '}
-              <span className="text-green-400">{userData.firstName}</span>!
+              Welcome back, <span className="text-green-400">{userData.firstName}</span>!
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mt-4">
               Ready for your next match? Access your tennis services below.
@@ -125,8 +126,7 @@ export default function HomePage() {
             transition={{ delay: 0.6, duration: 0.8 }}
             className="text-xl text-gray-400 max-w-3xl mt-4 md:mt-6 z-10"
           >
-            Join us for world-class coaching, premium courts, and a vibrant
-            tennis community.
+            Join us for world-class coaching, premium courts, and a vibrant tennis community.
           </motion.p>
         )}
 
@@ -173,9 +173,6 @@ export default function HomePage() {
           )}
         </motion.div>
 
-        {/* Replace previous animation with realistic tennis ball */}
-        <TennisBallAnimation />
-
         {isAuthenticated ? (
           <motion.div
             initial={{ opacity: 0 }}
@@ -189,10 +186,7 @@ export default function HomePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-4">
               {/* Your Reservations Card */}
-              <motion.div
-                whileHover={{ y: -10, transition: { duration: 0.2 } }}
-                className="col-span-1"
-              >
+              <motion.div whileHover={{ y: -10, transition: { duration: 0.2 } }} className="col-span-1">
                 <Card className="bg-gray-800/50 backdrop-blur-sm border-gray-700 h-full overflow-hidden group">
                   <CardHeader className="bg-gradient-to-r from-green-600/20 to-blue-600/20 pb-8">
                     <CardTitle className="text-2xl text-white flex items-center">
@@ -208,9 +202,7 @@ export default function HomePage() {
                       <li className="flex justify-between items-center p-3 bg-gray-700/30 rounded-md">
                         <div>
                           <p className="font-medium text-white">Center Court</p>
-                          <p className="text-sm text-gray-400">
-                            Tomorrow, 10:00 - 11:30
-                          </p>
+                          <p className="text-sm text-gray-400">Tomorrow, 10:00 - 11:30</p>
                         </div>
                         <Button
                           variant="ghost"
@@ -223,9 +215,7 @@ export default function HomePage() {
                       <li className="flex justify-between items-center p-3 bg-gray-700/30 rounded-md">
                         <div>
                           <p className="font-medium text-white">Court 3</p>
-                          <p className="text-sm text-gray-400">
-                            Friday, 15:30 - 17:00
-                          </p>
+                          <p className="text-sm text-gray-400">Friday, 15:30 - 17:00</p>
                         </div>
                         <Button
                           variant="ghost"
@@ -252,47 +242,30 @@ export default function HomePage() {
               </motion.div>
 
               {/* Club Schedule Card */}
-              <motion.div
-                whileHover={{ y: -10, transition: { duration: 0.2 } }}
-                className="col-span-1"
-              >
+              <motion.div whileHover={{ y: -10, transition: { duration: 0.2 } }} className="col-span-1">
                 <Card className="bg-gray-800/50 backdrop-blur-sm border-gray-700 h-full overflow-hidden group">
                   <CardHeader className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 pb-8">
                     <CardTitle className="text-2xl text-white flex items-center">
                       <Clock className="mr-2 h-6 w-6 text-purple-400" />
                       Club Schedule
                     </CardTitle>
-                    <CardDescription className="text-gray-400">
-                      Check upcoming events and classes
-                    </CardDescription>
+                    <CardDescription className="text-gray-400">Check upcoming events and classes</CardDescription>
                   </CardHeader>
                   <CardContent className="pt-6">
                     <ul className="space-y-3">
                       <li className="flex justify-between items-center p-3 bg-gray-700/30 rounded-md">
                         <div>
-                          <p className="font-medium text-white">
-                            Junior Tournament
-                          </p>
-                          <p className="text-sm text-gray-400">
-                            Saturday, 09:00 - 18:00
-                          </p>
+                          <p className="font-medium text-white">Junior Tournament</p>
+                          <p className="text-sm text-gray-400">Saturday, 09:00 - 18:00</p>
                         </div>
-                        <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full">
-                          Event
-                        </span>
+                        <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full">Event</span>
                       </li>
                       <li className="flex justify-between items-center p-3 bg-gray-700/30 rounded-md">
                         <div>
-                          <p className="font-medium text-white">
-                            Advanced Training
-                          </p>
-                          <p className="text-sm text-gray-400">
-                            Monday, 17:00 - 19:00
-                          </p>
+                          <p className="font-medium text-white">Advanced Training</p>
+                          <p className="text-sm text-gray-400">Monday, 17:00 - 19:00</p>
                         </div>
-                        <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full">
-                          Class
-                        </span>
+                        <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full">Class</span>
                       </li>
                     </ul>
                   </CardContent>
@@ -311,10 +284,7 @@ export default function HomePage() {
               </motion.div>
 
               {/* Top Coaches Card */}
-              <motion.div
-                whileHover={{ y: -10, transition: { duration: 0.2 } }}
-                className="col-span-1"
-              >
+              <motion.div whileHover={{ y: -10, transition: { duration: 0.2 } }} className="col-span-1">
                 <Card className="bg-gray-800/50 backdrop-blur-sm border-gray-700 h-full overflow-hidden group">
                   <CardHeader className="bg-gradient-to-r from-amber-600/20 to-red-600/20 pb-8">
                     <CardTitle className="text-2xl text-white flex items-center">
@@ -334,9 +304,7 @@ export default function HomePage() {
                           </div>
                           <div>
                             <p className="font-medium text-white">John Davis</p>
-                            <p className="text-sm text-gray-400">
-                              Former ATP Pro
-                            </p>
+                            <p className="text-sm text-gray-400">Former ATP Pro</p>
                           </div>
                         </div>
                         <Button
@@ -353,12 +321,8 @@ export default function HomePage() {
                             <span className="text-amber-400 font-bold">SM</span>
                           </div>
                           <div>
-                            <p className="font-medium text-white">
-                              Sarah Miller
-                            </p>
-                            <p className="text-sm text-gray-400">
-                              Youth Specialist
-                            </p>
+                            <p className="font-medium text-white">Sarah Miller</p>
+                            <p className="text-sm text-gray-400">Youth Specialist</p>
                           </div>
                         </div>
                         <Button
@@ -408,5 +372,6 @@ export default function HomePage() {
         )}
       </motion.section>
     </div>
-  );
+  )
 }
+
