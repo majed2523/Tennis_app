@@ -20,8 +20,4 @@ export {
   fetchAdminRole,
 };
 
-
-
 export { clientService, reservationService };
-
-

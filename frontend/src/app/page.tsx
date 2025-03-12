@@ -14,19 +14,12 @@ import {
   CardTitle,
 } from '../components/ui/card';
 import FeatureCards from '../components/FeatureCard';
+import LocationSection from '../components/LocationSection';
 import dynamic from 'next/dynamic';
 
 // Dynamically import the SplineViewerBall component with no SSR
 const SplineViewerBallSimple = dynamic(
   () => import('../components/SplineViewerBallSimple'),
-  {
-    ssr: false,
-  }
-);
-
-// Fallback tennis ball in case the Spline viewer doesn't work
-const FallbackTennisBall = dynamic(
-  () => import('../components/FallBackTennis'),
   {
     ssr: false,
   }
@@ -110,7 +103,7 @@ export default function HomePage() {
         className="flex flex-col justify-center items-center text-center px-6 pt-24 md:pt-32 pb-16 relative overflow-hidden"
       >
         {/* Tennis Ball - positioned to the side */}
-        {splineError ? <FallbackTennisBall /> : <SplineViewerBallSimple />}
+         <SplineViewerBallSimple />
 
         <motion.h1
           initial={{ opacity: 0, y: -30 }}
@@ -265,7 +258,140 @@ export default function HomePage() {
                   </CardFooter>
                 </Card>
               </motion.div>
-              {/* Add more content here */}
+
+              {/* Club Schedule Card */}
+              <motion.div
+                whileHover={{ y: -10, transition: { duration: 0.2 } }}
+                className="col-span-1"
+              >
+                <Card className="bg-gray-800/50 backdrop-blur-sm border-gray-700 h-full overflow-hidden group">
+                  <CardHeader className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 pb-8">
+                    <CardTitle className="text-2xl text-white flex items-center">
+                      <Clock className="mr-2 h-6 w-6 text-purple-400" />
+                      Club Schedule
+                    </CardTitle>
+                    <CardDescription className="text-gray-400">
+                      Check upcoming events and classes
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <ul className="space-y-3">
+                      <li className="flex justify-between items-center p-3 bg-gray-700/30 rounded-md">
+                        <div>
+                          <p className="font-medium text-white">
+                            Junior Tournament
+                          </p>
+                          <p className="text-sm text-gray-400">
+                            Saturday, 09:00 - 18:00
+                          </p>
+                        </div>
+                        <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full">
+                          Event
+                        </span>
+                      </li>
+                      <li className="flex justify-between items-center p-3 bg-gray-700/30 rounded-md">
+                        <div>
+                          <p className="font-medium text-white">
+                            Advanced Training
+                          </p>
+                          <p className="text-sm text-gray-400">
+                            Monday, 17:00 - 19:00
+                          </p>
+                        </div>
+                        <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full">
+                          Class
+                        </span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                  <CardFooter className="border-t border-gray-700/50 pt-4">
+                    <Link href="/schedule" className="w-full">
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-between group-hover:text-purple-400 transition-colors"
+                      >
+                        View Full Schedule
+                        <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </Button>
+                    </Link>
+                  </CardFooter>
+                </Card>
+              </motion.div>
+
+              {/* Top Coaches Card */}
+              <motion.div
+                whileHover={{ y: -10, transition: { duration: 0.2 } }}
+                className="col-span-1"
+              >
+                <Card className="bg-gray-800/50 backdrop-blur-sm border-gray-700 h-full overflow-hidden group">
+                  <CardHeader className="bg-gradient-to-r from-amber-600/20 to-red-600/20 pb-8">
+                    <CardTitle className="text-2xl text-white flex items-center">
+                      <Award className="mr-2 h-6 w-6 text-amber-400" />
+                      Top Coaches
+                    </CardTitle>
+                    <CardDescription className="text-gray-400">
+                      Book lessons with our professional coaches
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <ul className="space-y-3">
+                      <li className="flex justify-between items-center p-3 bg-gray-700/30 rounded-md">
+                        <div className="flex items-center">
+                          <div className="w-10 h-10 rounded-full bg-amber-600/20 flex items-center justify-center mr-3">
+                            <span className="text-amber-400 font-bold">JD</span>
+                          </div>
+                          <div>
+                            <p className="font-medium text-white">John Davis</p>
+                            <p className="text-sm text-gray-400">
+                              Former ATP Pro
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-amber-400 hover:text-amber-300 hover:bg-amber-500/10"
+                        >
+                          Book
+                        </Button>
+                      </li>
+                      <li className="flex justify-between items-center p-3 bg-gray-700/30 rounded-md">
+                        <div className="flex items-center">
+                          <div className="w-10 h-10 rounded-full bg-amber-600/20 flex items-center justify-center mr-3">
+                            <span className="text-amber-400 font-bold">SM</span>
+                          </div>
+                          <div>
+                            <p className="font-medium text-white">
+                              Sarah Miller
+                            </p>
+                            <p className="text-sm text-gray-400">
+                              Youth Specialist
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-amber-400 hover:text-amber-300 hover:bg-amber-500/10"
+                        >
+                          Book
+                        </Button>
+                      </li>
+                    </ul>
+                  </CardContent>
+                  <CardFooter className="border-t border-gray-700/50 pt-4">
+                    <Link href="/coaches" className="w-full">
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-between group-hover:text-amber-400 transition-colors"
+                      >
+                        View All Coaches
+                        <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </Button>
+                    </Link>
+                  </CardFooter>
+                </Card>
+              </motion.div>
             </div>
           </motion.div>
         ) : (
@@ -284,6 +410,9 @@ export default function HomePage() {
           </>
         )}
       </motion.section>
+
+      {/* Location Section */}
+      <LocationSection />
     </div>
   );
 }

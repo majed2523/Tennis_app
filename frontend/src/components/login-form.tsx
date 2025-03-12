@@ -1,7 +1,6 @@
 'use client';
 
 import type React from 'react';
-
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
@@ -17,11 +16,13 @@ interface LoginFormProps {
     phone_number: string;
   }) => void;
   onRegisterClick?: () => void;
+  returnUrl?: string;
 }
 
 export default function LoginForm({
   onSuccess,
   onRegisterClick,
+  returnUrl,
 }: LoginFormProps) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
@@ -37,25 +38,42 @@ export default function LoginForm({
 
     try {
       const result = await clientService.loginClient(phoneNumber, password);
+      console.log('🔹 Raw login response:', result);
 
       if (result.error) {
         setError(result.error);
       } else {
-        // Save user data from API response
+        // Extract user data from the response
+        // The API returns first_name and last_name directly in the response
         const userData = {
-          firstName: result.first_name,
-          lastName: result.last_name,
-          phone_number: result.phone_number,
+          firstName: result.first_name || '',
+          lastName: result.last_name || '',
+          phone_number: phoneNumber,
         };
+
+        console.log('🔹 Extracted user data:', userData);
 
         // Store user data in localStorage for persistence
         localStorage.setItem('userData', JSON.stringify(userData));
 
+        // Dispatch custom event to notify other components
+        window.dispatchEvent(new Event('authChange'));
+
         // Login successful
         if (onSuccess) {
           onSuccess(userData);
+        } else {
+          // If no onSuccess handler, handle navigation here
+          if (
+            returnUrl &&
+            returnUrl !== '/login' &&
+            returnUrl !== '/register'
+          ) {
+            router.push(returnUrl);
+          } else {
+            router.push('/'); // Redirect to home if no return URL
+          }
         }
-        router.refresh();
       }
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');

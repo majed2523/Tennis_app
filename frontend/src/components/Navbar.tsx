@@ -26,10 +26,10 @@ import {
 import { Avatar, AvatarFallback } from '../components/ui/avatar';
 import LoginForm from './login-form';
 import RegisterForm from './register-form';
+import  clientService  from '../services/ClientService';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -43,58 +43,81 @@ export default function Navbar() {
 
   // Check if user is authenticated on component mount and on localStorage changes
   useEffect(() => {
-    const checkAuth = () => {
+    const checkAuth = async () => {
       const token = localStorage.getItem('authToken');
-      const storedUserData = localStorage.getItem('userData');
-      const role = localStorage.getItem('admin_role'); // Check for admin role
 
-      if (token) {
-        setIsAuthenticated(true);
-
-        if (storedUserData) {
-          try {
-            const parsedData = JSON.parse(storedUserData);
-            // Ensure user data has required fields
-            if (parsedData && parsedData.firstName && parsedData.lastName) {
-              setUserData(parsedData);
-              console.log('🔹 Navbar loaded user data:', parsedData);
-            } else {
-              console.error('❌ Invalid user data format:', parsedData);
-              localStorage.removeItem('userData');
-              setIsAuthenticated(false);
-              setUserData(null);
-            }
-          } catch (error) {
-            console.error('❌ Error parsing userData:', error);
-            localStorage.removeItem('userData');
-            setIsAuthenticated(false);
-            setUserData(null);
-          }
-        }
-
-        // ✅ Check if the user is Admin1 (schedule_manager)
-        if (role === 'schedule_manager') {
-          setIsAdmin(true);
-        } else {
-          setIsAdmin(false);
-        }
-      } else {
+      if (!token) {
         setIsAuthenticated(false);
         setUserData(null);
-        setIsAdmin(false);
+        return;
+      }
+
+      // We have a token, so we're authenticated
+      setIsAuthenticated(true);
+
+      // Try to get user data from localStorage first
+      const storedUserData = localStorage.getItem('userData');
+
+      if (storedUserData) {
+        try {
+          const parsedData = JSON.parse(storedUserData);
+          console.log('🔹 Navbar parsing stored user data:', parsedData);
+
+          if (parsedData && parsedData.firstName && parsedData.lastName) {
+            setUserData(parsedData);
+            console.log(
+              '🔹 Navbar loaded user data from localStorage:',
+              parsedData
+            );
+          } else {
+            console.log(
+              '❌ Invalid user data format in localStorage, fetching from API'
+            );
+            // If localStorage data is invalid, try to fetch from API
+            await fetchUserData();
+          }
+        } catch (error) {
+          console.error('❌ Error parsing userData:', error);
+          // If parsing fails, try to fetch from API
+          await fetchUserData();
+        }
+      } else {
+        // No user data in localStorage, try to fetch from API
+        console.log('❌ No user data in localStorage, fetching from API');
+        await fetchUserData();
       }
     };
 
-    // Check authentication on mount
+    const fetchUserData = async () => {
+      try {
+        console.log('🔹 Fetching user data from API');
+        const result = await clientService.getClientDetails();
+
+        if (result.error) {
+          console.error('❌ Error fetching user data:', result.error);
+          setIsAuthenticated(false);
+          setUserData(null);
+        }
+        // The getClientDetails function now handles storing the user data in localStorage
+
+        // Refresh user data from localStorage after API call
+        const refreshedUserData = localStorage.getItem('userData');
+        if (refreshedUserData) {
+          const parsedData = JSON.parse(refreshedUserData);
+          setUserData(parsedData);
+          console.log('🔹 Navbar loaded user data from API:', parsedData);
+        }
+      } catch (error) {
+        console.error('❌ Error in fetchUserData:', error);
+      }
+    };
+
+    // Check auth on mount
     checkAuth();
 
-    // Listen for localStorage changes from other components
+    // Set up storage event listener to detect changes from other components
     const handleStorageChange = (e: StorageEvent) => {
-      if (
-        e.key === 'authToken' ||
-        e.key === 'userData' ||
-        e.key === 'admin_role'
-      ) {
+      if (e.key === 'authToken' || e.key === 'userData') {
         checkAuth();
       }
     };
@@ -110,7 +133,6 @@ export default function Navbar() {
       window.removeEventListener('authChange', handleAuthChange);
     };
   }, []);
-
 
   const handleAuthSuccess = (userData?: {
     firstName: string;
@@ -136,8 +158,7 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userData');
+    clientService.logoutClient(); // This now removes both token and userData
     setIsAuthenticated(false);
     setUserData(null);
 
@@ -148,8 +169,23 @@ export default function Navbar() {
   };
 
   const getUserInitials = () => {
-    if (!userData || !userData.firstName || !userData.lastName) return 'U';
-    return `${userData.firstName.charAt(0)}${userData.lastName.charAt(0)}`;
+    if (!userData?.firstName || !userData?.lastName) {
+      console.log('❌ Missing user data for initials:', userData);
+      return 'U';
+    }
+    const firstInitial = userData.firstName.trim().charAt(0).toUpperCase();
+    const lastInitial = userData.lastName.trim().charAt(0).toUpperCase();
+    return `${firstInitial}${lastInitial}`;
+  };
+
+  const getFullName = () => {
+    if (!userData?.firstName || !userData?.lastName) {
+      console.log('❌ Missing user data for full name:', userData);
+      return 'My Account';
+    }
+    const firstName = userData.firstName.trim();
+    const lastName = userData.lastName.trim();
+    return `${firstName} ${lastName}`;
   };
 
   return (
@@ -184,10 +220,10 @@ export default function Navbar() {
             Home
           </Link>
           <Link
-            href="/registration"
+            href="/courts"
             className="text-gray-300 hover:text-green-400 transition-colors"
           >
-            Registration
+            Courts
           </Link>
           <Link
             href="/coaches"
@@ -213,15 +249,6 @@ export default function Navbar() {
           >
             About
           </Link>
-          {/* ✅ Show Admin Schedule only if user is Admin1 */}
-          {isAdmin && (
-            <Link
-              href="/admin/schedule"
-              className="text-red-400 hover:text-red-500 font-bold transition-colors"
-            >
-              Admin Schedule
-            </Link>
-          )}
         </nav>
 
         {/* Auth Buttons or User Menu */}
@@ -243,9 +270,7 @@ export default function Navbar() {
                 align="end"
               >
                 <DropdownMenuLabel className="text-gray-300">
-                  {userData
-                    ? `${userData.firstName} ${userData.lastName}`
-                    : 'My Account'}
+                  {getFullName()}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-gray-800" />
                 <DropdownMenuItem
@@ -384,7 +409,7 @@ export default function Navbar() {
                   </Avatar>
                   <div>
                     <p className="text-sm font-medium text-white">
-                      {userData.firstName} {userData.lastName}
+                      {getFullName()}
                     </p>
                     <p className="text-xs text-gray-400">Member</p>
                   </div>
@@ -399,10 +424,10 @@ export default function Navbar() {
                   Home
                 </Link>
                 <Link
-                  href="/registration"
+                  href="/courts"
                   className="py-2 text-gray-300 hover:text-green-400 transition-colors"
                 >
-                  Registration
+                  Courts
                 </Link>
                 <Link
                   href="/coaches"
@@ -490,4 +515,3 @@ export default function Navbar() {
     </header>
   );
 }
-

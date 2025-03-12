@@ -18,7 +18,7 @@ export default function AdminLogin() {
 
       // Redirect based on role
       if (response.role === 'schedule_manager') {
-        router.push('/admin/schedule');
+        router.push('/schedule');
       } else if (response.role === 'booking_manager') {
         router.push('/admin/bookings');
       } else {

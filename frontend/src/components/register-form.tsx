@@ -1,7 +1,6 @@
 'use client';
 
 import type React from 'react';
-
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
@@ -77,6 +76,7 @@ export default function RegisterForm({
         lastName,
         password
       );
+      console.log('🔹 Registration result:', result);
 
       if (result.error) {
         setError(result.error);
@@ -87,6 +87,7 @@ export default function RegisterForm({
           phoneNumber,
           password
         );
+        console.log('🔹 Auto-login result after registration:', loginResult);
 
         if (loginResult.error) {
           setError(loginResult.error);
@@ -98,6 +99,7 @@ export default function RegisterForm({
             phone_number: phoneNumber,
           };
 
+          console.log('🔹 Saving user data after registration:', userData);
           localStorage.setItem('userData', JSON.stringify(userData));
 
           // Dispatch custom event to notify other components
@@ -114,7 +116,7 @@ export default function RegisterForm({
             ) {
               router.push(returnUrl);
             } else {
-              router.push('/');
+              router.push('/'); // Redirect to home if no return URL
             }
           }
         }
