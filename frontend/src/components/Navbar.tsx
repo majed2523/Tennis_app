@@ -26,7 +26,7 @@ import {
 import { Avatar, AvatarFallback } from '../components/ui/avatar';
 import LoginForm from './login-form';
 import RegisterForm from './register-form';
-import  clientService  from '../services/ClientService';
+import { userService } from '../services/apiService';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,7 +36,8 @@ export default function Navbar() {
   const [userData, setUserData] = useState<{
     firstName: string;
     lastName: string;
-    phone_number: string;
+    userId: string;
+    role: string;
   } | null>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -91,7 +92,7 @@ export default function Navbar() {
     const fetchUserData = async () => {
       try {
         console.log('🔹 Fetching user data from API');
-        const result = await clientService.getClientDetails();
+        const result = await userService.getClientDetails();
 
         if (result.error) {
           console.error('❌ Error fetching user data:', result.error);
@@ -137,7 +138,8 @@ export default function Navbar() {
   const handleAuthSuccess = (userData?: {
     firstName: string;
     lastName: string;
-    phone_number: string;
+    userId: string;
+    role: string;
   }) => {
     setIsAuthOpen(false);
     setIsAuthenticated(true);
@@ -158,13 +160,9 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
-    clientService.logoutClient(); // This now removes both token and userData
+    userService.logout();
     setIsAuthenticated(false);
     setUserData(null);
-
-    // Dispatch custom event to notify other components
-    window.dispatchEvent(new Event('authChange'));
-
     router.push('/');
   };
 

@@ -1,91 +1,148 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { authService } from '../../../services/api';
 import {
-  fetchSchedule,
-  fetchBookings,
-  manageSchedule,
-  manageCourtBookings,
-} from '../../../services/AdminService';
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
+import { Users, UserPlus, Calendar, Settings } from 'lucide-react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 export default function AdminDashboard() {
-  const [role, setRole] = useState<string | null>(null);
-  const [schedule, setSchedule] = useState<any>(null);
-  const [bookings, setBookings] = useState<any>(null);
-  const [scheduleInput, setScheduleInput] = useState('');
-  const [bookingInput, setBookingInput] = useState('');
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('admin_token');
-    const role = localStorage.getItem('admin_role');
-
-    if (!token || !role) {
-      router.push('/admin/login'); // Redirect to login if not authenticated
-    } else {
-      setRole(role);
-
-      if (role === 'schedule_manager') {
-        fetchSchedule().then(setSchedule).catch(console.error);
-      } else if (role === 'booking_manager') {
-        fetchBookings().then(setBookings).catch(console.error);
-      }
+    // Check if user is authenticated and is an admin
+    if (!authService.isAuthenticated()) {
+      router.push('/login');
+      return;
     }
-  }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('admin_token');
-    localStorage.removeItem('admin_role');
-    router.push('/');
-  };
+    const userData = authService.getCurrentUser();
+    if (userData?.role !== 'admin') {
+      router.push('/login');
+    }
+  }, [router]);
+
+  const userData = authService.getCurrentUser();
 
   return (
-    <div className="p-6 bg-gray-900 text-white min-h-screen">
-      <h1 className="text-3xl">Admin Dashboard ({role})</h1>
-      <button
-        className="mt-4 px-4 py-2 bg-red-500 rounded"
-        onClick={handleLogout}
+    <div className="min-h-screen bg-gray-900 p-8">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-8"
       >
-        Logout
-      </button>
+        <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
+        <p className="text-gray-400 mt-2">
+          Welcome back, {userData?.firstName}! Manage your tennis club from
+          here.
+        </p>
+      </motion.div>
 
-      {role === 'schedule_manager' && (
-        <div className="mt-6">
-          <h2 className="text-xl">Manage Schedule</h2>
-          <textarea
-            className="text-black p-2 w-full"
-            value={scheduleInput}
-            onChange={(e) => setScheduleInput(e.target.value)}
-            placeholder="Enter new schedule"
-          />
-          <button
-            onClick={() => manageSchedule({ schedule: scheduleInput })}
-            className="bg-blue-500 px-4 py-2 rounded mt-2"
-          >
-            Save Schedule
-          </button>
-        </div>
-      )}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Card className="bg-gray-800 border-gray-700 hover:border-green-400 transition-colors">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl text-white flex items-center gap-2">
+                <UserPlus className="h-5 w-5 text-green-400" />
+                User Management
+              </CardTitle>
+              <CardDescription className="text-gray-400">
+                Register and manage users
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-300 mb-4">
+                Create accounts for players, coaches, and admins.
+              </p>
+              <Link href="/admin/register">
+                <Button className="w-full bg-green-600 hover:bg-green-500">
+                  Register New User
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
 
-      {role === 'booking_manager' && (
-        <div className="mt-6">
-          <h2 className="text-xl">Manage Court Bookings</h2>
-          <input
-            className="text-black p-2 w-full"
-            type="text"
-            value={bookingInput}
-            onChange={(e) => setBookingInput(e.target.value)}
-            placeholder="Enter new booking"
-          />
-          <button
-            onClick={() => manageCourtBookings({ booking: bookingInput })}
-            className="bg-green-500 px-4 py-2 rounded mt-2"
-          >
-            Save Booking
-          </button>
+          <Card className="bg-gray-800 border-gray-700 hover:border-green-400 transition-colors">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl text-white flex items-center gap-2">
+                <Users className="h-5 w-5 text-green-400" />
+                Team Management
+              </CardTitle>
+              <CardDescription className="text-gray-400">
+                Create and manage teams
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-300 mb-4">
+                Organize players into teams and assign coaches.
+              </p>
+              <Link href="/admin/teams">
+                <Button className="w-full bg-green-600 hover:bg-green-500">
+                  Manage Teams
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gray-800 border-gray-700 hover:border-green-400 transition-colors">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl text-white flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-green-400" />
+                Schedule Management
+              </CardTitle>
+              <CardDescription className="text-gray-400">
+                View and manage schedules
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-300 mb-4">
+                View all lessons and coach availability.
+              </p>
+              <Link href="/admin/schedule">
+                <Button className="w-full bg-green-600 hover:bg-green-500">
+                  View Schedules
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gray-800 border-gray-700 hover:border-green-400 transition-colors">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl text-white flex items-center gap-2">
+                <Settings className="h-5 w-5 text-green-400" />
+                System Settings
+              </CardTitle>
+              <CardDescription className="text-gray-400">
+                Configure system settings
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-300 mb-4">
+                Manage global settings for the tennis club.
+              </p>
+              <Link href="/admin/settings">
+                <Button className="w-full bg-green-600 hover:bg-green-500">
+                  System Settings
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
         </div>
-      )}
+      </motion.div>
     </div>
   );
 }

@@ -1,156 +1,65 @@
 'use client';
 
-import type React from 'react';
-
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '../../components/ui/card';
-import { Eye, EyeOff } from 'lucide-react';
-import { clientService } from '../../services/apiService';
+import LoginForm from '../../components/login-form';
+import { authService } from '../../services/api';
+import { motion } from 'framer-motion';
 
 export default function LoginPage() {
-  const [formData, setFormData] = useState({ phoneNumber: '', password: '' });
-  const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.phoneNumber || !formData.password) {
-      setMessage('Please fill all fields!');
-      return;
-    }
-
-    setIsLoading(true);
-    setMessage('');
-
-    try {
-      const result = await clientService.loginClient(
-        formData.phoneNumber,
-        formData.password
-      );
-
-      if (result.error) {
-        setMessage(result.error);
-        console.log('❌ Login failed:', result.error);
-        return;
+  useEffect(() => {
+    // Check if user is already logged in
+    if (authService.isAuthenticated()) {
+      const userData = authService.getCurrentUser();
+      if (userData?.role === 'admin') {
+        router.push('/admin/dashboard');
+      } else if (userData?.role === 'coach') {
+        router.push('/coach/dashboard');
+      } else {
+        router.push('/player/dashboard');
       }
-
-      setMessage('✅ Login successful! Redirecting...');
-      console.log('✅ Login successful!');
-      router.push('/dashboard');
-    } catch (error) {
-      setMessage('An unexpected error occurred');
-      console.error('Login error:', error);
-    } finally {
-      setIsLoading(false);
     }
-  };
+  }, [router]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white p-6">
-      <Card className="w-full max-w-md bg-gray-800 border-gray-700">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center text-green-400">
-            Welcome Back 🎾
-          </CardTitle>
-          <CardDescription className="text-center text-gray-400">
-            Enter your credentials to sign in
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="Enter your phone number"
-                value={formData.phoneNumber}
-                onChange={(e) =>
-                  setFormData({ ...formData, phoneNumber: e.target.value })
-                }
-                className="bg-gray-700 border-gray-600"
-                required
-              />
-            </div>
+    <div className="min-h-screen bg-gray-900 flex flex-col justify-center items-center p-4">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-8"
+      >
+        <div className="flex items-center justify-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-12 w-12 text-green-400"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+            <line x1="9" y1="9" x2="9.01" y2="9" />
+            <line x1="15" y1="9" x2="15.01" y2="9" />
+          </svg>
+        </div>
+      </motion.div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Enter your password"
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                  className="bg-gray-700 border-gray-600 pr-10"
-                  required
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-0 top-0 h-full px-3 text-gray-400 hover:text-white"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                  <span className="sr-only">
-                    {showPassword ? 'Hide password' : 'Show password'}
-                  </span>
-                </Button>
-              </div>
-            </div>
-
-            {message && (
-              <div
-                className={`p-3 rounded-md text-sm ${
-                  message.includes('✅')
-                    ? 'bg-green-500/20 text-green-400'
-                    : 'bg-red-500/20 text-red-400'
-                }`}
-              >
-                {message}
-              </div>
-            )}
-
-            <Button
-              type="submit"
-              className="w-full bg-green-600 hover:bg-green-500"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Signing in...' : 'Sign In'}
-            </Button>
-
-            <div className="text-center text-sm text-gray-400">
-              Don't have an account?{' '}
-              <Button
-                variant="link"
-                className="p-0 h-auto text-green-400 hover:text-green-300"
-                onClick={() => router.push('/register')}
-              >
-                Sign up
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="w-full max-w-md"
+      >
+        <div className="bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-700">
+          <LoginForm />
+        </div>
+      </motion.div>
     </div>
   );
 }

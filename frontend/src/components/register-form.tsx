@@ -3,17 +3,18 @@
 import type React from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { clientService } from '../services/apiService';
+import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert';
 
 interface RegisterFormProps {
   onSuccess?: (userData?: {
     firstName: string;
     lastName: string;
-    phone_number: string;
+    userId: string;
+    role: string;
   }) => void;
   onLoginClick?: () => void;
   returnUrl?: string;
@@ -26,7 +27,6 @@ export default function RegisterForm({
 }: RegisterFormProps) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -35,13 +35,7 @@ export default function RegisterForm({
   const router = useRouter();
 
   const validateForm = () => {
-    if (
-      !firstName ||
-      !lastName ||
-      !phoneNumber ||
-      !password ||
-      !confirmPassword
-    ) {
+    if (!firstName || !lastName || !password || !confirmPassword) {
       setError('All fields are required');
       return false;
     }
@@ -70,61 +64,18 @@ export default function RegisterForm({
     setIsLoading(true);
 
     try {
-      const result = await clientService.registerClient(
-        phoneNumber,
-        firstName,
-        lastName,
-        password
+      // Since registration is now admin-only, we'll show a message instead
+      setError(
+        'Registration is currently only available through an administrator. Please contact the club for assistance.'
       );
-      console.log('🔹 Registration result:', result);
 
-      if (result.error) {
-        setError(result.error);
-      } else {
-        // Registration successful
-        // Auto-login the user
-        const loginResult = await clientService.loginClient(
-          phoneNumber,
-          password
-        );
-        console.log('🔹 Auto-login result after registration:', loginResult);
+      // In a real implementation with admin access, you would use:
+      // const result = await userService.registerUser(firstName, lastName, password, "player")
 
-        if (loginResult.error) {
-          setError(loginResult.error);
-        } else {
-          // Save user data
-          const userData = {
-            firstName,
-            lastName,
-            phone_number: phoneNumber,
-          };
-
-          console.log('🔹 Saving user data after registration:', userData);
-          localStorage.setItem('userData', JSON.stringify(userData));
-
-          // Dispatch custom event to notify other components
-          window.dispatchEvent(new Event('authChange'));
-
-          if (onSuccess) {
-            onSuccess(userData);
-          } else {
-            // If no onSuccess handler, handle navigation here
-            if (
-              returnUrl &&
-              returnUrl !== '/login' &&
-              returnUrl !== '/register'
-            ) {
-              router.push(returnUrl);
-            } else {
-              router.push('/'); // Redirect to home if no return URL
-            }
-          }
-        }
-      }
+      setIsLoading(false);
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');
       console.error('Registration error:', err);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -135,6 +86,18 @@ export default function RegisterForm({
         <h2 className="text-2xl font-bold text-white">Create an account</h2>
         <p className="text-gray-400">Enter your information to sign up</p>
       </div>
+
+      <Alert
+        variant="destructive"
+        className="bg-amber-500/20 text-amber-400 border-amber-500/50"
+      >
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Registration Notice</AlertTitle>
+        <AlertDescription>
+          Registration is currently only available through an administrator.
+          Please contact the club for assistance.
+        </AlertDescription>
+      </Alert>
 
       {error && (
         <div className="bg-red-500/20 text-red-400 p-3 rounded-md text-sm">
@@ -167,19 +130,6 @@ export default function RegisterForm({
               className="bg-gray-800 border-gray-700"
             />
           </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="phoneNumber">Phone Number</Label>
-          <Input
-            id="phoneNumber"
-            type="tel"
-            placeholder="Enter your phone number"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            required
-            className="bg-gray-800 border-gray-700"
-          />
         </div>
 
         <div className="space-y-2">

@@ -8,4 +8,4 @@ print(f"🔹 Database Path: {DATABASE_PATH}")  # Debugging step
 
 
 # Secret key for Flask (replace with a real secret key in production)
-SECRET_KEY = 'your-secret-key-here'
+SECRET_KEY = "your_secret_key"

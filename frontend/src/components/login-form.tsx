@@ -1,30 +1,18 @@
 'use client';
 
 import type React from 'react';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { clientService } from '../services/apiService';
+import { authService } from '../services/api';
+import { Alert, AlertDescription } from '../components/ui/alert';
 
-interface LoginFormProps {
-  onSuccess?: (userData?: {
-    firstName: string;
-    lastName: string;
-    phone_number: string;
-  }) => void;
-  onRegisterClick?: () => void;
-  returnUrl?: string;
-}
-
-export default function LoginForm({
-  onSuccess,
-  onRegisterClick,
-  returnUrl,
-}: LoginFormProps) {
-  const [phoneNumber, setPhoneNumber] = useState('');
+export default function LoginForm() {
+  const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -37,42 +25,20 @@ export default function LoginForm({
     setIsLoading(true);
 
     try {
-      const result = await clientService.loginClient(phoneNumber, password);
-      console.log('🔹 Raw login response:', result);
+      const result = await authService.login(userId, password);
 
       if (result.error) {
         setError(result.error);
       } else {
-        // Extract user data from the response
-        // The API returns first_name and last_name directly in the response
-        const userData = {
-          firstName: result.first_name || '',
-          lastName: result.last_name || '',
-          phone_number: phoneNumber,
-        };
+        // Get user role and redirect accordingly
+        const userData = authService.getCurrentUser();
 
-        console.log('🔹 Extracted user data:', userData);
-
-        // Store user data in localStorage for persistence
-        localStorage.setItem('userData', JSON.stringify(userData));
-
-        // Dispatch custom event to notify other components
-        window.dispatchEvent(new Event('authChange'));
-
-        // Login successful
-        if (onSuccess) {
-          onSuccess(userData);
+        if (userData?.role === 'admin') {
+          router.push('/admin/dashboard');
+        } else if (userData?.role === 'coach') {
+          router.push('/coach/dashboard');
         } else {
-          // If no onSuccess handler, handle navigation here
-          if (
-            returnUrl &&
-            returnUrl !== '/login' &&
-            returnUrl !== '/register'
-          ) {
-            router.push(returnUrl);
-          } else {
-            router.push('/'); // Redirect to home if no return URL
-          }
+          router.push('/player/dashboard');
         }
       }
     } catch (err) {
@@ -84,27 +50,29 @@ export default function LoginForm({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full max-w-md mx-auto">
       <div className="space-y-2 text-center">
-        <h2 className="text-2xl font-bold text-white">Welcome back</h2>
-        <p className="text-gray-400">Enter your credentials to sign in</p>
+        <h1 className="text-3xl font-bold text-white">
+          Welcome to Tennis Club
+        </h1>
+        <p className="text-gray-400">Sign in to access your account</p>
       </div>
 
       {error && (
-        <div className="bg-red-500/20 text-red-400 p-3 rounded-md text-sm">
-          {error}
-        </div>
+        <Alert className="bg-red-500/20 text-red-400 border-red-500/50">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="phone">Phone Number</Label>
+          <Label htmlFor="userId">User ID</Label>
           <Input
-            id="phone"
-            type="tel"
-            placeholder="Enter your phone number"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            id="userId"
+            type="text"
+            placeholder="Enter your user ID"
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
             required
             className="bg-gray-800 border-gray-700"
           />
@@ -159,15 +127,8 @@ export default function LoginForm({
         </Button>
       </form>
 
-      <div className="text-center text-sm">
-        <span className="text-gray-400">Don't have an account?</span>{' '}
-        <Button
-          variant="link"
-          className="p-0 h-auto text-green-400 hover:text-green-300"
-          onClick={onRegisterClick}
-        >
-          Sign up
-        </Button>
+      <div className="text-center text-sm text-gray-400">
+        <p>Need an account? Please contact the club administrator.</p>
       </div>
     </div>
   );

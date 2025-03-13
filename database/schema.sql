@@ -1,36 +1,51 @@
--- Create Clients Table (phone_number is now the primary key)
-CREATE TABLE clients (
-    phone_number TEXT PRIMARY KEY,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    password TEXT NOT NULL  -- ✅ Added missing password column
+-- Step 2: Create a unified 'users' table
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  password TEXT NOT NULL,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  role TEXT NOT NULL CHECK (role IN ('player', 'coach', 'admin'))
 );
 
--- Create Courts Table
-CREATE TABLE courts (
+-- Step 3: Create a 'teams' table where each team has a name and a coach
+CREATE TABLE IF NOT EXISTS teams (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  team_name TEXT NOT NULL UNIQUE,
+  coach_id INTEGER NOT NULL,
+  FOREIGN KEY (coach_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Step 4: Create a 'team_members' table to assign players to teams
+CREATE TABLE IF NOT EXISTS team_members (
+   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  player_id INTEGER NOT NULL,
+  team_id INTEGER NOT NULL,
+  FOREIGN KEY (player_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE
+);
+
+-- ✅ Table for coach availability (when they can give lessons)
+CREATE TABLE IF NOT EXISTS coach_availability (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    court_name TEXT NOT NULL UNIQUE,
-    court_type TEXT NOT NULL
-);
-
--- Ensure the reservations table has proper constraints
-CREATE TABLE IF NOT EXISTS reservations (
-    reservation_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    client_id INTEGER NOT NULL,
-    court_id INTEGER NOT NULL,
-    reservation_time DATETIME NOT NULL,
-    booked_by_admin INTEGER,  -- This allows an admin to book on behalf of someone
-    FOREIGN KEY (client_id) REFERENCES clients(client_id),
-    FOREIGN KEY (court_id) REFERENCES courts(court_id),
-    FOREIGN KEY (booked_by_admin) REFERENCES admins(admin_id) ON DELETE SET NULL
+    coach_id INTEGER NOT NULL,
+    day TEXT CHECK (day IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')),
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    FOREIGN KEY (coach_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE (coach_id, day, start_time, end_time)  -- Prevents duplicate entries for the same day & time
 );
 
 
--- Create Admins Table
--- Ensure the admins table exists
-CREATE TABLE IF NOT EXISTS admins (
-    admin_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL,
-    role TEXT CHECK(role IN ('schedule_manager', 'booking_manager')) NOT NULL
+-- ✅ Table for private lessons bookings
+CREATE TABLE IF NOT EXISTS private_lessons (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    player_id INTEGER NOT NULL,
+    coach_id INTEGER NOT NULL,
+    lesson_date DATE NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    FOREIGN KEY (player_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (coach_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE (coach_id, lesson_date, start_time)  -- Prevents double-booking a coach
 );
+

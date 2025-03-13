@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV /home/majed-23/Desktop/Tennis_app/backend/venv
+set -gx VIRTUAL_ENV /home/majed-23/Desktop/Tennis_app-main/backend/venv
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH
