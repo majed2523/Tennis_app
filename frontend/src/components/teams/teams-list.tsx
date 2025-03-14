@@ -10,7 +10,7 @@ import {
 } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
-import { teamService } from '../../services/apiService';
+import { teamService } from '../../services/teamService';
 import { Users, User, AlertCircle, ChevronRight, UserPlus } from 'lucide-react';
 import TeamDetails from './team-details';
 import AssignPlayerForm from './assign-player-form';

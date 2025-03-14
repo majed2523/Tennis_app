@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import LoginForm from '../../components/login-form';
-import { authService } from '../../services/api';
+import { authService } from '../../services/authService';
 import { motion } from 'framer-motion';
 
 export default function LoginPage() {

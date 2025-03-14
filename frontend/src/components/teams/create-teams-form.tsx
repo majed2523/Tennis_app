@@ -1,8 +1,6 @@
 'use client';
 
-import type React from 'react';
-
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
@@ -20,33 +18,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../components/ui/select';
-import { teamService } from '../../services/api';
+import { teamService } from '../../services/teamService';
+import { userService } from "../../services/userService";
 import { AlertCircle, CheckCircle, Users } from 'lucide-react';
 
 interface Coach {
   id: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
 }
 
-// Mock coaches data - in a real app, you would fetch this from the API
-const MOCK_COACHES: Coach[] = [
-  { id: '1', firstName: 'John', lastName: 'Davis' },
-  { id: '2', firstName: 'Sarah', lastName: 'Miller' },
-  { id: '3', firstName: 'Michael', lastName: 'Chen' },
-];
-
 export default function CreateTeamForm() {
-  const [coaches, setCoaches] = useState<Coach[]>(MOCK_COACHES);
+  const [coaches, setCoaches] = useState<Coach[]>([]);
   const [teamName, setTeamName] = useState('');
   const [selectedCoach, setSelectedCoach] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingCoaches, setIsLoadingCoaches] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // In a real app, you would fetch coaches from the API
+  // Fetch coaches from the backend API
   useEffect(() => {
-    // Fetch coaches logic would go here
+    const fetchCoaches = async () => {
+      try {
+        setIsLoadingCoaches(true);
+        const result = await userService.getAllCoaches();
+        if (result.error) {
+          setError(result.error);
+        } else if (Array.isArray(result)) {
+          setCoaches(result);
+        } else {
+          setError('Unexpected response while fetching coaches.');
+        }
+      } catch (err) {
+        console.error('Error fetching coaches:', err);
+        setError('Failed to load coaches');
+      } finally {
+        setIsLoadingCoaches(false);
+      }
+    };
+
+    fetchCoaches();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -67,9 +79,10 @@ export default function CreateTeamForm() {
       if (result.error) {
         setError(result.error);
       } else {
+        // Find the coach from the fetched data
         const coach = coaches.find((c) => c.id === selectedCoach);
         const coachName = coach
-          ? `${coach.firstName} ${coach.lastName}`
+          ? `${coach.first_name} ${coach.last_name}`
           : 'the selected coach';
 
         setSuccess(
@@ -80,8 +93,8 @@ export default function CreateTeamForm() {
         setSelectedCoach('');
       }
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
       console.error('Error creating team:', err);
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -129,14 +142,22 @@ export default function CreateTeamForm() {
 
           <div className="space-y-2">
             <Label htmlFor="coach">Assign Coach</Label>
-            <Select value={selectedCoach} onValueChange={setSelectedCoach}>
+            <Select
+              value={selectedCoach}
+              onValueChange={setSelectedCoach}
+              disabled={isLoadingCoaches}
+            >
               <SelectTrigger className="bg-gray-700 border-gray-600">
-                <SelectValue placeholder="Select a coach" />
+                <SelectValue
+                  placeholder={
+                    isLoadingCoaches ? 'Loading coaches...' : 'Select a coach'
+                  }
+                />
               </SelectTrigger>
               <SelectContent className="bg-gray-800 border-gray-700">
                 {coaches.map((coach) => (
                   <SelectItem key={coach.id} value={coach.id}>
-                    {coach.firstName} {coach.lastName}
+                    {coach.first_name} {coach.last_name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -146,7 +167,7 @@ export default function CreateTeamForm() {
           <Button
             type="submit"
             className="w-full bg-green-600 hover:bg-green-500"
-            disabled={isLoading}
+            disabled={isLoading || isLoadingCoaches}
           >
             {isLoading ? 'Creating...' : 'Create Team'}
           </Button>

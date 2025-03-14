@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { authService } from '../../../services/api';
+import { authService } from '../../../services/authService';
 import AvailabilityForm from '../../../components/coach/availability-form';
 import AvailabilitySchedule from '../../../components/coach/availability-schedule';
 import { motion } from 'framer-motion';

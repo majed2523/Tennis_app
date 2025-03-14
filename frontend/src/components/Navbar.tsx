@@ -26,7 +26,7 @@ import {
 import { Avatar, AvatarFallback } from '../components/ui/avatar';
 import LoginForm from './login-form';
 import RegisterForm from './register-form';
-import { userService } from '../services/apiService';
+import { authService } from '../services/authService';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -91,8 +91,9 @@ export default function Navbar() {
 
     const fetchUserData = async () => {
       try {
+        // ... other endpoints ...
         console.log('🔹 Fetching user data from API');
-        const result = await userService.getClientDetails();
+        const result = await authService.getClientDetails();
 
         if (result.error) {
           console.error('❌ Error fetching user data:', result.error);
@@ -160,7 +161,7 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
-    userService.logout();
+    authService.logout();
     setIsAuthenticated(false);
     setUserData(null);
     router.push('/');
@@ -218,23 +219,12 @@ export default function Navbar() {
             Home
           </Link>
           <Link
-            href="/courts"
-            className="text-gray-300 hover:text-green-400 transition-colors"
-          >
-            Courts
-          </Link>
-          <Link
             href="/coaches"
             className="text-gray-300 hover:text-green-400 transition-colors"
           >
             Coaches
           </Link>
-          <Link
-            href="/reservation"
-            className="text-gray-300 hover:text-green-400 transition-colors"
-          >
-            Reservation
-          </Link>
+
           <Link
             href="/schedule"
             className="text-gray-300 hover:text-green-400 transition-colors"

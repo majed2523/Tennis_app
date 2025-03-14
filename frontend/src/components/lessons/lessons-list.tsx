@@ -9,7 +9,8 @@ import {
   CardTitle,
 } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
-import { lessonService, authService } from '../../services/api';
+import { authService } from '../../services/authService';
+import { lessonService } from '../../services/lessonService';
 import { Calendar, Clock, User, AlertCircle } from 'lucide-react';
 
 interface Lesson {

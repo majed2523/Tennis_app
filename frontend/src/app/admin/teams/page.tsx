@@ -1,25 +1,23 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { userService } from '../../../services/apiService';
+import { authService } from '../../../services/authService';
 import CreateTeamForm from '../../../components/teams/create-teams-form';
 import TeamsList from '../../../components/teams/teams-list';
 import { motion } from 'framer-motion';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs';
 
 export default function AdminTeamsPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('view');
 
   useEffect(() => {
     // Check if user is authenticated and is an admin
-    if (!userService.isAuthenticated()) {
+    if (!authService.isAuthenticated()) {
       router.push('/login');
       return;
     }
 
-    const userData = userService.getCurrentUser();
+    const userData = authService.getCurrentUser();
     if (userData?.role !== 'admin') {
       router.push('/login');
     }
@@ -37,39 +35,25 @@ export default function AdminTeamsPage() {
         <p className="text-gray-400 mt-2">Create and manage tennis teams</p>
       </motion.div>
 
-      <Tabs
-        defaultValue="view"
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="w-full"
-      >
-        <TabsList className="grid w-full max-w-md grid-cols-2 mb-8">
-          <TabsTrigger value="view">View Teams</TabsTrigger>
-          <TabsTrigger value="create">Create Team</TabsTrigger>
-        </TabsList>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="lg:col-span-1"
+        >
+          <CreateTeamForm />
+        </motion.div>
 
-        <TabsContent value="view" className="mt-0">
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="w-full"
-          >
-            <TeamsList />
-          </motion.div>
-        </TabsContent>
-
-        <TabsContent value="create" className="mt-0">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="max-w-md mx-auto"
-          >
-            <CreateTeamForm />
-          </motion.div>
-        </TabsContent>
-      </Tabs>
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="lg:col-span-2"
+        >
+          <TeamsList />
+        </motion.div>
+      </div>
     </div>
   );
 }

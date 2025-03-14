@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { authService } from '../../../services/api';
+import { authService } from '../../../services/authService';
 import UserRegistrationForm from '../../../components/admin/user-registration-form';
 import { motion } from 'framer-motion';
 

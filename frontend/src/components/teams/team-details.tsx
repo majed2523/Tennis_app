@@ -13,7 +13,7 @@ import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 import { Avatar, AvatarFallback } from '../../components/ui/avatar';
 import { AlertCircle, Users, ArrowLeft, UserPlus, Trash2 } from 'lucide-react';
-import { teamService } from '../../services/apiService';
+import { teamService } from '../../services/teamService';
 
 interface Player {
   id: string;
@@ -38,12 +38,6 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
   const fetchTeamDetails = async () => {
     try {
       setIsLoading(true);
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        setError('Authentication required');
-        return;
-      }
-
       const teamData = await teamService.getTeam(Number(teamId));
 
       if (teamData.error) {
@@ -218,7 +212,6 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
           onClick={() => {
             onBack();
             // This will show the assign player form when returning to the teams list
-            // You could also implement a modal here for a better UX
           }}
         >
           <UserPlus className="h-4 w-4 mr-2" />

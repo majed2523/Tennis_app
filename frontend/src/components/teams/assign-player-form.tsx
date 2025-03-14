@@ -21,14 +21,13 @@ import {
 import { Label } from '../../components/ui/label';
 import { AlertCircle, CheckCircle, UserPlus } from 'lucide-react';
 import { Alert, AlertDescription } from '../../components/ui/alert';
-import { userService, teamService } from '../../services/apiService';
+import { userService } from '../../services/userService';
+import { teamService } from '../../services/teamService';
 
-// This interface would need to match your backend data structure
 interface Player {
   id: string;
   first_name: string;
   last_name: string;
-  role?: string;
 }
 
 interface Team {
@@ -53,7 +52,6 @@ export default function AssignPlayerForm({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // Fetch players from the API
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
@@ -61,12 +59,13 @@ export default function AssignPlayerForm({
         const result = await userService.getAllPlayers();
 
         if (result.error) {
-          console.error('Error fetching players:', result.error);
+          setError(result.error);
         } else {
           setPlayers(Array.isArray(result) ? result : []);
         }
       } catch (err) {
         console.error('Error fetching players:', err);
+        setError('Failed to load players');
       } finally {
         setIsLoadingPlayers(false);
       }
