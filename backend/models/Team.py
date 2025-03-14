@@ -2,56 +2,78 @@ from dataclasses import dataclass
 
 @dataclass
 class Team:
-    def __init__(self, id, team_name, coach_id):
-        self.id = id
-        self.team_name = team_name
-        self.coach_id = coach_id
+    id: int
+    team_name: str
+    coach_id: int
 
-    def save(self, db_connection):
-        cursor = db_connection.cursor()
+    @classmethod
+    def from_row(cls, row):
+        if row is None:
+            return None
+        return cls(
+            id=row[0],
+            team_name=row[1],
+            coach_id=row[2]
+        )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "team_name": self.team_name,
+            "coach_id": self.coach_id
+        }
+
+    def save(self, db):
+        cursor = db.cursor()
         cursor.execute(
             "INSERT INTO teams (team_name, coach_id) VALUES (?, ?)",
-            (self.team_name, self.coach_id),
+            (self.team_name, self.coach_id)
         )
-        db_connection.commit()
+        db.commit()
 
     @staticmethod
-    def get_all_teams(conn):
-        cursor = conn.cursor()
+    def get_all_teams(db):
+        cursor = db.cursor()
         cursor.execute("SELECT id, team_name, coach_id FROM teams")
-        teams = cursor.fetchall()
-        return [{"id": team[0], "team_name": team[1], "coach_id": team[2]} for team in teams]
+        rows = cursor.fetchall()
+        return [Team.from_row(row).to_dict() for row in rows]
 
     @staticmethod
-    def get_team(conn, team_id):
-        cursor = conn.cursor()
+    def get_team(db, team_id):
+        cursor = db.cursor()
         cursor.execute("SELECT id, team_name, coach_id FROM teams WHERE id = ?", (team_id,))
-        team = cursor.fetchone()
-        if team:
-            return {"id": team[0], "team_name": team[1], "coach_id": team[2]}
-        return None
-    
-    
-    @staticmethod
-    def add_member(conn, team_id, player_id):
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO team_members (player_id, team_id) VALUES (?, ?)", (player_id, team_id))
-        conn.commit()
+        row = cursor.fetchone()
+        return Team.from_row(row).to_dict() if row else None
 
     @staticmethod
-    def remove_member(conn, team_id, player_id):
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM team_members WHERE team_id = ? AND player_id = ?", (team_id, player_id))
-        conn.commit()
+    def assign_player(db, team_id, player_id):
+        cursor = db.cursor()
+        cursor.execute(
+            "INSERT INTO team_members (team_id, player_id) VALUES (?, ?)",
+            (team_id, player_id)
+        )
+        db.commit()
 
     @staticmethod
-    def get_team_players(conn, team_id):
-        cursor = conn.cursor()
+    def remove_player(db, team_id, player_id):
+        cursor = db.cursor()
+        cursor.execute(
+            "DELETE FROM team_members WHERE team_id = ? AND player_id = ?",
+            (team_id, player_id)
+        )
+        db.commit()
+
+    @staticmethod
+    def get_team_players(db, team_id):
+        cursor = db.cursor()
         cursor.execute("""
             SELECT u.id, u.first_name, u.last_name, u.role
-            FROM team_members tm
-            JOIN users u ON tm.player_id = u.id
+            FROM users u
+            JOIN team_members tm ON u.id = tm.player_id
             WHERE tm.team_id = ?
         """, (team_id,))
         rows = cursor.fetchall()
-        return [{"id": row[0], "firstName": row[1], "lastName": row[2], "role": row[3]} for row in rows]
+        return [
+            {"id": row[0], "first_name": row[1], "last_name": row[2], "role": row[3]}
+            for row in rows
+        ]
