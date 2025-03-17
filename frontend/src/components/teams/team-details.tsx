@@ -22,76 +22,47 @@ interface Player {
   role?: string;
 }
 
+interface Team {
+  id: string;
+  team_name: string;
+  coach_name?: string;
+  players?: Player[];
+  player_count?: number;
+}
+
 interface TeamDetailsProps {
   teamId: string;
   onBack: () => void;
 }
 
 export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
-  const [team, setTeam] = useState<any>(null);
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [team, setTeam] = useState<Team | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingPlayers, setIsLoadingPlayers] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [playerError, setPlayerError] = useState<string | null>(null);
-
-  const fetchTeamDetails = async () => {
-    try {
-      setIsLoading(true);
-      const teamData = await teamService.getTeam(Number(teamId));
-
-      if (teamData.error) {
-        setError(teamData.error);
-        return;
-      }
-
-      setTeam(teamData);
-    } catch (err) {
-      console.error('Error fetching team details:', err);
-      setError('Failed to load team details');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fetchTeamPlayers = async () => {
-    try {
-      setIsLoadingPlayers(true);
-      const result = await teamService.getTeamMembers(teamId);
-
-      if (result.error) {
-        setPlayerError(result.error);
-      } else {
-        setPlayers(Array.isArray(result) ? result : []);
-      }
-    } catch (err) {
-      console.error('Error fetching team players:', err);
-      setPlayerError('Failed to load team players');
-    } finally {
-      setIsLoadingPlayers(false);
-    }
-  };
-
-  const handleRemovePlayer = async (playerId: string) => {
-    try {
-      const result = await teamService.removePlayerFromTeam(teamId, playerId);
-
-      if (result.error) {
-        setPlayerError(result.error);
-      } else {
-        // Refresh the player list
-        fetchTeamPlayers();
-      }
-    } catch (err) {
-      console.error('Error removing player:', err);
-      setPlayerError('Failed to remove player from team');
-    }
-  };
 
   useEffect(() => {
+    const fetchTeamDetails = async () => {
+      try {
+        setIsLoading(true);
+        const teamData = await teamService.getTeam(Number(teamId));
+
+        if (teamData.error) {
+          setError(teamData.error);
+          return;
+        }
+
+        console.log('🔹 Updating UI with team:', teamData); // Debugging
+        setTeam(teamData);
+      } catch (err) {
+        console.error('Error fetching team details:', err);
+        setError('Failed to load team details');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     if (teamId) {
       fetchTeamDetails();
-      fetchTeamPlayers();
     }
   }, [teamId]);
 
@@ -138,7 +109,7 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
             </CardDescription>
           </div>
           <Badge className="bg-green-400/20 text-green-400">
-            {players.length} Players
+            {team.player_count ?? 0} Players
           </Badge>
         </div>
       </CardHeader>
@@ -146,25 +117,14 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
       <CardContent>
         <h3 className="text-lg font-semibold text-white mb-4">Team Members</h3>
 
-        {playerError && (
-          <div className="bg-red-500/20 text-red-400 p-3 rounded-md mb-4 flex items-center">
-            <AlertCircle className="h-4 w-4 mr-2" />
-            <p>{playerError}</p>
-          </div>
-        )}
-
-        {isLoadingPlayers ? (
-          <div className="flex justify-center items-center h-40">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-400"></div>
-          </div>
-        ) : players.length === 0 ? (
+        {team.players?.length === 0 ? (
           <div className="text-center py-8 text-gray-400 bg-gray-700/30 rounded-md">
             <Users className="h-12 w-12 mx-auto mb-3 text-gray-500" />
             <p>No players have been assigned to this team yet.</p>
           </div>
         ) : (
           <div className="space-y-3">
-            {players.map((player) => (
+            {team.players?.map((player) => (
               <div
                 key={player.id}
                 className="flex items-center justify-between p-3 bg-gray-700/30 rounded-md hover:bg-gray-700/50 transition-colors"
@@ -185,16 +145,6 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
                     </p>
                   </div>
                 </div>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
-                  onClick={() => handleRemovePlayer(player.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                  <span className="sr-only">Remove player</span>
-                </Button>
               </div>
             ))}
           </div>
@@ -205,17 +155,6 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
         <Button variant="outline" onClick={onBack} className="text-gray-300">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Teams
-        </Button>
-
-        <Button
-          className="bg-green-600 hover:bg-green-500"
-          onClick={() => {
-            onBack();
-            // This will show the assign player form when returning to the teams list
-          }}
-        >
-          <UserPlus className="h-4 w-4 mr-2" />
-          Add Player
         </Button>
       </CardFooter>
     </Card>

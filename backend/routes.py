@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_cors import cross_origin
 from controllers.Users_controller import UserController
 from controllers.Team_controller import TeamController
 from controllers.Lesson_controller import LessonController
@@ -103,14 +104,12 @@ def create_team():
 
 
 @routes_app.route('/teams/<int:team_id>', methods=['GET'])
+@cross_origin()
 def get_team(team_id):
     """
     Get details of a specific team.
     """
-    team = TeamController.get_team(team_id)
-    if team:
-        return jsonify(team), 200
-    return jsonify({"error": "Team not found"}), 404
+    return TeamController.get_team(team_id)
 
 
 @routes_app.route('/teams', methods=['GET'])

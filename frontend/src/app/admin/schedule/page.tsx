@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
@@ -12,24 +12,30 @@ import {
   SelectValue,
 } from '../../../components/ui/select';
 import { Plus, Save, Trash2 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '../../../components/ui/card';
+import { teamService } from '../../../services/teamService';
 
 interface ScheduleItem {
   id: string;
   day: string;
   time: string;
   court: string;
-  group: string;
+  team: string;
 }
 
 const days = [
-  'MONDAY',
-  'TUESDAY',
-  'WEDNESDAY',
-  'THURSDAY',
-  'FRIDAY',
-  'SATURDAY',
-  'SUNDAY',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
 ];
 const courts = [
   'Court 1',
@@ -42,7 +48,19 @@ const courts = [
 
 export default function AdminSchedulePage() {
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
+  const [teams, setTeams] = useState<string[]>([]);
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    const fetchTeams = async () => {
+      const fetchedTeams = await teamService.getAllTeams();
+      setTeams(
+        fetchedTeams.map((team: { team_name: string }) => team.team_name)
+      );
+    };
+
+    fetchTeams();
+  }, []);
 
   const addScheduleItem = () => {
     const newItem: ScheduleItem = {
@@ -50,7 +68,7 @@ export default function AdminSchedulePage() {
       day: '',
       time: '',
       court: '',
-      group: '',
+      team: '',
     };
     setSchedule([...schedule, newItem]);
     setIsEditing(true);
@@ -72,17 +90,9 @@ export default function AdminSchedulePage() {
     setSchedule(schedule.filter((item) => item.id !== id));
   };
 
-  const saveSchedule = async () => {
-    try {
-      await fetch('/api/schedule', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(schedule),
-      });
-      setIsEditing(false);
-    } catch (error) {
-      console.error('Failed to save schedule:', error);
-    }
+  const saveSchedule = () => {
+    console.log('🔹 Schedule Saved Locally:', schedule);
+    setIsEditing(false);
   };
 
   return (
@@ -109,8 +119,7 @@ export default function AdminSchedulePage() {
               onClick={addScheduleItem}
               className="border-green-500/30 text-green-400 hover:bg-green-500/10"
             >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Schedule Item
+              <Plus className="mr-2 h-4 w-4" /> Add Schedule Item
             </Button>
 
             {isEditing && (
@@ -118,8 +127,7 @@ export default function AdminSchedulePage() {
                 onClick={saveSchedule}
                 className="bg-green-600 hover:bg-green-500"
               >
-                <Save className="mr-2 h-4 w-4" />
-                Save Changes
+                <Save className="mr-2 h-4 w-4" /> Save Changes
               </Button>
             )}
           </div>
@@ -195,14 +203,23 @@ export default function AdminSchedulePage() {
                       </SelectContent>
                     </Select>
 
-                    <Input
-                      placeholder="Group name"
-                      value={item.group}
-                      onChange={(e) =>
-                        updateScheduleItem(item.id, 'group', e.target.value)
+                    <Select
+                      value={item.team}
+                      onValueChange={(value) =>
+                        updateScheduleItem(item.id, 'team', value)
                       }
-                      className="bg-gray-700 border-gray-600"
-                    />
+                    >
+                      <SelectTrigger className="bg-gray-700 border-gray-600">
+                        <SelectValue placeholder="Select team" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-800 border-gray-700">
+                        {teams.map((team) => (
+                          <SelectItem key={team} value={team}>
+                            {team}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </CardContent>
               </Card>

@@ -5,6 +5,7 @@ class Team:
     id: int
     team_name: str
     coach_id: int
+    coach_name: str = None
 
     @classmethod
     def from_row(cls, row):
@@ -13,14 +14,16 @@ class Team:
         return cls(
             id=row[0],
             team_name=row[1],
-            coach_id=row[2]
+            coach_id=row[2],
+            coach_name=f"{row[3]} {row[4]}" if row[3] and row[4] else "Unassigned"  # Store coach name
         )
 
     def to_dict(self):
         return {
             "id": self.id,
             "team_name": self.team_name,
-            "coach_id": self.coach_id
+            "coach_id": self.coach_id,
+            "coach_name": self.coach_name  # Ensure coach name is returned
         }
 
     def save(self, db):
@@ -34,16 +37,33 @@ class Team:
     @staticmethod
     def get_all_teams(db):
         cursor = db.cursor()
-        cursor.execute("SELECT id, team_name, coach_id FROM teams")
+        cursor.execute("""
+        SELECT t.id, t.team_name, t.coach_id, u.first_name, u.last_name
+        FROM teams t
+        LEFT JOIN users u ON t.coach_id = u.id
+    """)
         rows = cursor.fetchall()
         return [Team.from_row(row).to_dict() for row in rows]
 
     @staticmethod
     def get_team(db, team_id):
         cursor = db.cursor()
-        cursor.execute("SELECT id, team_name, coach_id FROM teams WHERE id = ?", (team_id,))
+        cursor.execute("""
+        SELECT t.id, t.team_name, t.coach_id, 
+               u.first_name, u.last_name
+        FROM teams t
+        LEFT JOIN users u ON t.coach_id = u.id
+        WHERE t.id = ?
+    """, (team_id,))
         row = cursor.fetchone()
-        return Team.from_row(row).to_dict() if row else None
+        
+        if row is None:
+            return None
+        
+        team = Team.from_row(row).to_dict()
+        print("🔹 get_team() Output:", team)  # Debugging output
+         
+        return team
 
     @staticmethod
     def assign_player(db, team_id, player_id):
@@ -73,7 +93,10 @@ class Team:
             WHERE tm.team_id = ?
         """, (team_id,))
         rows = cursor.fetchall()
-        return [
+        return {
+        "players": [
             {"id": row[0], "first_name": row[1], "last_name": row[2], "role": row[3]}
             for row in rows
-        ]
+        ],
+        "count": len(rows)  # Add the player count
+    }

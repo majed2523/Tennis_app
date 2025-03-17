@@ -20,7 +20,7 @@ interface Team {
   team_name: string;
   coach_id: string;
   coach_name?: string;
-  members_count?: number;
+  player_count?: number; // Changed from members_count to match API
 }
 
 export default function TeamsList() {
@@ -41,6 +41,8 @@ export default function TeamsList() {
       }
 
       const result = await teamService.getAllTeams();
+      console.log('🔹 API Response (Teams):', result); // Debugging output
+
       if (result.error) {
         setError(result.error);
       } else {
@@ -71,8 +73,7 @@ export default function TeamsList() {
   };
 
   const handlePlayerAssigned = () => {
-    // Refresh teams list to show updated member counts
-    fetchTeams();
+    fetchTeams(); // Refresh teams list after assigning player
   };
 
   if (isLoading) {
@@ -100,7 +101,6 @@ export default function TeamsList() {
     );
   }
 
-  // If a team is selected, show its details
   if (selectedTeamId) {
     return <TeamDetails teamId={selectedTeamId} onBack={handleBackToTeams} />;
   }
@@ -157,7 +157,7 @@ export default function TeamsList() {
                       {team.team_name}
                     </h3>
                     <Badge className="bg-green-400/20 text-green-400">
-                      {team.members_count || 0} Members
+                      {team.player_count ?? 0} Members {/* Fixed display */}
                     </Badge>
                   </div>
 

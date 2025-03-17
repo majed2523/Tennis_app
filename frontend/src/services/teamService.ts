@@ -20,32 +20,36 @@ export const teamService = {
     }
   },
 
-  getTeam: async (teamId: number) => {
-    try {
-      const token = localStorage.getItem('authToken');
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-      };
+  getTeam : async (teamId: number) => {
+  try {
+    const token = localStorage.getItem('authToken');
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
 
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-
-      const res = await fetch(`${BASE_URL}/teams/${teamId}`, {
-        method: 'GET',
-        headers,
-      });
-
-      if (!res.ok) {
-        return { error: `Request failed with status ${res.status}` };
-      }
-
-      return await res.json();
-    } catch (error) {
-      console.error('Error fetching team:', error);
-      return { error: 'Network error' };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
     }
-  },
+
+    const res = await fetch(`${BASE_URL}/teams/${teamId}`, {
+      method: 'GET',
+      headers,
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.error('Backend Error:', errorData);
+      throw new Error(errorData.error || 'Failed to fetch team details');
+    }
+
+    const team = await res.json();
+    console.log("🔹 Team Data Received from API:", team); // Debugging output
+    return team;
+  } catch (error) {
+    console.error('❌ Error fetching team:', error);
+    return { error: 'Network error' };
+  }
+},
 
   getAllTeams: async () => {
     try {
@@ -64,12 +68,16 @@ export const teamService = {
       });
 
       if (!res.ok) {
-        return { error: `Request failed with status ${res.status}` };
+        const errorData = await res.json();
+        console.error('Backend Error:', errorData);
+        throw new Error(errorData.error || 'Failed to fetch teams');
       }
 
-      return await res.json();
+      const teams = await res.json();
+      console.log('🔹 All Teams Data:', teams); // Debugging output
+      return teams;
     } catch (error) {
-      console.error('Error fetching teams:', error);
+      console.error('❌ Error fetching teams:', error);
       return { error: 'Network error' };
     }
   },

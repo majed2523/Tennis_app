@@ -29,6 +29,11 @@ class TeamController:
     def get_all_teams():
         db = get_db_connection()
         teams = Team.get_all_teams(db)
+
+        if not teams:
+            db.close()
+            return jsonify({"error": "No teams found"}), 404
+
         db.close()
         return jsonify(teams), 200
 
@@ -37,11 +42,18 @@ class TeamController:
     def get_team(team_id):
         db = get_db_connection()
         team = Team.get_team(db, team_id)
-        db.close()
-        if team:
-            return jsonify(team), 200
-        else:
+        
+        if team is None:
+            db.close()
             return jsonify({"error": "Team not found"}), 404
+
+        # Fetch players
+        players_data = Team.get_team_players(db, team_id)
+        team["players"] = players_data["players"]
+        team["player_count"] = players_data["count"]
+
+        db.close()
+        return jsonify(team), 200
 
     @staticmethod
     @jwt_required()

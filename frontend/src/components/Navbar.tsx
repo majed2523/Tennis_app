@@ -2,19 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
-import {
-  Menu,
-  User,
-  LogOut,
-  Calendar,
-  Settings,
-  Trophy,
-  Clock,
-} from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '../components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '../components/ui/sheet';
-import { Dialog, DialogContent, DialogTrigger } from '../components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,15 +12,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '../components/ui/avatar';
-import LoginForm from './login-form';
-import RegisterForm from './register-form';
 import { authService } from '../services/authService';
+import { motion } from 'framer-motion';
 
 export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState<{
     firstName: string;
@@ -39,467 +23,344 @@ export default function Navbar() {
     userId: string;
     role: string;
   } | null>(null);
-  const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
-  // Check if user is authenticated on component mount and on localStorage changes
+  // Check authentication status on component mount and when localStorage changes
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuth = () => {
       const token = localStorage.getItem('authToken');
-
-      if (!token) {
-        setIsAuthenticated(false);
-        setUserData(null);
-        return;
-      }
-
-      // We have a token, so we're authenticated
-      setIsAuthenticated(true);
-
-      // Try to get user data from localStorage first
       const storedUserData = localStorage.getItem('userData');
 
-      if (storedUserData) {
-        try {
-          const parsedData = JSON.parse(storedUserData);
-          console.log('🔹 Navbar parsing stored user data:', parsedData);
-
-          if (parsedData && parsedData.firstName && parsedData.lastName) {
+      if (token) {
+        setIsAuthenticated(true);
+        if (storedUserData) {
+          try {
+            const parsedData = JSON.parse(storedUserData);
             setUserData(parsedData);
-            console.log(
-              '🔹 Navbar loaded user data from localStorage:',
-              parsedData
-            );
-          } else {
-            console.log(
-              '❌ Invalid user data format in localStorage, fetching from API'
-            );
-            // If localStorage data is invalid, try to fetch from API
-            await fetchUserData();
+            console.log('🔹 Navbar loaded user data:', parsedData);
+          } catch (error) {
+            console.error('Error parsing userData:', error);
           }
-        } catch (error) {
-          console.error('❌ Error parsing userData:', error);
-          // If parsing fails, try to fetch from API
-          await fetchUserData();
         }
       } else {
-        // No user data in localStorage, try to fetch from API
-        console.log('❌ No user data in localStorage, fetching from API');
-        await fetchUserData();
+        setIsAuthenticated(false);
+        setUserData(null);
       }
     };
 
-    const fetchUserData = async () => {
-      try {
-        // ... other endpoints ...
-        console.log('🔹 Fetching user data from API');
-        const result = await authService.getClientDetails();
-
-        if (result.error) {
-          console.error('❌ Error fetching user data:', result.error);
-          setIsAuthenticated(false);
-          setUserData(null);
-        }
-        // The getClientDetails function now handles storing the user data in localStorage
-
-        // Refresh user data from localStorage after API call
-        const refreshedUserData = localStorage.getItem('userData');
-        if (refreshedUserData) {
-          const parsedData = JSON.parse(refreshedUserData);
-          setUserData(parsedData);
-          console.log('🔹 Navbar loaded user data from API:', parsedData);
-        }
-      } catch (error) {
-        console.error('❌ Error in fetchUserData:', error);
-      }
-    };
-
-    // Check auth on mount
     checkAuth();
 
-    // Set up storage event listener to detect changes from other components
-    const handleStorageChange = (e: StorageEvent) => {
+    // Listen for auth changes
+    window.addEventListener('authChange', checkAuth);
+    window.addEventListener('storage', (e) => {
       if (e.key === 'authToken' || e.key === 'userData') {
         checkAuth();
       }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-
-    // Custom event for same-tab updates
-    const handleAuthChange = () => checkAuth();
-    window.addEventListener('authChange', handleAuthChange);
+    });
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('authChange', handleAuthChange);
+      window.removeEventListener('authChange', checkAuth);
+      window.removeEventListener('storage', (e) => {
+        if (e.key === 'authToken' || e.key === 'userData') {
+          checkAuth();
+        }
+      });
     };
   }, []);
 
-  const handleAuthSuccess = (userData?: {
-    firstName: string;
-    lastName: string;
-    userId: string;
-    role: string;
-  }) => {
-    setIsAuthOpen(false);
-    setIsAuthenticated(true);
-    if (userData) {
-      setUserData(userData);
-    }
-
-    // Dispatch custom event to notify other components
-    window.dispatchEvent(new Event('authChange'));
-
-    // Redirect based on where the user came from
-    if (pathname === '/login' || pathname === '/register') {
-      router.push('/');
-    } else {
-      // Stay on the current page (e.g., if logging in from reservation page)
-      router.refresh();
-    }
-  };
-
   const handleLogout = () => {
     authService.logout();
-    setIsAuthenticated(false);
-    setUserData(null);
-    router.push('/');
+    router.push('/login');
   };
 
-  const getUserInitials = () => {
-    if (!userData?.firstName || !userData?.lastName) {
-      console.log('❌ Missing user data for initials:', userData);
-      return 'U';
-    }
-    const firstInitial = userData.firstName.trim().charAt(0).toUpperCase();
-    const lastInitial = userData.lastName.trim().charAt(0).toUpperCase();
-    return `${firstInitial}${lastInitial}`;
-  };
+  // Get dashboard route based on user role
+  const getDashboardRoute = () => {
+    if (!userData) return '/login';
 
-  const getFullName = () => {
-    if (!userData?.firstName || !userData?.lastName) {
-      console.log('❌ Missing user data for full name:', userData);
-      return 'My Account';
+    switch (userData.role) {
+      case 'admin':
+        return '/admin/dashboard';
+      case 'coach':
+        return '/coach/dashboard';
+      case 'player':
+        return '/player/dashboard';
+      default:
+        return '/';
     }
-    const firstName = userData.firstName.trim();
-    const lastName = userData.lastName.trim();
-    return `${firstName} ${lastName}`;
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#1A1E2E]/90 backdrop-blur-sm border-b border-gray-800">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-8 w-8 text-green-400"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-            <line x1="9" y1="9" x2="9.01" y2="9" />
-            <line x1="15" y1="9" x2="15.01" y2="9" />
-          </svg>
-          <span className="ml-2 text-xl font-bold text-white">Tennis Club</span>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
-          <Link
-            href="/"
-            className="text-gray-300 hover:text-green-400 transition-colors"
-          >
-            Home
-          </Link>
-          <Link
-            href="/coaches"
-            className="text-gray-300 hover:text-green-400 transition-colors"
-          >
-            Coaches
-          </Link>
-
-          <Link
-            href="/schedule"
-            className="text-gray-300 hover:text-green-400 transition-colors"
-          >
-            Schedule
-          </Link>
-          <Link
-            href="/about"
-            className="text-gray-300 hover:text-green-400 transition-colors"
-          >
-            About
-          </Link>
-        </nav>
-
-        {/* Auth Buttons or User Menu */}
-        <div className="hidden md:flex items-center space-x-4">
-          {isAuthenticated ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="relative h-10 w-10 rounded-full"
-                >
-                  <Avatar className="h-10 w-10 bg-green-600 hover:bg-green-500 transition-colors">
-                    <AvatarFallback>{getUserInitials()}</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-56 bg-gray-900 border-gray-800"
-                align="end"
+    <nav className="bg-gray-900 border-b border-gray-800 py-4 px-6 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto flex justify-between items-center">
+        <div className="flex items-center">
+          <Link href="/" className="flex items-center">
+            <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mr-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-6 w-6 text-white"
               >
-                <DropdownMenuLabel className="text-gray-300">
-                  {getFullName()}
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-gray-800" />
-                <DropdownMenuItem
-                  className="text-gray-300 hover:text-white hover:bg-gray-800 cursor-pointer"
-                  onClick={() => router.push('/reservation')}
-                >
-                  <Calendar className="mr-2 h-4 w-4" />
-                  <span>My Reservations</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-gray-300 hover:text-white hover:bg-gray-800 cursor-pointer"
-                  onClick={() => router.push('/schedule')}
-                >
-                  <Clock className="mr-2 h-4 w-4" />
-                  <span>Schedule</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-gray-300 hover:text-white hover:bg-gray-800 cursor-pointer"
-                  onClick={() => router.push('/coaches')}
-                >
-                  <Trophy className="mr-2 h-4 w-4" />
-                  <span>Top Coaches</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-gray-300 hover:text-white hover:bg-gray-800 cursor-pointer"
-                  onClick={() => router.push('/profile')}
-                >
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-gray-300 hover:text-white hover:bg-gray-800 cursor-pointer"
-                  onClick={() => router.push('/settings')}
-                >
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-gray-800" />
-                <DropdownMenuItem
-                  className="text-red-400 hover:text-red-300 hover:bg-gray-800 cursor-pointer"
-                  onClick={handleLogout}
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <>
-              <Dialog open={isAuthOpen} onOpenChange={setIsAuthOpen}>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white"
-                    onClick={() => setAuthMode('login')}
-                  >
-                    Sign In
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md bg-gray-900 border-gray-800">
-                  {authMode === 'login' ? (
-                    <LoginForm
-                      onSuccess={handleAuthSuccess}
-                      onRegisterClick={() => setAuthMode('register')}
-                      returnUrl={pathname}
-                    />
-                  ) : (
-                    <RegisterForm
-                      onSuccess={handleAuthSuccess}
-                      onLoginClick={() => setAuthMode('login')}
-                      returnUrl={pathname}
-                    />
-                  )}
-                </DialogContent>
-              </Dialog>
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                <line x1="9" y1="9" x2="9.01" y2="9" />
+                <line x1="15" y1="9" x2="15.01" y2="9" />
+              </svg>
+            </div>
+            <span className="text-xl font-bold text-white">Tennis Club</span>
+          </Link>
 
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    className="bg-green-600 hover:bg-green-500 text-white"
-                    onClick={() => {
-                      setAuthMode('register');
-                      setIsAuthOpen(true);
-                    }}
-                  >
-                    Sign Up
-                  </Button>
-                </DialogTrigger>
-              </Dialog>
-            </>
-          )}
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex ml-10 space-x-8">
+            <Link
+              href="/"
+              className={`text-gray-300 hover:text-white transition-colors ${
+                pathname === '/' ? 'text-white font-medium' : ''
+              }`}
+            >
+              Home
+            </Link>
+            <Link
+              href="/coaches"
+              className={`text-gray-300 hover:text-white transition-colors ${
+                pathname === '/coaches' ? 'text-white font-medium' : ''
+              }`}
+            >
+              Coaches
+            </Link>
+            <Link
+              href="/schedule"
+              className={`text-gray-300 hover:text-white transition-colors ${
+                pathname === '/schedule' ? 'text-white font-medium' : ''
+              }`}
+            >
+              Schedule
+            </Link>
+            <Link
+              href="/about"
+              className={`text-gray-300 hover:text-white transition-colors ${
+                pathname === '/about' ? 'text-white font-medium' : ''
+              }`}
+            >
+              About
+            </Link>
+          </div>
         </div>
 
-        {/* Mobile Menu Button */}
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden text-gray-300"
-            >
-              <Menu className="h-6 w-6" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent
-            side="left"
-            className="bg-gray-900 text-white border-gray-800"
-          >
-            <div className="flex flex-col h-full">
-              <div className="flex items-center justify-between py-4">
-                <Link href="/" className="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6 text-green-400"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-                    <line x1="9" y1="9" x2="9.01" y2="9" />
-                    <line x1="15" y1="9" x2="15.01" y2="9" />
-                  </svg>
-                  <span className="ml-2 text-xl font-bold">Tennis Club</span>
-                </Link>
-              </div>
+        {/* Authentication Section */}
+        <div className="flex items-center">
+          {isAuthenticated && userData ? (
+            <div className="flex items-center">
+              {/* Dashboard Button - Only show on larger screens */}
+              <Link href={getDashboardRoute()} className="hidden md:block mr-4">
+                <Button
+                  variant="outline"
+                  className="border-green-500 text-green-500 hover:bg-green-500/10"
+                >
+                  Dashboard
+                </Button>
+              </Link>
 
-              {isAuthenticated && userData && (
-                <div className="flex items-center space-x-3 mb-6 p-4 bg-gray-800/50 rounded-lg">
-                  <Avatar className="h-10 w-10 bg-green-600">
-                    <AvatarFallback>{getUserInitials()}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="text-sm font-medium text-white">
-                      {getFullName()}
-                    </p>
-                    <p className="text-xs text-gray-400">Member</p>
-                  </div>
-                </div>
-              )}
-
-              <nav className="flex flex-col space-y-4 mt-4">
-                <Link
-                  href="/"
-                  className="py-2 text-gray-300 hover:text-green-400 transition-colors"
-                >
-                  Home
-                </Link>
-                <Link
-                  href="/courts"
-                  className="py-2 text-gray-300 hover:text-green-400 transition-colors"
-                >
-                  Courts
-                </Link>
-                <Link
-                  href="/coaches"
-                  className="py-2 text-gray-300 hover:text-green-400 transition-colors"
-                >
-                  Coaches
-                </Link>
-                <Link
-                  href="/reservation"
-                  className="py-2 text-gray-300 hover:text-green-400 transition-colors"
-                >
-                  Reservation
-                </Link>
-                <Link
-                  href="/schedule"
-                  className="py-2 text-gray-300 hover:text-green-400 transition-colors"
-                >
-                  Schedule
-                </Link>
-                <Link
-                  href="/about"
-                  className="py-2 text-gray-300 hover:text-green-400 transition-colors"
-                >
-                  About
-                </Link>
-              </nav>
-
-              <div className="mt-auto space-y-4 py-4">
-                {isAuthenticated ? (
+              {/* User Menu */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
                   <Button
-                    variant="outline"
-                    className="w-full border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                    variant="ghost"
+                    className="relative h-10 w-10 rounded-full"
+                  >
+                    <div className="flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center border-2 border-green-500">
+                        <span className="text-white font-medium">
+                          {userData.firstName
+                            ? userData.firstName.charAt(0)
+                            : 'U'}
+                          {userData.lastName ? userData.lastName.charAt(0) : ''}
+                        </span>
+                      </div>
+                      <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-56 bg-gray-800 border-gray-700 text-white"
+                >
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col">
+                      <span>
+                        {userData.firstName} {userData.lastName}
+                      </span>
+                      <span className="text-xs text-gray-400 mt-1 capitalize">
+                        {userData.role}
+                      </span>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-gray-700" />
+                  <Link href={getDashboardRoute()}>
+                    <DropdownMenuItem className="cursor-pointer hover:bg-gray-700">
+                      Dashboard
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/profile">
+                    <DropdownMenuItem className="cursor-pointer hover:bg-gray-700">
+                      Profile
+                    </DropdownMenuItem>
+                  </Link>
+                  {userData.role === 'admin' && (
+                    <>
+                      <DropdownMenuSeparator className="bg-gray-700" />
+                      <Link href="/admin/register">
+                        <DropdownMenuItem className="cursor-pointer hover:bg-gray-700">
+                          Register Users
+                        </DropdownMenuItem>
+                      </Link>
+                      <Link href="/admin/teams">
+                        <DropdownMenuItem className="cursor-pointer hover:bg-gray-700">
+                          Manage Teams
+                        </DropdownMenuItem>
+                      </Link>
+                    </>
+                  )}
+                  {userData.role === 'coach' && (
+                    <>
+                      <DropdownMenuSeparator className="bg-gray-700" />
+                      <Link href="/coach/availability">
+                        <DropdownMenuItem className="cursor-pointer hover:bg-gray-700">
+                          My Availability
+                        </DropdownMenuItem>
+                      </Link>
+                      <Link href="/coach/lessons">
+                        <DropdownMenuItem className="cursor-pointer hover:bg-gray-700">
+                          My Lessons
+                        </DropdownMenuItem>
+                      </Link>
+                    </>
+                  )}
+                  {userData.role === 'player' && (
+                    <>
+                      <DropdownMenuSeparator className="bg-gray-700" />
+                      <Link href="/player/lessons">
+                        <DropdownMenuItem className="cursor-pointer hover:bg-gray-700">
+                          My Lessons
+                        </DropdownMenuItem>
+                      </Link>
+                    </>
+                  )}
+                  <DropdownMenuSeparator className="bg-gray-700" />
+                  <DropdownMenuItem
+                    className="cursor-pointer text-red-400 hover:text-red-300 hover:bg-gray-700"
                     onClick={handleLogout}
                   >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Log out
-                  </Button>
-                ) : (
-                  <>
-                    <Button
-                      variant="outline"
-                      className="w-full border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white"
-                      onClick={() => {
-                        setAuthMode('login');
-                        setIsAuthOpen(true);
-                      }}
-                    >
-                      Sign In
-                    </Button>
-                    <Button
-                      className="w-full bg-green-600 hover:bg-green-500 text-white"
-                      onClick={() => {
-                        setAuthMode('register');
-                        setIsAuthOpen(true);
-                      }}
-                    >
-                      Sign Up
-                    </Button>
-                  </>
-                )}
-              </div>
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
-          </SheetContent>
-        </Sheet>
+          ) : (
+            <div className="flex space-x-3">
+              <Link href="/login">
+                <Button
+                  variant="ghost"
+                  className="text-white hover:bg-gray-800"
+                >
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/register">
+                <Button className="bg-green-600 hover:bg-green-500 text-white">
+                  Sign Up
+                </Button>
+              </Link>
+            </div>
+          )}
+
+          {/* Mobile Menu Button */}
+          <button
+            className="ml-4 md:hidden text-gray-400 hover:text-white"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              {isMenuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
+          </button>
+        </div>
       </div>
 
-      {/* Auth Dialog for Mobile */}
-      <Dialog open={isAuthOpen} onOpenChange={setIsAuthOpen}>
-        <DialogContent className="sm:max-w-md bg-gray-900 border-gray-800">
-          {authMode === 'login' ? (
-            <LoginForm
-              onSuccess={handleAuthSuccess}
-              onRegisterClick={() => setAuthMode('register')}
-              returnUrl={pathname}
-            />
-          ) : (
-            <RegisterForm
-              onSuccess={handleAuthSuccess}
-              onLoginClick={() => setAuthMode('login')}
-              returnUrl={pathname}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
-    </header>
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="md:hidden mt-4 bg-gray-800 rounded-lg overflow-hidden"
+        >
+          <div className="px-4 py-2 space-y-1">
+            <Link
+              href="/"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              href="/coaches"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Coaches
+            </Link>
+            <Link
+              href="/schedule"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Schedule
+            </Link>
+            <Link
+              href="/about"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              About
+            </Link>
+            {isAuthenticated && (
+              <Link
+                href={getDashboardRoute()}
+                className="block px-3 py-2 rounded-md text-base font-medium text-green-500 hover:text-green-400 hover:bg-gray-700"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+            )}
+          </div>
+        </motion.div>
+      )}
+    </nav>
   );
 }

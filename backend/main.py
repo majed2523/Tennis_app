@@ -20,7 +20,7 @@ jwt = JWTManager(app)
 # app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 3600  # in seconds
 
 # Enable CORS
-CORS(app, supports_credentials=True) # CORS are the rules you define to make your 2 servers connect(backend and frontend)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True) # CORS are the rules you define to make your 2 servers connect(backend and frontend)
 
 # Register the Blueprint
 app.register_blueprint(routes_app)
