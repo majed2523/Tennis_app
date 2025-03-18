@@ -26,31 +26,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
-      <header className="py-6 px-8 flex justify-between items-center">
-        <div className="flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-8 w-8 text-green-400"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-            <line x1="9" y1="9" x2="9.01" y2="9" />
-            <line x1="15" y1="9" x2="15.01" y2="9" />
-          </svg>
-          <span className="ml-2 text-xl font-bold text-white">Tennis Club</span>
-        </div>
-
-        <Link href="/login">
-          <Button className="bg-green-600 hover:bg-green-500">Sign In</Button>
-        </Link>
-      </header>
-
+        
       <main className="flex-1 flex flex-col items-center justify-center p-8">
         <motion.div
           initial={{ opacity: 0, y: -30 }}
