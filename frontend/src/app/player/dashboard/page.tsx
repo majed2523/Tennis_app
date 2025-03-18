@@ -12,7 +12,15 @@ import {
   CardTitle,
 } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
-import { Calendar, Award, ChevronRight, Users, BookOpen } from 'lucide-react';
+import {
+  Calendar,
+  Users,
+  BookOpen,
+  Clock,
+  Trophy,
+  TrendingUp,
+  Bell,
+} from 'lucide-react';
 import Link from 'next/link';
 import { authService } from '../../../services/authService';
 import { lessonService } from '../../../services/lessonService';
@@ -24,6 +32,26 @@ export default function PlayerDashboard() {
   const [lessons, setLessons] = useState<any[]>([]);
   const [teams, setTeams] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      message: 'Your lesson with Coach Mike is tomorrow at 3:00 PM',
+      time: '1 hour ago',
+      type: 'reminder',
+    },
+    {
+      id: 2,
+      message: 'New team practice schedule has been posted',
+      time: '3 hours ago',
+      type: 'update',
+    },
+    {
+      id: 3,
+      message: 'Tournament registration opens next week',
+      time: '1 day ago',
+      type: 'event',
+    },
+  ]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -64,232 +92,416 @@ export default function PlayerDashboard() {
     checkAuth();
   }, [router]);
 
+  // Animation variants
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  };
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center">
+        <div className="flex flex-col items-center">
+          <div className="relative w-16 h-16">
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-green-500/30 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-green-500 rounded-full animate-spin"></div>
+          </div>
+          <p className="mt-4 text-gray-400">Loading your dashboard...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-7xl mx-auto"
-      >
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">
-            Welcome,{' '}
-            <span className="text-green-500">{userData?.firstName}</span>!
-          </h1>
-          <p className="text-gray-400">
-            Here's an overview of your tennis activities and upcoming lessons.
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 p-6">
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="relative mb-8 p-6 md:p-8 rounded-xl overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 rounded-xl"></div>
+          <div className="absolute inset-0 bg-gray-800/90 backdrop-blur-sm rounded-xl"></div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Quick Stats */}
-          <motion.div
-            whileHover={{ y: -5, transition: { duration: 0.2 } }}
-            className="bg-gray-800 rounded-lg p-6 border border-gray-700"
-          >
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mr-4">
-                <Calendar className="h-6 w-6 text-green-500" />
-              </div>
+          <div className="relative z-10">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <div>
-                <h3 className="text-lg font-semibold">Upcoming Lessons</h3>
-                <p className="text-2xl font-bold">{lessons.length || 0}</p>
+                <h1 className="text-3xl md:text-4xl font-bold text-white">
+                  Welcome,{' '}
+                  <span className="text-green-500">{userData?.firstName}</span>!
+                </h1>
+                <p className="text-gray-400 mt-2">
+                  Here's an overview of your tennis activities and upcoming
+                  lessons.
+                </p>
               </div>
-            </div>
-            <Link href="/player/lessons">
-              <Button
-                variant="ghost"
-                className="w-full justify-between hover:bg-gray-700/50"
-              >
-                View All Lessons
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </motion.div>
-
-          <motion.div
-            whileHover={{ y: -5, transition: { duration: 0.2 } }}
-            className="bg-gray-800 rounded-lg p-6 border border-gray-700"
-          >
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mr-4">
-                <Users className="h-6 w-6 text-blue-500" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">My Teams</h3>
-                <p className="text-2xl font-bold">{teams.length || 0}</p>
-              </div>
-            </div>
-            <Link href="/teams">
-              <Button
-                variant="ghost"
-                className="w-full justify-between hover:bg-gray-700/50"
-              >
-                View My Teams
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </motion.div>
-
-          <motion.div
-            whileHover={{ y: -5, transition: { duration: 0.2 } }}
-            className="bg-gray-800 rounded-lg p-6 border border-gray-700"
-          >
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mr-4">
-                <Award className="h-6 w-6 text-purple-500" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">Club Schedule</h3>
-                <p className="text-sm text-gray-400">View upcoming events</p>
-              </div>
-            </div>
-            <Link href="/schedule">
-              <Button
-                variant="ghost"
-                className="w-full justify-between hover:bg-gray-700/50"
-              >
-                View Schedule
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </motion.div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Upcoming Lessons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <Card className="bg-gray-800 border-gray-700">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-white flex items-center">
-                  <Calendar className="mr-2 h-5 w-5 text-green-500" />
-                  Upcoming Lessons
-                </CardTitle>
-                <CardDescription>
-                  Your scheduled private lessons with coaches
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {lessons.length > 0 ? (
-                  <div className="space-y-4">
-                    {lessons.map((lesson, index) => (
-                      <div
-                        key={index}
-                        className="bg-gray-700/50 rounded-lg p-4 hover:bg-gray-700 transition-colors"
-                      >
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h4 className="font-medium">
-                              Lesson with {lesson.coach_name || 'Coach'}
-                            </h4>
-                            <p className="text-sm text-gray-400">
-                              {new Date(
-                                lesson.lesson_date
-                              ).toLocaleDateString()}{' '}
-                              • {lesson.start_time} - {lesson.end_time}
-                            </p>
-                          </div>
-                          <div className="bg-green-500/20 text-green-500 text-xs px-2 py-1 rounded-full">
-                            Confirmed
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-6 text-gray-500">
-                    <BookOpen className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                    <p>No upcoming lessons</p>
-                    <p className="text-sm mt-1">
-                      Book a lesson with one of our coaches
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-              <CardFooter className="border-t border-gray-700 pt-4">
-                <Link href="/player/lessons" className="w-full">
-                  <Button variant="outline" className="w-full">
-                    View All Lessons
+              <div className="mt-4 md:mt-0">
+                <Link href="/schedule">
+                  <Button className="bg-green-600 hover:bg-green-500 text-white">
+                    View Club Schedule
                   </Button>
                 </Link>
-              </CardFooter>
-            </Card>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <motion.div
+            variants={container}
+            initial="hidden"
+            animate="show"
+            className="lg:col-span-2 space-y-6"
+          >
+            {/* Quick Stats */}
+            <motion.div
+              variants={item}
+              className="grid grid-cols-1 md:grid-cols-3 gap-4"
+            >
+              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300">
+                <CardContent className="p-6">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mr-4">
+                      <Calendar className="h-6 w-6 text-green-500" />
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">Upcoming Lessons</p>
+                      <p className="text-2xl font-bold text-white">
+                        {lessons.length || 0}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300">
+                <CardContent className="p-6">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mr-4">
+                      <Users className="h-6 w-6 text-blue-500" />
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">My Teams</p>
+                      <p className="text-2xl font-bold text-white">
+                        {teams.length || 0}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300">
+                <CardContent className="p-6">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mr-4">
+                      <Clock className="h-6 w-6 text-purple-500" />
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">Practice Hours</p>
+                      <p className="text-2xl font-bold text-white">12</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Upcoming Lessons */}
+            <motion.div variants={item}>
+              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Calendar className="mr-2 h-5 w-5 text-green-500" />
+                      <CardTitle className="text-white">
+                        Upcoming Lessons
+                      </CardTitle>
+                    </div>
+                    <Link href="/player/lessons">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-gray-400 hover:text-white"
+                      >
+                        View All
+                      </Button>
+                    </Link>
+                  </div>
+                  <CardDescription>
+                    Your scheduled private lessons with coaches
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {lessons.length > 0 ? (
+                    <div className="space-y-4">
+                      {lessons.map((lesson, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="bg-gray-700/30 rounded-lg p-4 hover:bg-gray-700/50 transition-colors"
+                        >
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h4 className="font-medium text-white">
+                                Lesson with {lesson.coach_name || 'Coach'}
+                              </h4>
+                              <p className="text-sm text-gray-400">
+                                {new Date(
+                                  lesson.lesson_date
+                                ).toLocaleDateString()}{' '}
+                                • {lesson.start_time} - {lesson.end_time}
+                              </p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                Court {lesson.court || 1}
+                              </p>
+                            </div>
+                            <div className="bg-green-500/20 text-green-500 text-xs px-2 py-1 rounded-full">
+                              Confirmed
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-6 text-gray-500">
+                      <BookOpen className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                      <p>No upcoming lessons</p>
+                      <p className="text-sm mt-1">
+                        Book a lesson with one of our coaches
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* My Teams */}
+            <motion.div variants={item}>
+              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Users className="mr-2 h-5 w-5 text-blue-500" />
+                      <CardTitle className="text-white">My Teams</CardTitle>
+                    </div>
+                    <Link href="/teams">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-gray-400 hover:text-white"
+                      >
+                        View All
+                      </Button>
+                    </Link>
+                  </div>
+                  <CardDescription>
+                    Teams you're currently part of
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {teams.length > 0 ? (
+                    <div className="space-y-4">
+                      {teams.map((team, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="bg-gray-700/30 rounded-lg p-4 hover:bg-gray-700/50 transition-colors"
+                        >
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h4 className="font-medium text-white">
+                                {team.team_name || `Team ${index + 1}`}
+                              </h4>
+                              <p className="text-sm text-gray-400">
+                                Coach: {team.coach_name || 'Assigned Coach'}
+                              </p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                Next practice: Friday, 5:00 PM
+                              </p>
+                            </div>
+                            <div className="bg-blue-500/20 text-blue-500 text-xs px-2 py-1 rounded-full">
+                              Active
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-6 text-gray-500">
+                      <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                      <p>You're not part of any teams yet</p>
+                      <p className="text-sm mt-1">
+                        Contact an admin to join a team
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
           </motion.div>
 
-          {/* My Teams */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            variants={container}
+            initial="hidden"
+            animate="show"
+            className="lg:col-span-1 space-y-6"
           >
-            <Card className="bg-gray-800 border-gray-700">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-white flex items-center">
-                  <Users className="mr-2 h-5 w-5 text-blue-500" />
-                  My Teams
-                </CardTitle>
-                <CardDescription>
-                  Teams you're currently part of
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {teams.length > 0 ? (
+            {/* Notifications */}
+            <motion.div variants={item}>
+              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center">
+                    <Bell className="mr-2 h-5 w-5 text-amber-500" />
+                    <CardTitle className="text-white">Notifications</CardTitle>
+                  </div>
+                  <CardDescription>
+                    Recent updates and reminders
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
                   <div className="space-y-4">
-                    {teams.map((team, index) => (
-                      <div
-                        key={index}
-                        className="bg-gray-700/50 rounded-lg p-4 hover:bg-gray-700 transition-colors"
+                    {notifications.map((notification, index) => (
+                      <motion.div
+                        key={notification.id}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="bg-gray-700/30 rounded-lg p-4 hover:bg-gray-700/50 transition-colors"
                       >
-                        <div className="flex justify-between items-start">
+                        <div className="flex items-start gap-3">
+                          <div
+                            className={`mt-0.5 p-1.5 rounded-full 
+                            ${
+                              notification.type === 'reminder'
+                                ? 'bg-amber-500/20'
+                                : notification.type === 'update'
+                                ? 'bg-blue-500/20'
+                                : 'bg-green-500/20'
+                            }`}
+                          >
+                            {notification.type === 'reminder' ? (
+                              <Clock className="h-3.5 w-3.5 text-amber-500" />
+                            ) : notification.type === 'update' ? (
+                              <TrendingUp className="h-3.5 w-3.5 text-blue-500" />
+                            ) : (
+                              <Trophy className="h-3.5 w-3.5 text-green-500" />
+                            )}
+                          </div>
                           <div>
-                            <h4 className="font-medium">
-                              {team.team_name || `Team ${index + 1}`}
-                            </h4>
-                            <p className="text-sm text-gray-400">
-                              Coach: {team.coach_name || 'Assigned Coach'}
+                            <p className="text-sm text-white">
+                              {notification.message}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {notification.time}
                             </p>
                           </div>
-                          <div className="bg-blue-500/20 text-blue-500 text-xs px-2 py-1 rounded-full">
-                            Active
-                          </div>
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
-                ) : (
-                  <div className="text-center py-6 text-gray-500">
-                    <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                    <p>You're not part of any teams yet</p>
-                    <p className="text-sm mt-1">
-                      Contact an admin to join a team
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-              <CardFooter className="border-t border-gray-700 pt-4">
-                <Link href="/teams" className="w-full">
-                  <Button variant="outline" className="w-full">
-                    View All Teams
+                </CardContent>
+                <CardFooter className="border-t border-gray-700 pt-4">
+                  <Button
+                    variant="outline"
+                    className="w-full text-gray-400 hover:text-white"
+                  >
+                    View All Notifications
                   </Button>
-                </Link>
-              </CardFooter>
-            </Card>
+                </CardFooter>
+              </Card>
+            </motion.div>
+
+            {/* Progress Card */}
+            <motion.div variants={item}>
+              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center">
+                    <TrendingUp className="mr-2 h-5 w-5 text-green-500" />
+                    <CardTitle className="text-white">Your Progress</CardTitle>
+                  </div>
+                  <CardDescription>
+                    Track your tennis improvement
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm text-gray-400">Forehand</span>
+                        <span className="text-sm text-gray-400">75%</span>
+                      </div>
+                      <div className="w-full bg-gray-700 rounded-full h-2">
+                        <div
+                          className="bg-green-500 h-2 rounded-full"
+                          style={{ width: '75%' }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm text-gray-400">Backhand</span>
+                        <span className="text-sm text-gray-400">60%</span>
+                      </div>
+                      <div className="w-full bg-gray-700 rounded-full h-2">
+                        <div
+                          className="bg-blue-500 h-2 rounded-full"
+                          style={{ width: '60%' }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm text-gray-400">Serve</span>
+                        <span className="text-sm text-gray-400">80%</span>
+                      </div>
+                      <div className="w-full bg-gray-700 rounded-full h-2">
+                        <div
+                          className="bg-purple-500 h-2 rounded-full"
+                          style={{ width: '80%' }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm text-gray-400">Volley</span>
+                        <span className="text-sm text-gray-400">45%</span>
+                      </div>
+                      <div className="w-full bg-gray-700 rounded-full h-2">
+                        <div
+                          className="bg-amber-500 h-2 rounded-full"
+                          style={{ width: '45%' }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="border-t border-gray-700 pt-4">
+                  <Button
+                    variant="outline"
+                    className="w-full text-gray-400 hover:text-white"
+                  >
+                    View Full Progress Report
+                  </Button>
+                </CardFooter>
+              </Card>
+            </motion.div>
           </motion.div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

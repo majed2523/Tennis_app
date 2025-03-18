@@ -61,11 +61,22 @@ class User:
         db.commit()
         return True
 
-    def delete(self, db):
+    def delete(db, user_id):
         cursor = db.cursor()
-        cursor.execute("DELETE FROM users WHERE id = ?", (self.id,))
+        cursor.execute("DELETE FROM users WHERE id = ?", (user_id))
         db.commit()
         return cursor.rowcount > 0
+    
+    
+    def update( db,user_id, new_id=None, new_password=None):
+        cursor = db.cursor()
+        if new_id:
+            cursor.execute("UPDATE users SET id = ? WHERE id = ?", (new_id, user_id))
+        if new_password:
+            hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            cursor.execute("UPDATE users SET password = ? WHERE id = ?", (hashed_password, user_id))
+        db.commit()
+        return True
 
     def generate_token(self):
         payload = {

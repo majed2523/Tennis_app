@@ -21,13 +21,20 @@ import {
   SelectValue,
 } from '../../components/ui/select';
 import { userService } from '../../services/userService';
-import { AlertCircle, CheckCircle, UserPlus } from 'lucide-react';
+import { AlertCircle, CheckCircle } from 'lucide-react';
+import { Alert, AlertDescription } from '../../components/ui/alert';
 
-export default function UserRegistrationForm() {
+interface UserRegistrationFormProps {
+  onSuccess?: () => void;
+}
+
+export default function UserRegistrationForm({
+  onSuccess,
+}: UserRegistrationFormProps) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState('player');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -62,64 +69,72 @@ export default function UserRegistrationForm() {
         setFirstName('');
         setLastName('');
         setPassword('');
-        setRole('');
+        setRole('player');
+
+        // Call onSuccess callback if provided
+        if (onSuccess) {
+          setTimeout(() => {
+            onSuccess();
+          }, 1500);
+        }
       }
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');
-      console.error('Error registering user:', err);
+      console.error('Registration error:', err);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <Card className="w-full max-w-md bg-gray-800 border-gray-700">
+    <Card className="w-full max-w-md bg-gray-800/50 border-gray-700 backdrop-blur-sm">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-green-400 flex items-center gap-2">
-          <UserPlus className="h-5 w-5" />
+        <CardTitle className="text-2xl font-bold text-green-400">
           Register New User
         </CardTitle>
         <CardDescription className="text-gray-400">
-          Add a new player or coach to the system
+          Create a new account for a player or coach
         </CardDescription>
       </CardHeader>
 
       <CardContent>
         {error && (
-          <div className="bg-red-500/20 text-red-400 p-3 rounded-md text-sm mb-4 flex items-start">
-            <AlertCircle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
-            <span>{error}</span>
-          </div>
+          <Alert className="mb-4 bg-red-900/20 border-red-900/30 text-red-400">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         )}
 
         {success && (
-          <div className="bg-green-500/20 text-green-400 p-3 rounded-md text-sm mb-4 flex items-start">
-            <CheckCircle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
-            <span>{success}</span>
-          </div>
+          <Alert className="mb-4 bg-green-900/20 border-green-900/30 text-green-400">
+            <CheckCircle className="h-4 w-4" />
+            <AlertDescription>{success}</AlertDescription>
+          </Alert>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="firstName">First Name</Label>
-            <Input
-              id="firstName"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="bg-gray-700 border-gray-600"
-              required
-            />
-          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="firstName">First Name</Label>
+              <Input
+                id="firstName"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="bg-gray-700 border-gray-600"
+                required
+              />
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="lastName">Last Name</Label>
-            <Input
-              id="lastName"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              className="bg-gray-700 border-gray-600"
-              required
-            />
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input
+                id="lastName"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="bg-gray-700 border-gray-600"
+                required
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -143,6 +158,7 @@ export default function UserRegistrationForm() {
               <SelectContent className="bg-gray-800 border-gray-700">
                 <SelectItem value="player">Player</SelectItem>
                 <SelectItem value="coach">Coach</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
               </SelectContent>
             </Select>
           </div>

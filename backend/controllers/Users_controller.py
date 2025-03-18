@@ -58,3 +58,46 @@ class UserController:
         coaches = User.get_all_coaches(db)
         db.close()
         return jsonify(coaches), 200
+    
+    
+    @staticmethod
+    @jwt_required()
+    def update_user(user_id,new_id,new_password):
+        db = get_db_connection()
+        admin_id = get_jwt_identity()
+        admin_user = User.find_by_id(db, admin_id)
+
+        if not admin_user or admin_user.role != "admin":
+            db.close()
+            return jsonify({"error": "Unauthorized. Only admin can update users."}), 403
+
+        user = User.find_by_id(db, user_id)
+        if not user:
+            db.close()
+            return jsonify({"error": "User not found"}), 404
+        
+        success = User.update(db, user_id, new_id=new_id, new_password=new_password)
+        db.close()
+        if success:
+            return jsonify({"message": f"User {user_id} updated successfully."}), 200
+        else:
+            return jsonify({"error": "Failed to update user."}), 500
+
+    @staticmethod
+    @jwt_required()
+    def delete_user(user_id):
+        db = get_db_connection()
+        admin_id = get_jwt_identity()
+        admin_user = User.find_by_id(db, admin_id)
+
+        if not admin_user or admin_user.role != "admin":
+            db.close()
+            return jsonify({"error": "Unauthorized. Only admin can delete users."}), 403
+
+        success = User.delete(db, user_id)
+        db.close()
+
+        if success:
+            return jsonify({"message": f"User {user_id} deleted successfully."}), 200
+        else:
+            return jsonify({"error": "Failed to delete user."}), 500

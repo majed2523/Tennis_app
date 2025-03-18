@@ -83,6 +83,27 @@ def get_all_coaches():
     """
     return UserController.get_all_coaches()
 
+@routes_app.route('/user/<int:user_id>', methods=['PUT'])
+@jwt_required()
+def update_user(user_id):
+    """
+    Admin can update user ID or password.
+    Expects JSON body: { "new_id": <id>, "new_password": "<password>" }
+    """
+    data = request.get_json()
+    new_id = data.get("new_id")
+    new_password = data.get("new_password")
+
+    return UserController.update_user(user_id, new_id, new_password)
+
+@routes_app.route('/user/<int:user_id>', methods=['DELETE'])
+@jwt_required()
+def delete_user(user_id):
+    """
+    Admin can delete a user.
+    """
+    return UserController.delete_user(user_id)
+
 
 # ---------------------------------
 # Team Endpoints
