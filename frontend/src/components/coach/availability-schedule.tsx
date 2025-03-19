@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card"
 import { Badge } from "../../components/ui/badge"
-import { coachService, authService } from "../../services/api"
+import { coachService } from '../../services/coachService';
+import { authService } from '../../services/authService';
 import { Clock, Calendar, AlertCircle } from "lucide-react"
 
 interface Availability {

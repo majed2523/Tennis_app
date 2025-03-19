@@ -63,7 +63,7 @@ class User:
 
     def delete(db, user_id):
         cursor = db.cursor()
-        cursor.execute("DELETE FROM users WHERE id = ?", (user_id))
+        cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
         db.commit()
         return cursor.rowcount > 0
     
@@ -74,7 +74,7 @@ class User:
             cursor.execute("UPDATE users SET id = ? WHERE id = ?", (new_id, user_id))
         if new_password:
             hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-            cursor.execute("UPDATE users SET password = ? WHERE id = ?", (hashed_password, user_id))
+            cursor.execute("UPDATE users SET password = ? WHERE id = ?", (hashed_password, new_id if new_id else user_id))
         db.commit()
         return True
 

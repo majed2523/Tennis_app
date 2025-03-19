@@ -295,16 +295,8 @@ export default function Navbar() {
           ) : (
             <div className="flex space-x-3">
               <Link href="/login">
-                <Button
-                  variant="ghost"
-                  className="text-white hover:bg-gray-800"
-                >
-                  Sign In
-                </Button>
-              </Link>
-              <Link href="/register">
                 <Button className="bg-green-600 hover:bg-green-500 text-white">
-                  Sign Up
+                  Sign in
                 </Button>
               </Link>
             </div>

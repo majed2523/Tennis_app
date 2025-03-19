@@ -1,5 +1,7 @@
 'use client';
 
+import type React from 'react';
+
 import { useEffect, useState } from 'react';
 import {
   Card,
@@ -11,16 +13,34 @@ import {
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 import { teamService } from '../../services/teamService';
-import { Users, User, AlertCircle, ChevronRight, UserPlus } from 'lucide-react';
+import {
+  Users,
+  User,
+  AlertCircle,
+  ChevronRight,
+  UserPlus,
+  Trash2,
+} from 'lucide-react';
 import TeamDetails from './team-details';
 import AssignPlayerForm from './assign-player-form';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../../components/ui/dialog';
+import { authService } from '../../services/authService';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Team {
   id: string;
   team_name: string;
   coach_id: string;
   coach_name?: string;
-  player_count?: number; // Changed from members_count to match API
+  player_count?: number;
+  isDeleting?: boolean;
 }
 
 export default function TeamsList() {
@@ -29,6 +49,9 @@ export default function TeamsList() {
   const [error, setError] = useState<string | null>(null);
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
   const [showAssignForm, setShowAssignForm] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [teamToDelete, setTeamToDelete] = useState<Team | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const fetchTeams = async () => {
     try {
@@ -60,6 +83,11 @@ export default function TeamsList() {
     fetchTeams();
   }, []);
 
+  useEffect(() => {
+    const user = authService.getCurrentUser();
+    setIsAdmin(user?.role === 'admin');
+  }, []);
+
   const handleViewTeam = (teamId: string) => {
     setSelectedTeamId(teamId);
   };
@@ -74,6 +102,40 @@ export default function TeamsList() {
 
   const handlePlayerAssigned = () => {
     fetchTeams(); // Refresh teams list after assigning player
+  };
+
+  const handleDeleteClick = (team: Team, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTeamToDelete(team);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteTeam = async () => {
+    if (!teamToDelete) return;
+
+    try {
+      // Mark the team as deleting to show loading state
+      setTeams(
+        teams.map((t) =>
+          t.id === teamToDelete.id ? { ...t, isDeleting: true } : t
+        )
+      );
+
+      const result = await teamService.deleteTeam(teamToDelete.id);
+
+      if (result.error) {
+        setError(result.error);
+      } else {
+        // Remove the team from the list
+        setTeams(teams.filter((t) => t.id !== teamToDelete.id));
+      }
+    } catch (err) {
+      console.error('Error deleting team:', err);
+      setError('Failed to delete team');
+    } finally {
+      setDeleteDialogOpen(false);
+      setTeamToDelete(null);
+    }
   };
 
   if (isLoading) {
@@ -147,39 +209,93 @@ export default function TeamsList() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {teams.map((team) => (
-                <div
-                  key={team.id}
-                  className="bg-gray-700/50 p-4 rounded-md border border-gray-600 hover:border-green-400 transition-colors"
-                >
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="font-bold text-white text-lg">
-                      {team.team_name}
-                    </h3>
-                    <Badge className="bg-green-400/20 text-green-400">
-                      {team.player_count ?? 0} Members {/* Fixed display */}
-                    </Badge>
-                  </div>
-
-                  <div className="flex items-center text-gray-300 mb-4">
-                    <User className="h-4 w-4 text-green-400 mr-2" />
-                    <span>Coach: {team.coach_name || 'Unknown'}</span>
-                  </div>
-
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-between text-gray-300 hover:text-green-400 hover:bg-gray-700"
-                    onClick={() => handleViewTeam(team.id)}
+              <AnimatePresence>
+                {teams.map((team) => (
+                  <motion.div
+                    key={team.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                    transition={{ duration: 0.3 }}
+                    className="bg-gray-700/50 p-4 rounded-md border border-gray-600 hover:border-green-400 transition-colors"
                   >
-                    View Team Details
-                    <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Button>
-                </div>
-              ))}
+                    <div className="flex justify-between items-start mb-3">
+                      <h3 className="font-bold text-white text-lg">
+                        {team.team_name}
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <Badge className="bg-green-400/20 text-green-400">
+                          {team.player_count ?? 0} Members
+                        </Badge>
+                        {isAdmin && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-red-400 hover:text-red-300 hover:bg-red-900/20"
+                            onClick={(e) => handleDeleteClick(team, e)}
+                            disabled={team.isDeleting}
+                          >
+                            {team.isDeleting ? (
+                              <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-400 border-t-transparent" />
+                            ) : (
+                              <Trash2 className="h-4 w-4" />
+                            )}
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center text-gray-300 mb-4">
+                      <User className="h-4 w-4 text-green-400 mr-2" />
+                      <span>Coach: {team.coach_name || 'Unknown'}</span>
+                    </div>
+
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-between text-gray-300 hover:text-green-400 hover:bg-gray-700"
+                      onClick={() => handleViewTeam(team.id)}
+                    >
+                      View Team Details
+                      <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
           )}
         </CardContent>
       </Card>
+
+      {/* Delete Team Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="bg-gray-800 border-gray-700 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-xl text-red-400">
+              Delete Team
+            </DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Are you sure you want to delete the team "
+              {teamToDelete?.team_name}"? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex space-x-2 pt-4">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              className="border-gray-600 text-gray-300 hover:bg-gray-700"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteTeam}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete Team
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

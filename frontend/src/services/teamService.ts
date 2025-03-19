@@ -20,36 +20,36 @@ export const teamService = {
     }
   },
 
-  getTeam : async (teamId: number) => {
-  try {
-    const token = localStorage.getItem('authToken');
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
+  getTeam: async (teamId: number) => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
 
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const res = await fetch(`${BASE_URL}/teams/${teamId}`, {
+        method: 'GET',
+        headers,
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error('Backend Error:', errorData);
+        throw new Error(errorData.error || 'Failed to fetch team details');
+      }
+
+      const team = await res.json();
+      console.log('🔹 Team Data Received from API:', team); // Debugging output
+      return team;
+    } catch (error) {
+      console.error('❌ Error fetching team:', error);
+      return { error: 'Network error' };
     }
-
-    const res = await fetch(`${BASE_URL}/teams/${teamId}`, {
-      method: 'GET',
-      headers,
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      console.error('Backend Error:', errorData);
-      throw new Error(errorData.error || 'Failed to fetch team details');
-    }
-
-    const team = await res.json();
-    console.log("🔹 Team Data Received from API:", team); // Debugging output
-    return team;
-  } catch (error) {
-    console.error('❌ Error fetching team:', error);
-    return { error: 'Network error' };
-  }
-},
+  },
 
   getAllTeams: async () => {
     try {
@@ -149,6 +149,29 @@ export const teamService = {
       return { success: true };
     } catch (error) {
       console.error('Error removing player from team:', error);
+      return { error: 'Network error' };
+    }
+  },
+
+  deleteTeam: async (teamId: string) => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const res = await fetch(`${BASE_URL}/teams/${teamId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        return { error: data.error || 'Failed to delete team!' };
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error deleting team:', error);
       return { error: 'Network error' };
     }
   },

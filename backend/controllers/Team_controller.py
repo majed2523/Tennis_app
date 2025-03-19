@@ -92,3 +92,25 @@ class TeamController:
         Team.remove_player(db, team_id, player_id)
         db.close()
         return jsonify({"message": "Player successfully removed from team."}), 200
+    
+    
+    
+    @staticmethod
+    @jwt_required()
+    def delete_team(team_id):
+        db = get_db_connection()
+        admin_id = get_jwt_identity()
+        admin_user = User.find_by_id(db, admin_id)
+
+        if not admin_user or admin_user.role != "admin":
+            db.close()
+            return jsonify({"error": "Unauthorized. Only admin can delete teams."}), 403
+
+        success = Team.delete_team(db, team_id)
+        db.close()
+
+        if success:
+            return jsonify({"message": f"Team {team_id} deleted successfully."}), 200
+        else:
+            return jsonify({"error": "Team not found or could not be deleted."}), 404
+

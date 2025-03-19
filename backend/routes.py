@@ -173,6 +173,15 @@ def remove_player_from_team(team_id, player_id):
     return TeamController.remove_player_from_team(team_id, player_id)
 
 
+@routes_app.route('/teams/<int:team_id>', methods=['DELETE'])
+@jwt_required()
+def delete_team(team_id):
+    """
+    Admin can delete a team.
+    """
+    return TeamController.delete_team(team_id)
+
+
 # ---------------------------------
 # Coach Availability Endpoints
 # ---------------------------------

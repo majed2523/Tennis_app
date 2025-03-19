@@ -37,10 +37,10 @@ import {
   User,
 } from 'lucide-react';
 import { authService } from '../../services/authService';
-// import {
-//   announcementService,
-//   type Announcement,
-// } from '@/services/announcementService';
+import {
+  announcementService,
+  type Announcement,
+} from '../../services/announcementService';
 
 export default function AnnouncementsPage() {
   const router = useRouter();
@@ -77,14 +77,14 @@ export default function AnnouncementsPage() {
       setCanCreateAnnouncements(true);
     }
 
-    // Fetch announcements
+    // Fetch announcements from localStorage
     fetchAnnouncements();
   }, [router]);
 
-  const fetchAnnouncements = async () => {
+  const fetchAnnouncements = () => {
     setIsLoading(true);
     try {
-      const data = await announcementService.getAllAnnouncements();
+      const data = announcementService.getAllAnnouncements();
       setAnnouncements(data);
     } catch (error) {
       console.error('Error fetching announcements:', error);
@@ -93,7 +93,7 @@ export default function AnnouncementsPage() {
     }
   };
 
-  const handleCreateAnnouncement = async () => {
+  const handleCreateAnnouncement = () => {
     // Validate form
     if (!title.trim()) {
       setFormError('Title is required');
@@ -109,7 +109,11 @@ export default function AnnouncementsPage() {
     setFormSuccess(null);
 
     try {
-      await announcementService.createAnnouncement(title, content, isImportant);
+      const newAnnouncement = announcementService.createAnnouncement(
+        title,
+        content,
+        isImportant
+      );
       setFormSuccess('Announcement created successfully');
 
       // Reset form
@@ -138,14 +142,14 @@ export default function AnnouncementsPage() {
     setIsDeleteDialogOpen(true);
   };
 
-  const handleDeleteAnnouncement = async () => {
+  const handleDeleteAnnouncement = () => {
     if (!deletingAnnouncement) return;
 
     setDeleteError(null);
     setDeleteSuccess(null);
 
     try {
-      const result = await announcementService.deleteAnnouncement(
+      const result = announcementService.deleteAnnouncement(
         deletingAnnouncement.id
       );
 

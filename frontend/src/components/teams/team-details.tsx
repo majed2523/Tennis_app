@@ -9,22 +9,22 @@ import {
   CardTitle,
   CardFooter,
 } from '../../components/ui/card';
-import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 import { Avatar, AvatarFallback } from '../../components/ui/avatar';
-import { AlertCircle, Users, ArrowLeft, UserX } from 'lucide-react';
+import { AlertCircle, Users, ArrowLeft, UserX, Trash2 } from 'lucide-react';
 import { teamService } from '../../services/teamService';
-import { authService } from '../../services/authService';
+import { Alert, AlertDescription } from '../../components/ui/alert';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '../../components/ui/dialog';
-import { Alert, AlertDescription } from '../../components/ui/alert';
-import { motion, AnimatePresence } from 'framer-motion';
+import { authService } from '../../services/authService';
 
 interface Player {
   id: string;
@@ -53,12 +53,19 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const router = useRouter();
 
   // Remove player state
   const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
   const [removingPlayer, setRemovingPlayer] = useState<Player | null>(null);
   const [removeError, setRemoveError] = useState<string | null>(null);
   const [removeSuccess, setRemoveSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    const user = authService.getCurrentUser();
+    setIsAdmin(user?.role === 'admin');
+  }, []);
 
   useEffect(() => {
     // Check if user is admin
@@ -143,6 +150,27 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
     }
   };
 
+  const handleDeleteTeam = async () => {
+    try {
+      setIsLoading(true);
+      const result = await teamService.deleteTeam(teamId);
+
+      if (result.error) {
+        setError(result.error);
+        setDeleteDialogOpen(false);
+      } else {
+        // Redirect to teams page after successful deletion
+        router.push('/admin/teams');
+      }
+    } catch (err) {
+      console.error('Error deleting team:', err);
+      setError('Failed to delete team');
+      setDeleteDialogOpen(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <Card className="w-full bg-gray-800 border-gray-700">
@@ -191,21 +219,40 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
 
   return (
     <Card className="w-full bg-gray-800 border-gray-700">
-      <CardHeader>
-        <div className="flex justify-between items-start">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <div className="flex items-center">
+          <Button
+            variant="ghost"
+            onClick={onBack}
+            className="mr-2 text-gray-400 hover:text-white"
+          >
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            Back
+          </Button>
           <div>
-            <CardTitle className="text-2xl font-bold text-green-400 flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              {team.team_name}
+            <CardTitle className="text-2xl font-bold text-green-400">
+              {team?.team_name || 'Team Details'}
             </CardTitle>
-            <CardDescription className="text-gray-400 mt-1">
-              Coach: {team.coach_name || 'Unassigned'}
+            <CardDescription className="text-gray-400">
+              Coach: {team?.coach_name || 'Loading...'}
             </CardDescription>
           </div>
-          <Badge className="bg-green-400/20 text-green-400">
-            {team.player_count ?? team.players?.length ?? 0} Players
-          </Badge>
         </div>
+        {isAdmin && (
+          <Button
+            variant="destructive"
+            onClick={() => setDeleteDialogOpen(true)}
+            className="bg-red-600 hover:bg-red-700"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent mr-2" />
+            ) : (
+              <Trash2 className="h-4 w-4 mr-2" />
+            )}
+            Delete Team
+          </Button>
+        )}
       </CardHeader>
 
       <CardContent>
@@ -325,6 +372,37 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
               className="bg-red-600 hover:bg-red-500"
             >
               Remove Player
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Team Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="bg-gray-800 border-gray-700 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-xl text-red-400">
+              Delete Team
+            </DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Are you sure you want to delete the team "{team?.team_name}"? This
+              action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex space-x-2 pt-4">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              className="border-gray-600 text-gray-300 hover:bg-gray-700"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteTeam}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete Team
             </Button>
           </DialogFooter>
         </DialogContent>

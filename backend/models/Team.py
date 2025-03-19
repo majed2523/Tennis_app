@@ -100,3 +100,15 @@ class Team:
         ],
         "count": len(rows)  # Add the player count
     }
+        
+            
+    @staticmethod
+    def delete_team(db, team_id):
+        cursor = db.cursor()
+        cursor.execute("DELETE FROM teams WHERE id = ?", (team_id,))
+        db.commit()
+        return cursor.rowcount > 0  # Returns True if a row was deleted
+
+
+
+

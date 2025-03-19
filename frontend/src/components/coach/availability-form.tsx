@@ -20,7 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../components/ui/select';
-import { coachService, authService } from '../../services/api';
+import { coachService } from '../../services/coachService';
+import { authService } from '../../services/authService';
 import { AlertCircle, CheckCircle, Clock } from 'lucide-react';
 
 const DAYS_OF_WEEK = [

@@ -23,9 +23,9 @@ import { Badge } from '../../components/ui/badge';
 const coaches = [
   {
     id: 1,
-    name: 'John Davis',
+    name: 'Benzagota Jaber',
     image:
-      'https://images.pexels.com/photos/5384445/pexels-photo-5384445.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+      '/assets/jaber.jpg',
     role: 'Head Coach',
     specialties: [
       'Professional Training',
@@ -41,9 +41,9 @@ const coaches = [
   },
   {
     id: 2,
-    name: 'Sarah Miller',
+    name: 'Akrem Boukhatem',
     image:
-      'https://images.pexels.com/photos/5384429/pexels-photo-5384429.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+      '/assets/akrem.jpg',
     role: 'Youth Development Coach',
     specialties: ['Junior Training', 'Fundamentals', 'Mental Game'],
     experience: '10+ years',
@@ -55,9 +55,9 @@ const coaches = [
   },
   {
     id: 3,
-    name: 'Michael Chen',
+    name: 'Meneceur Abedelmadjed',
     image:
-      'https://images.pexels.com/photos/5384430/pexels-photo-5384430.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+      '/assets/majed.jpg',
     role: 'Performance Coach',
     specialties: ['Fitness Training', 'Match Strategy', 'Serve Technique'],
     experience: '12+ years',
@@ -82,7 +82,7 @@ export default function CoachesPage() {
         className="relative h-[50vh] flex items-center justify-center overflow-hidden"
       >
         {/* Background Image */}
-        <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/5739061/pexels-photo-5739061.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')] bg-cover bg-center">
+        <div className="absolute inset-0 bg-[url('/assets/download.jpeg')] bg-cover bg-center">
           <div className="absolute inset-0 bg-gray-900/70 backdrop-blur-sm" />
         </div>
 
