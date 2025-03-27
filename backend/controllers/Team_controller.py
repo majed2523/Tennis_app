@@ -1,7 +1,7 @@
 from models.Team import Team
 from models.Users import User
 from database import get_db_connection
-import sqlite3
+import sqlite3  # might remove if purely on Postgres
 from flask import jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
@@ -29,11 +29,9 @@ class TeamController:
     def get_all_teams():
         db = get_db_connection()
         teams = Team.get_all_teams(db)
-
         if not teams:
             db.close()
             return jsonify({"error": "No teams found"}), 404
-
         db.close()
         return jsonify(teams), 200
 
@@ -92,9 +90,7 @@ class TeamController:
         Team.remove_player(db, team_id, player_id)
         db.close()
         return jsonify({"message": "Player successfully removed from team."}), 200
-    
-    
-    
+
     @staticmethod
     @jwt_required()
     def delete_team(team_id):
@@ -113,4 +109,3 @@ class TeamController:
             return jsonify({"message": f"Team {team_id} deleted successfully."}), 200
         else:
             return jsonify({"error": "Team not found or could not be deleted."}), 404
-

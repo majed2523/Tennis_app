@@ -35,7 +35,7 @@ class Lesson:
     def save(self, db):
         cursor = db.cursor()
         cursor.execute(
-            "INSERT INTO private_lessons (player_id, coach_id, lesson_date, start_time, end_time) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO private_lessons (player_id, coach_id, lesson_date, start_time, end_time) VALUES (%s, %s, %s, %s, %s)",
             (self.player_id, self.coach_id, self.lesson_date, self.start_time, self.end_time)
         )
         db.commit()
@@ -44,7 +44,7 @@ class Lesson:
     def is_booked(db, coach_id, lesson_date, start_time):
         cursor = db.cursor()
         cursor.execute(
-            "SELECT 1 FROM private_lessons WHERE coach_id = ? AND lesson_date = ? AND start_time = ?",
+            "SELECT 1 FROM private_lessons WHERE coach_id = %s AND lesson_date = %s AND start_time = %s",
             (coach_id, lesson_date, start_time)
         )
         return cursor.fetchone() is not None
@@ -53,7 +53,7 @@ class Lesson:
     def get_player_lessons(db, player_id):
         cursor = db.cursor()
         cursor.execute(
-            "SELECT id, player_id, coach_id, lesson_date, start_time, end_time FROM private_lessons WHERE player_id = ?",
+            "SELECT id, player_id, coach_id, lesson_date, start_time, end_time FROM private_lessons WHERE player_id = %s",
             (player_id,)
         )
         rows = cursor.fetchall()
@@ -63,7 +63,7 @@ class Lesson:
     def get_coach_lessons(db, coach_id):
         cursor = db.cursor()
         cursor.execute(
-            "SELECT id, player_id, coach_id, lesson_date, start_time, end_time FROM private_lessons WHERE coach_id = ?",
+            "SELECT id, player_id, coach_id, lesson_date, start_time, end_time FROM private_lessons WHERE coach_id = %s",
             (coach_id,)
         )
         rows = cursor.fetchall()

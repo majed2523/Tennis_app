@@ -32,7 +32,7 @@ class CoachAvailability:
     def save(self, db):
         cursor = db.cursor()
         cursor.execute(
-            "INSERT INTO coach_availability (coach_id, day, start_time, end_time) VALUES (?, ?, ?, ?)",
+            "INSERT INTO coach_availability (coach_id, day, start_time, end_time) VALUES (%s, %s, %s, %s)",
             (self.coach_id, self.day, self.start_time, self.end_time)
         )
         db.commit()
@@ -41,7 +41,7 @@ class CoachAvailability:
     def get_availability(db, coach_id):
         cursor = db.cursor()
         cursor.execute(
-            "SELECT id, coach_id, day, start_time, end_time FROM coach_availability WHERE coach_id = ?",
+            "SELECT id, coach_id, day, start_time, end_time FROM coach_availability WHERE coach_id = %s",
             (coach_id,)
         )
         rows = cursor.fetchall()
@@ -50,7 +50,7 @@ class CoachAvailability:
     def update(self, db):
         cursor = db.cursor()
         cursor.execute(
-            "UPDATE coach_availability SET day = ?, start_time = ?, end_time = ? WHERE id = ?",
+            "UPDATE coach_availability SET day = %s, start_time = %s, end_time = %s WHERE id = %s",
             (self.day, self.start_time, self.end_time, self.id)
         )
         db.commit()

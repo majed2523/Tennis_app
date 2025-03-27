@@ -19,7 +19,13 @@ class UserController:
         if User.find_by_name(db, first_name, last_name):
             db.close()
             return jsonify({"error": "User already exists."}), 400
-        user = User(id=None, first_name=first_name, last_name=last_name, password=password, role=role)
+        user = User(
+            id=None,
+            first_name=first_name,
+            last_name=last_name,
+            password=password,
+            role=role
+        )
         user.save(db)
         db.close()
         return jsonify({"message": f"User {first_name} {last_name} added successfully as a {role}."}), 201
@@ -59,10 +65,9 @@ class UserController:
         db.close()
         return jsonify(coaches), 200
     
-    
     @staticmethod
     @jwt_required()
-    def update_user(user_id,new_id,new_password):
+    def update_user(user_id, new_id, new_password):
         db = get_db_connection()
         admin_id = get_jwt_identity()
         admin_user = User.find_by_id(db, admin_id)

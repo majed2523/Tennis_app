@@ -3,8 +3,7 @@ import jwt
 import datetime
 from dataclasses import dataclass
 from database import get_db_connection
-
-SECRET_KEY = "your_secret_key"  # Update this for production
+from flask import current_app  # for accessing the JWT secret from main.py
 
 @dataclass
 class User:
@@ -35,6 +34,7 @@ class User:
         }
 
     def hash_password(self):
+        # only hash if it's not already hashed
         if not self.password.startswith("$2b$"):
             self.password = bcrypt.hashpw(
                 self.password.encode('utf-8'),
@@ -47,15 +47,15 @@ class User:
     def save(self, db):
         self.hash_password()
         cursor = db.cursor()
-        # Check for duplicate user (by first and last name)
+        # Check for duplicate user
         cursor.execute(
-            "SELECT id FROM users WHERE first_name = ? AND last_name = ?",
+            "SELECT id FROM users WHERE first_name = %s AND last_name = %s",
             (self.first_name, self.last_name)
         )
         if cursor.fetchone():
             return False  # Already exists
         cursor.execute(
-            "INSERT INTO users (first_name, last_name, password, role) VALUES (?, ?, ?, ?)",
+            "INSERT INTO users (first_name, last_name, password, role) VALUES (%s, %s, %s, %s)",
             (self.first_name, self.last_name, self.password, self.role)
         )
         db.commit()
@@ -63,18 +63,20 @@ class User:
 
     def delete(db, user_id):
         cursor = db.cursor()
-        cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
         db.commit()
         return cursor.rowcount > 0
     
-    
-    def update( db,user_id, new_id=None, new_password=None):
+    def update(db, user_id, new_id=None, new_password=None):
         cursor = db.cursor()
         if new_id:
-            cursor.execute("UPDATE users SET id = ? WHERE id = ?", (new_id, user_id))
+            cursor.execute("UPDATE users SET id = %s WHERE id = %s", (new_id, user_id))
         if new_password:
             hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-            cursor.execute("UPDATE users SET password = ? WHERE id = ?", (hashed_password, new_id if new_id else user_id))
+            cursor.execute(
+                "UPDATE users SET password = %s WHERE id = %s",
+                (hashed_password, new_id if new_id else user_id)
+            )
         db.commit()
         return True
 
@@ -84,13 +86,14 @@ class User:
             "role": self.role,
             "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=24)
         }
-        return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+        secret = current_app.config['JWT_SECRET_KEY']  # from main.py
+        return jwt.encode(payload, secret, algorithm="HS256")
 
     @classmethod
     def find_by_id(cls, db, user_id):
         cursor = db.cursor()
         cursor.execute(
-            "SELECT id, first_name, last_name, password, role FROM users WHERE id = ?",
+            "SELECT id, first_name, last_name, password, role FROM users WHERE id = %s",
             (user_id,)
         )
         row = cursor.fetchone()
@@ -100,7 +103,7 @@ class User:
     def find_by_name(cls, db, first_name, last_name):
         cursor = db.cursor()
         cursor.execute(
-            "SELECT id, first_name, last_name, password, role FROM users WHERE first_name = ? AND last_name = ?",
+            "SELECT id, first_name, last_name, password, role FROM users WHERE first_name = %s AND last_name = %s",
             (first_name, last_name)
         )
         row = cursor.fetchone()

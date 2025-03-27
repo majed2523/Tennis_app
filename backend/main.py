@@ -8,7 +8,7 @@ from flask_jwt_extended import JWTManager
 app = Flask(__name__)
 
 # Configure your JWT settings
-app.config['JWT_SECRET_KEY'] = "your_secret_key"  # Secret key for signing JWTs
+app.config['JWT_SECRET_KEY'] = "d2df9688ef44d41a0ba41c801a5ce2d74ff487a8429f9b5b89bc3b9f165bd5fee03e98795aa2a7d940bac45bdd67510798a8a2bd9d38a5853c3b6697b3629ef1"  # Secret key for signing JWTs
 app.config['JWT_TOKEN_LOCATION'] = ['headers']  # Where to look for JWTs (e.g., headers)
 app.config['JWT_HEADER_NAME'] = 'Authorization'
 app.config['JWT_IDENTITY_CLAIM'] = 'id'                      # Tell JWT to use "id" instead of "sub"

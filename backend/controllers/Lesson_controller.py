@@ -17,7 +17,14 @@ class LessonController:
         if Lesson.is_booked(db, coach_id, lesson_date, start_time):
             db.close()
             return jsonify({"error": "This time slot is already booked."}), 400
-        lesson = Lesson(id=None, player_id=user_id, coach_id=coach_id, lesson_date=lesson_date, start_time=start_time, end_time=end_time)
+        lesson = Lesson(
+            id=None,
+            player_id=user_id,
+            coach_id=coach_id,
+            lesson_date=lesson_date,
+            start_time=start_time,
+            end_time=end_time
+        )
         lesson.save(db)
         db.close()
         return jsonify({"message": "Lesson booked successfully."}), 201

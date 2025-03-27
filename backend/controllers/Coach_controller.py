@@ -1,7 +1,7 @@
 from models.CoachAvail import CoachAvailability
 from models.Users import User
 from database import get_db_connection
-import sqlite3
+import sqlite3  # you may want to remove or replace with psycopg2 if purely on Postgres
 from flask import jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
@@ -15,11 +15,18 @@ class CoachAvailabilityController:
         if not user or user.role != "coach":
             db.close()
             return jsonify({"error": "Unauthorized. Only coaches can add availability."}), 403
-        # Use the provided coach_id or ensure that logged in coach matches
-        availability = CoachAvailability(id=None, coach_id=coach_id, day=day, start_time=start_time, end_time=end_time)
+        # Use the provided coach_id or ensure that logged-in coach matches
+        availability = CoachAvailability(
+            id=None,
+            coach_id=coach_id,
+            day=day,
+            start_time=start_time,
+            end_time=end_time
+        )
         try:
             availability.save(db)
         except sqlite3.IntegrityError as e:
+            # If you're on Postgres, you might want to catch a psycopg2 error instead.
             db.close()
             return jsonify({"error": "Failed to add availability: " + str(e)}), 400
         db.close()
@@ -41,17 +48,23 @@ class CoachAvailabilityController:
         if not user or user.role != "coach":
             db.close()
             return jsonify({"error": "Unauthorized. Only coaches can update availability."}), 403
-        # Fetch existing record
+
+        # Replaced the "?" with "%s" here:
         cursor = db.cursor()
-        cursor.execute("SELECT id, coach_id, day, start_time, end_time FROM coach_availability WHERE id = ?", (availability_id,))
+        cursor.execute(
+            "SELECT id, coach_id, day, start_time, end_time FROM coach_availability WHERE id = %s",
+            (availability_id,)
+        )
         row = cursor.fetchone()
         if not row:
             db.close()
             return jsonify({"error": "Availability record not found."}), 404
+
         availability = CoachAvailability.from_row(row)
         if availability.coach_id != logged_in_id:
             db.close()
             return jsonify({"error": "Unauthorized to update this availability."}), 403
+
         availability.day = day
         availability.start_time = start_time
         availability.end_time = end_time

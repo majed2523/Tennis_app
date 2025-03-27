@@ -1,15 +1,13 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_cors import cross_origin
 from controllers.Users_controller import UserController
 from controllers.Team_controller import TeamController
 from controllers.Lesson_controller import LessonController
 from controllers.Coach_controller import CoachAvailabilityController
-import jwt
 from flask_jwt_extended import jwt_required
+import jwt
 
-# Create a Blueprint for routes
 routes_app = Blueprint('routes_app', __name__)
-SECRET_KEY = "your_secret_key"  # Use the same secret as in your models
 
 # ---------------------------------
 # User Endpoints
@@ -33,8 +31,13 @@ def register_user():
     token = request.headers.get("Authorization")
     if not token:
         return jsonify({"error": "Missing token"}), 401
+
     try:
-        payload = jwt.decode(token.split(" ")[1], SECRET_KEY, algorithms=["HS256"])
+        payload = jwt.decode(
+            token.split(" ")[1],
+            current_app.config['JWT_SECRET_KEY'],  # from main.py
+            algorithms=["HS256"]
+        )
         if payload.get("role") != "admin":
             return jsonify({"error": "Unauthorized. Only admin can register users."}), 403
     except jwt.ExpiredSignatureError:
@@ -83,6 +86,7 @@ def get_all_coaches():
     """
     return UserController.get_all_coaches()
 
+
 @routes_app.route('/user/<int:user_id>', methods=['PUT'])
 @jwt_required()
 def update_user(user_id):
@@ -93,8 +97,8 @@ def update_user(user_id):
     data = request.get_json()
     new_id = data.get("new_id")
     new_password = data.get("new_password")
-
     return UserController.update_user(user_id, new_id, new_password)
+
 
 @routes_app.route('/user/<int:user_id>', methods=['DELETE'])
 @jwt_required()
