@@ -3,7 +3,7 @@ from flask_cors import CORS
 from database import init_db
 from routes import routes_app
 from flask_jwt_extended import JWTManager
-
+import os
 # Initialize Flask app
 app = Flask(__name__)
 
@@ -30,4 +30,9 @@ init_db()
 
 # Run the app
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(
+        debug=True,
+        host="0.0.0.0",  # crucial: listen on all interfaces
+        port=port       # crucial: use the PORT variable
+    )
