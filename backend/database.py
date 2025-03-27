@@ -7,7 +7,7 @@ import psycopg2.extras  # NEW OR CHANGED
 from config import DATABASE_PATH
 
 # Path to the schema file
-SCHEMA_PATH = os.path.join(os.path.dirname(__file__), "schema.sql")
+SCHEMA_PATH = os.path.join(os.path.dirname(__file__), "..", "database", "schema.sql")
 
 
 def get_db_connection():
