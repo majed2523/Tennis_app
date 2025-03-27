@@ -129,7 +129,6 @@ def create_team():
 
 
 @routes_app.route('/teams/<int:team_id>', methods=['GET'])
-@cross_origin()
 def get_team(team_id):
     """
     Get details of a specific team.
