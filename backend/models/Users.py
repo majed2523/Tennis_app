@@ -17,12 +17,13 @@ class User:
     def from_row(cls, row):
         if row is None:
             return None
+        # row has keys: id, first_name, last_name, password, role
         return cls(
-            id=row[0],
-            first_name=row[1],
-            last_name=row[2],
-            password=row[3],
-            role=row[4]
+            id=row["id"],
+            first_name=row["first_name"],
+            last_name=row["last_name"],
+            password=row["password"],
+            role=row["role"]
         )
 
     def to_dict(self):

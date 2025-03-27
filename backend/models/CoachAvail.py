@@ -12,12 +12,13 @@ class CoachAvailability:
     def from_row(cls, row):
         if row is None:
             return None
+        # row is a dictionary now, so use dict keys
         return cls(
-            id=row[0],
-            coach_id=row[1],
-            day=row[2],
-            start_time=row[3],
-            end_time=row[4]
+            id=row["id"],
+            coach_id=row["coach_id"],
+            day=row["day"],
+            start_time=row["start_time"],
+            end_time=row["end_time"]
         )
 
     def to_dict(self):

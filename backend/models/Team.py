@@ -11,11 +11,14 @@ class Team:
     def from_row(cls, row):
         if row is None:
             return None
+        # row has keys: id, team_name, coach_id, first_name, last_name
         return cls(
-            id=row[0],
-            team_name=row[1],
-            coach_id=row[2],
-            coach_name=f"{row[3]} {row[4]}" if row[3] and row[4] else "Unassigned"
+            id=row["id"],
+            team_name=row["team_name"],
+            coach_id=row["coach_id"],
+            coach_name=(f"{row['first_name']} {row['last_name']}"
+                        if row['first_name'] and row['last_name']
+                        else "Unassigned")
         )
 
     def to_dict(self):
@@ -95,10 +98,10 @@ class Team:
         return {
             "players": [
                 {
-                    "id": row[0],
-                    "first_name": row[1],
-                    "last_name": row[2],
-                    "role": row[3]
+                    "id": row["id"],
+                    "first_name": row["first_name"],
+                    "last_name": row["last_name"],
+                    "role": row["role"]
                 }
                 for row in rows
             ],

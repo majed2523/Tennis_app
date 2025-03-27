@@ -14,12 +14,12 @@ class Lesson:
         if row is None:
             return None
         return cls(
-            id=row[0],
-            player_id=row[1],
-            coach_id=row[2],
-            lesson_date=row[3],
-            start_time=row[4],
-            end_time=row[5]
+            id=row["id"],
+            player_id=row["player_id"],
+            coach_id=row["coach_id"],
+            lesson_date=row["lesson_date"],
+            start_time=row["start_time"],
+            end_time=row["end_time"]
         )
 
     def to_dict(self):
