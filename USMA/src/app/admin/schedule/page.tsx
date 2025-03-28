@@ -21,7 +21,12 @@ import {
   CardFooter,
 } from '../../../components/ui/card';
 import { teamService } from '../../../services/teamService';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '../../../components/ui/tabs';
 import { Badge } from '../../../components/ui/badge';
 import { Alert, AlertDescription } from '../../../components/ui/alert';
 
@@ -319,21 +324,21 @@ export default function AdminSchedulePage() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-white">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-white mb-4 md:mb-0">
+          <h1 className="text-3xl font-bold text-gray-800 mb-4 md:mb-0">
             Schedule Management
           </h1>
 
           <div className="flex flex-wrap gap-2">
             <Button
               onClick={addScheduleItem}
-              className="bg-green-600 hover:bg-green-500"
+              className="bg-club-red hover:bg-club-red/90"
             >
               <Plus className="mr-2 h-4 w-4" /> Add Schedule Item
             </Button>
@@ -341,7 +346,7 @@ export default function AdminSchedulePage() {
             {isEditing && (
               <Button
                 onClick={saveSchedule}
-                className="bg-blue-600 hover:bg-blue-500"
+                className="bg-club-red hover:bg-club-red/90"
                 disabled={Object.keys(conflicts).length > 0}
               >
                 <Save className="mr-2 h-4 w-4" /> Save Changes
@@ -378,12 +383,12 @@ export default function AdminSchedulePage() {
                     key={item.id}
                     className={`${
                       hasConflict
-                        ? 'bg-red-900/30 border-red-500/50'
-                        : 'bg-gray-800/50 border-gray-700'
+                        ? 'bg-red-100 border-red-500/50'
+                        : 'bg-white border-gray-200 shadow-sm'
                     }`}
                   >
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                      <CardTitle className="text-white text-sm font-medium flex items-center">
+                      <CardTitle className="text-gray-800 text-sm font-medium flex items-center">
                         Schedule Item
                         {hasConflict && (
                           <span className="ml-2 text-red-400 flex items-center">
@@ -395,7 +400,9 @@ export default function AdminSchedulePage() {
                       <div className="flex gap-2">
                         <Button
                           onClick={() => lockScheduleItem(item.id)}
-                          className={item.locked ? 'bg-red-500' : 'bg-gray-500'}
+                          className={
+                            item.locked ? 'bg-club-red' : 'bg-gray-400'
+                          }
                         >
                           {item.locked ? 'Unlock' : 'Lock'}
                         </Button>
@@ -417,7 +424,7 @@ export default function AdminSchedulePage() {
                           }
                           disabled={item.locked}
                         >
-                          <SelectTrigger className="bg-gray-700 border-gray-600">
+                          <SelectTrigger className="bg-white border-gray-300">
                             <SelectValue placeholder="Select day" />
                           </SelectTrigger>
                           <SelectContent>
@@ -437,7 +444,7 @@ export default function AdminSchedulePage() {
                           }
                           disabled={item.locked}
                         >
-                          <SelectTrigger className="bg-gray-700 border-gray-600">
+                          <SelectTrigger className="bg-white border-gray-300">
                             <SelectValue placeholder="Select time" />
                           </SelectTrigger>
                           <SelectContent>
@@ -457,7 +464,7 @@ export default function AdminSchedulePage() {
                           }
                           disabled={item.locked}
                         >
-                          <SelectTrigger className="bg-gray-700 border-gray-600">
+                          <SelectTrigger className="bg-white border-gray-300">
                             <SelectValue placeholder="Select court" />
                           </SelectTrigger>
                           <SelectContent>
@@ -477,7 +484,7 @@ export default function AdminSchedulePage() {
                           }
                           disabled={item.locked}
                         >
-                          <SelectTrigger className="bg-gray-700 border-gray-600">
+                          <SelectTrigger className="bg-white border-gray-300">
                             <SelectValue placeholder="Select team" />
                           </SelectTrigger>
                           <SelectContent>
@@ -552,13 +559,13 @@ export default function AdminSchedulePage() {
               <div className="w-full overflow-x-auto">
                 <div className="min-w-[1000px]">
                   <div className="grid grid-cols-8 gap-1">
-                    <div className="bg-gray-800/50 p-4 font-semibold rounded-tl-lg">
+                    <div className="bg-gray-100 p-4 font-semibold rounded-tl-lg text-gray-800">
                       Time
                     </div>
                     {days.map((day) => (
                       <div
                         key={day}
-                        className="bg-gray-800/50 p-4 font-semibold text-center"
+                        className="bg-gray-100 p-4 font-semibold text-center text-gray-800"
                       >
                         {day}
                       </div>
@@ -566,7 +573,7 @@ export default function AdminSchedulePage() {
 
                     {timeSlots.map((time) => (
                       <React.Fragment key={time}>
-                        <div className="bg-gray-800/50 p-4 font-semibold">
+                        <div className="bg-gray-100 p-4 font-semibold text-gray-800">
                           {time}
                         </div>
                         {days.map((day) => {
@@ -584,7 +591,7 @@ export default function AdminSchedulePage() {
                           return (
                             <div
                               key={`${day}-${time}`}
-                              className="border border-gray-800/50 p-2 min-h-[80px] bg-gray-800/10"
+                              className="border border-gray-200 p-2 min-h-[80px] bg-gray-50"
                             >
                               {filteredItems.map((item, index) => (
                                 <div

@@ -149,7 +149,7 @@ export default function CoachDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
+    <div className="min-h-screen bg-white text-gray-800 p-6">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -159,9 +159,9 @@ export default function CoachDashboard() {
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">
             Welcome, Coach{' '}
-            <span className="text-green-500">{userData?.firstName}</span>!
+            <span className="text-club-red">{userData?.firstName}</span>!
           </h1>
-          <p className="text-gray-400">
+          <p className="text-gray-600">
             Manage your lessons, teams, and availability from your dashboard.
           </p>
         </div>
@@ -170,11 +170,11 @@ export default function CoachDashboard() {
           {/* Quick Stats */}
           <motion.div
             whileHover={{ y: -5, transition: { duration: 0.2 } }}
-            className="bg-gray-800 rounded-lg p-6 border border-gray-700"
+            className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm"
           >
             <div className="flex items-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mr-4">
-                <Calendar className="h-6 w-6 text-green-500" />
+              <div className="w-12 h-12 rounded-full bg-club-red/20 flex items-center justify-center mr-4">
+                <Calendar className="h-6 w-6 text-club-red" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold">Upcoming Lessons</h3>
@@ -184,7 +184,7 @@ export default function CoachDashboard() {
             <Link href="/coach/lessons">
               <Button
                 variant="ghost"
-                className="w-full justify-between hover:bg-gray-700/50"
+                className="w-full justify-between hover:bg-gray-100"
               >
                 View All Lessons
                 <ChevronRight className="h-4 w-4" />
@@ -194,11 +194,11 @@ export default function CoachDashboard() {
 
           <motion.div
             whileHover={{ y: -5, transition: { duration: 0.2 } }}
-            className="bg-gray-800 rounded-lg p-6 border border-gray-700"
+            className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm"
           >
             <div className="flex items-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mr-4">
-                <Users className="h-6 w-6 text-blue-500" />
+              <div className="w-12 h-12 rounded-full bg-club-red/20 flex items-center justify-center mr-4">
+                <Users className="h-6 w-6 text-club-red" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold">My Teams</h3>
@@ -208,7 +208,7 @@ export default function CoachDashboard() {
             <Link href="/coach/teams">
               <Button
                 variant="ghost"
-                className="w-full justify-between hover:bg-gray-700/50"
+                className="w-full justify-between hover:bg-gray-100"
               >
                 View My Teams
                 <ChevronRight className="h-4 w-4" />
@@ -218,11 +218,11 @@ export default function CoachDashboard() {
 
           <motion.div
             whileHover={{ y: -5, transition: { duration: 0.2 } }}
-            className="bg-gray-800 rounded-lg p-6 border border-gray-700"
+            className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm"
           >
             <div className="flex items-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mr-4">
-                <Clock className="h-6 w-6 text-purple-500" />
+              <div className="w-12 h-12 rounded-full bg-club-red/20 flex items-center justify-center mr-4">
+                <Clock className="h-6 w-6 text-club-red" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold">My Availability</h3>
@@ -232,7 +232,7 @@ export default function CoachDashboard() {
             <Link href="/coach/availability">
               <Button
                 variant="ghost"
-                className="w-full justify-between hover:bg-gray-700/50"
+                className="w-full justify-between hover:bg-gray-100"
               >
                 Manage Availability
                 <ChevronRight className="h-4 w-4" />
@@ -248,18 +248,20 @@ export default function CoachDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <Card className="bg-gray-800 border-gray-700">
+            <Card className="bg-white border-gray-200 shadow-sm">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <Megaphone className="mr-2 h-5 w-5 text-purple-500" />
-                    <CardTitle className="text-white">Announcements</CardTitle>
+                    <Megaphone className="mr-2 h-5 w-5 text-club-red" />
+                    <CardTitle className="text-gray-800">
+                      Announcements
+                    </CardTitle>
                   </div>
                   <div className="flex gap-2">
                     <Link href="/announcements/create">
                       <Button
                         size="sm"
-                        className="bg-purple-600 hover:bg-purple-500"
+                        className="bg-club-red hover:bg-club-red/90"
                       >
                         Create
                       </Button>
@@ -275,7 +277,7 @@ export default function CoachDashboard() {
                     </Link>
                   </div>
                 </div>
-                <CardDescription>
+                <CardDescription className="text-gray-600">
                   Latest club announcements and updates
                 </CardDescription>
               </CardHeader>
@@ -288,7 +290,7 @@ export default function CoachDashboard() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className={`bg-gray-700/30 rounded-lg p-4 hover:bg-gray-700/50 transition-colors ${
+                        className={`bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition-colors ${
                           announcement.important
                             ? 'border-l-4 border-l-amber-500'
                             : ''
@@ -296,15 +298,15 @@ export default function CoachDashboard() {
                       >
                         <div className="flex justify-between items-start">
                           <div>
-                            <h4 className="font-medium text-white flex items-center">
+                            <h4 className="font-medium text-gray-800 flex items-center">
                               {announcement.title}
                               {announcement.important && (
-                                <Badge className="bg-amber-500/20 text-amber-400 ml-2">
+                                <Badge className="bg-club-red/20 text-club-red ml-2">
                                   Important
                                 </Badge>
                               )}
                             </h4>
-                            <p className="text-sm text-gray-400 mt-1">
+                            <p className="text-sm text-gray-600 mt-1">
                               {announcement.content.length > 100
                                 ? `${announcement.content.substring(0, 100)}...`
                                 : announcement.content}
@@ -327,9 +329,12 @@ export default function CoachDashboard() {
                   </div>
                 )}
               </CardContent>
-              <CardFooter className="border-t border-gray-700 pt-4">
+              <CardFooter className="border-t border-gray-200 pt-4">
                 <Link href="/announcements" className="w-full">
-                  <Button variant="outline" className="w-full">
+                  <Button
+                    variant="outline"
+                    className="w-full text-gray-700 border-gray-300"
+                  >
                     View All Announcements
                   </Button>
                 </Link>
@@ -343,13 +348,13 @@ export default function CoachDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Card className="bg-gray-800 border-gray-700">
+            <Card className="bg-white border-gray-200 shadow-sm">
               <CardHeader className="pb-3">
-                <CardTitle className="text-white flex items-center">
-                  <Calendar className="mr-2 h-5 w-5 text-green-500" />
+                <CardTitle className="text-gray-800 flex items-center">
+                  <Calendar className="mr-2 h-5 w-5 text-club-red" />
                   Upcoming Lessons
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-gray-600">
                   Your scheduled private lessons with players
                 </CardDescription>
               </CardHeader>
@@ -359,7 +364,7 @@ export default function CoachDashboard() {
                     {lessons.slice(0, 3).map((lesson, index) => (
                       <div
                         key={index}
-                        className="bg-gray-700/50 rounded-lg p-4 hover:bg-gray-700 transition-colors"
+                        className="bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition-colors"
                       >
                         <div className="flex justify-between items-start">
                           <div>
@@ -373,7 +378,7 @@ export default function CoachDashboard() {
                               • {lesson.start_time} - {lesson.end_time}
                             </p>
                           </div>
-                          <div className="bg-green-500/20 text-green-500 text-xs px-2 py-1 rounded-full">
+                          <div className="bg-club-red/20 text-club-red text-xs px-2 py-1 rounded-full">
                             Confirmed
                           </div>
                         </div>
@@ -382,17 +387,20 @@ export default function CoachDashboard() {
                   </div>
                 ) : (
                   <div className="text-center py-6 text-gray-500">
-                    <BookOpen className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                    <p>No upcoming lessons</p>
-                    <p className="text-sm mt-1">
+                    <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-3 opacity-50" />
+                    <p className="text-gray-600">No upcoming lessons</p>
+                    <p className="text-sm text-gray-500 mt-1">
                       Set your availability to allow bookings
                     </p>
                   </div>
                 )}
               </CardContent>
-              <CardFooter className="border-t border-gray-700 pt-4">
+              <CardFooter className="border-t border-gray-200 pt-4">
                 <Link href="/coach/lessons" className="w-full">
-                  <Button variant="outline" className="w-full">
+                  <Button
+                    variant="outline"
+                    className="w-full text-gray-700 border-gray-300"
+                  >
                     View All Lessons
                   </Button>
                 </Link>
@@ -406,13 +414,15 @@ export default function CoachDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <Card className="bg-gray-800 border-gray-700">
+            <Card className="bg-white border-gray-200 shadow-sm">
               <CardHeader className="pb-3">
-                <CardTitle className="text-white flex items-center">
-                  <Users className="mr-2 h-5 w-5 text-blue-500" />
+                <CardTitle className="text-gray-800 flex items-center">
+                  <Users className="mr-2 h-5 w-5 text-club-red" />
                   My Teams
                 </CardTitle>
-                <CardDescription>Teams you're coaching</CardDescription>
+                <CardDescription className="text-gray-600">
+                  Teams you're coaching
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 {coachTeams.length > 0 ? (
@@ -420,7 +430,7 @@ export default function CoachDashboard() {
                     {coachTeams.slice(0, 5).map((team, index) => (
                       <div
                         key={index}
-                        className="bg-gray-700/50 rounded-lg p-4 hover:bg-gray-700 transition-colors"
+                        className="bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition-colors"
                       >
                         <div className="flex justify-between items-start">
                           <div>
@@ -430,7 +440,7 @@ export default function CoachDashboard() {
                               {team.player_count === 1 ? 'Member' : 'Members'}
                             </p>
                           </div>
-                          <div className="bg-blue-500/20 text-blue-500 text-xs px-2 py-1 rounded-full">
+                          <div className="bg-club-red/20 text-club-red text-xs px-2 py-1 rounded-full">
                             Active
                           </div>
                         </div>
@@ -447,9 +457,12 @@ export default function CoachDashboard() {
                   </div>
                 )}
               </CardContent>
-              <CardFooter className="border-t border-gray-700 pt-4">
+              <CardFooter className="border-t border-gray-200 pt-4">
                 <Link href="/coach/teams" className="w-full">
-                  <Button variant="outline" className="w-full">
+                  <Button
+                    variant="outline"
+                    className="w-full text-gray-700 border-gray-300"
+                  >
                     View All Teams
                   </Button>
                 </Link>
@@ -463,13 +476,13 @@ export default function CoachDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <Card className="bg-gray-800 border-gray-700">
+            <Card className="bg-white border-gray-200 shadow-sm">
               <CardHeader className="pb-3">
-                <CardTitle className="text-white flex items-center">
-                  <CalendarDays className="mr-2 h-5 w-5 text-purple-500" />
+                <CardTitle className="text-gray-800 flex items-center">
+                  <CalendarDays className="mr-2 h-5 w-5 text-club-red" />
                   My Availability
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-gray-600">
                   Your current coaching availability
                 </CardDescription>
               </CardHeader>
@@ -479,7 +492,7 @@ export default function CoachDashboard() {
                     {availability.slice(0, 5).map((slot, index) => (
                       <div
                         key={index}
-                        className="bg-gray-700/50 rounded-lg p-4 hover:bg-gray-700 transition-colors"
+                        className="bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition-colors"
                       >
                         <div className="flex justify-between items-start">
                           <div>
@@ -488,7 +501,7 @@ export default function CoachDashboard() {
                               {slot.start_time} - {slot.end_time}
                             </p>
                           </div>
-                          <div className="bg-purple-500/20 text-purple-500 text-xs px-2 py-1 rounded-full">
+                          <div className="bg-club-red/20 text-club-red text-xs px-2 py-1 rounded-full">
                             Available
                           </div>
                         </div>
@@ -505,9 +518,12 @@ export default function CoachDashboard() {
                   </div>
                 )}
               </CardContent>
-              <CardFooter className="border-t border-gray-700 pt-4">
+              <CardFooter className="border-t border-gray-200 pt-4">
                 <Link href="/coach/availability" className="w-full">
-                  <Button variant="outline" className="w-full">
+                  <Button
+                    variant="outline"
+                    className="w-full text-gray-700 border-gray-300"
+                  >
                     Manage Availability
                   </Button>
                 </Link>

@@ -202,13 +202,13 @@ export default function UserManagementTable() {
   const getRoleBadgeColor = (role: string) => {
     switch (role.toLowerCase()) {
       case 'admin':
-        return 'bg-red-500/20 text-red-400';
+        return 'bg-club-red/20 text-club-red';
       case 'coach':
-        return 'bg-blue-500/20 text-blue-400';
+        return 'bg-club-red/20 text-club-red';
       case 'player':
-        return 'bg-green-500/20 text-green-400';
+        return 'bg-club-red/20 text-club-red';
       default:
-        return 'bg-gray-500/20 text-gray-400';
+        return 'bg-gray-500/20 text-gray-600';
     }
   };
 
@@ -221,13 +221,13 @@ export default function UserManagementTable() {
             placeholder="Search users..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 bg-gray-700 border-gray-600 text-white"
+            className="pl-10 bg-white border-gray-300 text-gray-800"
           />
         </div>
         <Button
           onClick={fetchUsers}
           variant="outline"
-          className="border-gray-600 text-gray-300 hover:text-white"
+          className="border-gray-300 text-gray-600 hover:text-gray-800"
         >
           <RefreshCw className="mr-2 h-4 w-4" />
           Refresh
@@ -235,7 +235,7 @@ export default function UserManagementTable() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
-        <TabsList className="bg-gray-700">
+        <TabsList className="bg-gray-100">
           <TabsTrigger value="all">All Users</TabsTrigger>
           <TabsTrigger value="player">Players</TabsTrigger>
           <TabsTrigger value="coach">Coaches</TabsTrigger>
@@ -246,19 +246,19 @@ export default function UserManagementTable() {
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <div className="relative w-12 h-12">
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-blue-500/30 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-blue-500 rounded-full animate-spin"></div>
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-club-red/30 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-club-red rounded-full animate-spin"></div>
           </div>
         </div>
       ) : (
-        <div className="rounded-md border border-gray-700 overflow-hidden">
+        <div className="rounded-md border border-gray-200 overflow-hidden">
           <Table>
-            <TableHeader className="bg-gray-800">
-              <TableRow className="hover:bg-gray-800/80 border-gray-700">
-                <TableHead className="text-gray-300">ID</TableHead>
-                <TableHead className="text-gray-300">Name</TableHead>
-                <TableHead className="text-gray-300">Role</TableHead>
-                <TableHead className="text-gray-300 text-right">
+            <TableHeader className="bg-gray-100">
+              <TableRow className="hover:bg-gray-100/80 border-gray-200">
+                <TableHead className="text-gray-700">ID</TableHead>
+                <TableHead className="text-gray-700">Name</TableHead>
+                <TableHead className="text-gray-700">Role</TableHead>
+                <TableHead className="text-gray-700 text-right">
                   Actions
                 </TableHead>
               </TableRow>
@@ -268,12 +268,12 @@ export default function UserManagementTable() {
                 filteredUsers.map((user) => (
                   <TableRow
                     key={user.id}
-                    className="hover:bg-gray-700/50 border-gray-700"
+                    className="hover:bg-gray-100 border-gray-200"
                   >
-                    <TableCell className="font-medium text-gray-300">
+                    <TableCell className="font-medium text-gray-700">
                       {user.userId}
                     </TableCell>
-                    <TableCell className="text-white">
+                    <TableCell className="text-gray-800">
                       {user.firstName || user.first_name}{' '}
                       {user.lastName || user.last_name}
                     </TableCell>
@@ -286,7 +286,7 @@ export default function UserManagementTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="mr-2 text-blue-400 hover:text-blue-300 hover:bg-blue-900/20"
+                        className="mr-2 text-club-red hover:text-club-red/80 hover:bg-club-red/10"
                         onClick={() => handleEditClick(user)}
                       >
                         <Pencil className="h-4 w-4" />
@@ -294,7 +294,7 @@ export default function UserManagementTable() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
+                        className="text-red-600 hover:text-red-500 hover:bg-red-100"
                         onClick={() => handleDeleteClick(user)}
                         disabled={user.role === 'admin'} // Prevent deleting admins
                       >
@@ -320,10 +320,10 @@ export default function UserManagementTable() {
 
       {/* Edit User Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="bg-gray-800 border-gray-700 text-white">
+        <DialogContent className="bg-white border-gray-200 text-gray-800">
           <DialogHeader>
             <DialogTitle>Edit User</DialogTitle>
-            <DialogDescription className="text-gray-400">
+            <DialogDescription className="text-gray-600">
               Update user ID or password for{' '}
               {editingUser?.firstName || editingUser?.first_name}{' '}
               {editingUser?.lastName || editingUser?.last_name}
@@ -350,7 +350,7 @@ export default function UserManagementTable() {
                 id="userId"
                 value={newUserId}
                 onChange={(e) => setNewUserId(e.target.value)}
-                className="bg-gray-700 border-gray-600"
+                className="bg-white border-gray-300"
               />
             </div>
             <div className="space-y-2">
@@ -362,7 +362,7 @@ export default function UserManagementTable() {
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="bg-gray-700 border-gray-600"
+                className="bg-white border-gray-300"
               />
             </div>
           </div>
@@ -371,13 +371,13 @@ export default function UserManagementTable() {
             <Button
               variant="outline"
               onClick={() => setIsEditDialogOpen(false)}
-              className="border-gray-600 text-gray-300 hover:text-white"
+              className="border-gray-300 text-gray-600 hover:text-gray-800"
             >
               Cancel
             </Button>
             <Button
               onClick={handleUpdateUser}
-              className="bg-blue-600 hover:bg-blue-500"
+              className="bg-club-red hover:bg-club-red/90"
             >
               Update User
             </Button>
@@ -387,10 +387,10 @@ export default function UserManagementTable() {
 
       {/* Delete User Dialog */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="bg-gray-800 border-gray-700 text-white">
+        <DialogContent className="bg-white border-gray-200 text-gray-800">
           <DialogHeader>
             <DialogTitle>Delete User</DialogTitle>
-            <DialogDescription className="text-gray-400">
+            <DialogDescription className="text-gray-600">
               Are you sure you want to delete{' '}
               {deletingUser?.firstName || deletingUser?.first_name}{' '}
               {deletingUser?.lastName || deletingUser?.last_name}? This action
@@ -415,7 +415,7 @@ export default function UserManagementTable() {
             <Button
               variant="outline"
               onClick={() => setIsDeleteDialogOpen(false)}
-              className="border-gray-600 text-gray-300 hover:text-white"
+              className="border-gray-300 text-gray-600 hover:text-gray-800"
             >
               Cancel
             </Button>

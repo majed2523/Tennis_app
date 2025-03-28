@@ -29,15 +29,7 @@ const days = [
   'VENDREDI',
   'SAMEDI',
 ];
-const timeSlots = [
-  '9H',
-  '10H30',
-  '12H',
-  '14H',
-  '15H30',
-  '17H',
-  '18H30',
-];
+const timeSlots = ['9H', '10H30', '12H', '14H', '15H30', '17H', '18H30'];
 
 // Function to determine if text should be black or white based on background color
 const getTextColor = (backgroundColor: string) => {
@@ -137,7 +129,7 @@ export default function SchedulePage() {
   };
 
   return (
-    <div className="p-8 bg-[#1A1E2E] text-white min-h-screen">
+    <div className="p-8 bg-white text-gray-800 min-h-screen">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -145,17 +137,17 @@ export default function SchedulePage() {
       >
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-[#2FE6A7] mb-2">
+            <h1 className="text-3xl font-bold text-club-red mb-2">
               Tennis Schedule
             </h1>
-            <p className="text-gray-400">
+            <p className="text-gray-600">
               View court availability and training times
             </p>
           </div>
 
           {isAdmin && (
             <Link href="/admin/schedule">
-              <Button className="mt-4 md:mt-0 bg-green-600 hover:bg-green-500">
+              <Button className="mt-4 md:mt-0 bg-club-red hover:bg-club-red/90">
                 Manage Schedule
               </Button>
             </Link>
@@ -167,7 +159,7 @@ export default function SchedulePage() {
           <div className="flex flex-wrap gap-2 mb-4">
             <Button
               variant="outline"
-              className={!selectedFilter ? 'bg-[#2FE6A7] text-[#1A1E2E]' : ''}
+              className={!selectedFilter ? 'bg-club-red text-white' : ''}
               onClick={() => setSelectedFilter(null)}
             >
               <Filter className="mr-2 h-4 w-4" />
@@ -198,7 +190,7 @@ export default function SchedulePage() {
             variant="outline"
             size="sm"
             onClick={() => setIsLegendVisible(!isLegendVisible)}
-            className="flex items-center"
+            className="flex items-center text-gray-700 border-gray-300"
           >
             <Info className="h-4 w-4 mr-2" />
             {isLegendVisible ? 'Hide Legend' : 'Show Legend'}
@@ -210,7 +202,7 @@ export default function SchedulePage() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="mt-4 p-4 bg-gray-800/30 rounded-lg"
+              className="mt-4 p-4 bg-gray-100 rounded-lg"
             >
               <h3 className="text-lg font-semibold mb-3">Legend</h3>
               <div className="flex flex-wrap gap-2">
@@ -235,13 +227,13 @@ export default function SchedulePage() {
       <div className="w-full overflow-x-auto pb-6">
         <div className="min-w-[1000px]">
           <div className="grid grid-cols-8 gap-1">
-            <div className="bg-gray-800/50 p-4 font-semibold rounded-tl-lg">
+            <div className="bg-gray-100 p-4 font-semibold rounded-tl-lg text-gray-800">
               Time
             </div>
             {days.map((day) => (
               <div
                 key={day}
-                className="bg-gray-800/50 p-4 font-semibold text-center"
+                className="bg-gray-100 p-4 font-semibold text-center text-gray-800"
               >
                 {day}
               </div>
@@ -249,7 +241,9 @@ export default function SchedulePage() {
 
             {timeSlots.map((time) => (
               <React.Fragment key={time}>
-                <div className="bg-gray-800/50 p-4 font-semibold">{time}</div>
+                <div className="bg-gray-100 p-4 font-semibold text-gray-800">
+                  {time}
+                </div>
                 {days.map((day) => {
                   const cellId = `${day}-${time}`;
                   const scheduleItems = schedule.filter(
@@ -266,13 +260,9 @@ export default function SchedulePage() {
                   return (
                     <div
                       key={cellId}
-                      className={`border border-gray-800/50 p-2 min-h-[80px] transition-all duration-200
-                        ${hoveredCell === cellId ? 'ring-2 ring-[#2FE6A7]' : ''}
-                        ${
-                          filteredItems.length
-                            ? 'bg-gray-800/30'
-                            : 'bg-gray-800/10'
-                        }`}
+                      className={`border border-gray-200 p-2 min-h-[80px] transition-all duration-200
+                        ${hoveredCell === cellId ? 'ring-2 ring-club-red' : ''}
+                        ${filteredItems.length ? 'bg-gray-100' : 'bg-gray-50'}`}
                       onMouseEnter={() => setHoveredCell(cellId)}
                       onMouseLeave={() => setHoveredCell(null)}
                     >

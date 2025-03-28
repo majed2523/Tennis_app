@@ -104,13 +104,13 @@ export default function TeamDetailsPage() {
   }, [teamId, router]);
 
   return (
-    <div className="min-h-screen bg-gray-900 p-8">
+    <div className="min-h-screen bg-white p-8">
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
         </div>
       ) : error ? (
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-white border-gray-200 shadow-sm">
           <CardContent className="pt-6">
             <div className="bg-red-500/20 text-red-400 p-4 rounded-md flex items-center">
               <AlertCircle className="h-5 w-5 mr-2" />
@@ -142,22 +142,24 @@ export default function TeamDetailsPage() {
               Back
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-white">
+              <h1 className="text-3xl font-bold text-gray-800">
                 {team.team_name}
               </h1>
-              <p className="text-gray-400 mt-1">
+              <p className="text-gray-600 mt-1">
                 Coach: {userData?.firstName} {userData?.lastName}
               </p>
             </div>
           </div>
 
-          <Card className="bg-gray-800/50 border-gray-700">
+          <Card className="bg-white border-gray-200 shadow-sm">
             <CardHeader>
-              <CardTitle className="text-xl text-white flex items-center">
-                <Users className="h-5 w-5 text-green-400 mr-2" />
+              <CardTitle className="text-xl text-gray-800 flex items-center">
+                <Users className="h-5 w-5 text-club-red mr-2" />
                 Team Members
               </CardTitle>
-              <CardDescription>Players in this team</CardDescription>
+              <CardDescription className="text-gray-600">
+                Players in this team
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {players.length > 0 ? (
@@ -168,9 +170,9 @@ export default function TeamDetailsPage() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1, duration: 0.3 }}
-                      className="flex items-center p-3 bg-gray-700/30 rounded-md hover:bg-gray-700/50 transition-colors"
+                      className="flex items-center p-3 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
                     >
-                      <Avatar className="h-10 w-10 bg-green-600 text-white mr-4">
+                      <Avatar className="h-10 w-10 bg-club-red text-white mr-4">
                         <AvatarFallback>
                           {(player.first_name || player.firstName || '').charAt(
                             0
@@ -181,11 +183,11 @@ export default function TeamDetailsPage() {
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="font-medium text-white">
+                        <p className="font-medium text-gray-800">
                           {player.first_name || player.firstName}{' '}
                           {player.last_name || player.lastName}
                         </p>
-                        <p className="text-sm text-gray-400">
+                        <p className="text-sm text-gray-600">
                           {player.role || 'Player'}
                         </p>
                       </div>
@@ -193,8 +195,8 @@ export default function TeamDetailsPage() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-gray-400 bg-gray-700/30 rounded-md">
-                  <Users className="h-12 w-12 mx-auto mb-3 text-gray-500" />
+                <div className="text-center py-8 text-gray-600 bg-gray-100 rounded-md">
+                  <Users className="h-12 w-12 mx-auto mb-3 text-gray-400" />
                   <p>No players have been assigned to this team yet.</p>
                 </div>
               )}
@@ -202,10 +204,10 @@ export default function TeamDetailsPage() {
           </Card>
         </motion.div>
       ) : (
-        <Card className="bg-gray-800/50 border-gray-700">
+        <Card className="bg-white border-gray-200 shadow-sm">
           <CardContent className="pt-6">
-            <div className="text-center py-8 text-gray-400">
-              <AlertCircle className="h-12 w-12 mx-auto mb-3 text-gray-500" />
+            <div className="text-center py-8 text-gray-600">
+              <AlertCircle className="h-12 w-12 mx-auto mb-3 text-gray-400" />
               <p>Team not found</p>
               <Button
                 variant="outline"

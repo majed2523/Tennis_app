@@ -85,7 +85,7 @@ export default function CreateAnnouncementPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 p-6 md:p-8">
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-100 p-6 md:p-8">
       <div className="max-w-3xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -96,17 +96,17 @@ export default function CreateAnnouncementPage() {
           <Button
             variant="ghost"
             onClick={() => router.push('/announcements')}
-            className="mb-4 text-gray-400 hover:text-white"
+            className="mb-4 text-gray-600 hover:text-gray-800"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Announcements
           </Button>
 
-          <h1 className="text-3xl font-bold text-white flex items-center gap-2">
-            <Megaphone className="h-7 w-7 text-purple-400" />
+          <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
+            <Megaphone className="h-7 w-7 text-club-red" />
             Create Announcement
           </h1>
-          <p className="text-gray-400 mt-2">
+          <p className="text-gray-600 mt-2">
             Share important information with all users
           </p>
         </motion.div>
@@ -116,7 +116,7 @@ export default function CreateAnnouncementPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <Card className="bg-gray-800/50 border-gray-700">
+          <Card className="bg-white border-gray-200 shadow-sm">
             <CardHeader>
               <CardTitle>New Announcement</CardTitle>
               <CardDescription>
@@ -145,7 +145,7 @@ export default function CreateAnnouncementPage() {
                     id="title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="bg-gray-700 border-gray-600"
+                    className="bg-white border-gray-300"
                     placeholder="Enter announcement title"
                   />
                 </div>
@@ -156,7 +156,7 @@ export default function CreateAnnouncementPage() {
                     id="content"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    className="bg-gray-700 border-gray-600 min-h-[200px]"
+                    className="bg-white border-gray-300 min-h-[200px]"
                     placeholder="Enter announcement content..."
                   />
                 </div>
@@ -173,7 +173,7 @@ export default function CreateAnnouncementPage() {
                 <div className="pt-4">
                   <Button
                     type="submit"
-                    className="w-full bg-purple-600 hover:bg-purple-500"
+                    className="w-full bg-club-red hover:bg-club-red/90"
                     disabled={isLoading}
                   >
                     {isLoading ? 'Creating...' : 'Create Announcement'}
@@ -185,11 +185,11 @@ export default function CreateAnnouncementPage() {
               <Button
                 variant="outline"
                 onClick={() => router.push('/announcements')}
-                className="border-gray-600 text-gray-300 hover:text-white"
+                className="border-gray-300 text-gray-600 hover:text-gray-800"
               >
                 Cancel
               </Button>
-              <div className="text-sm text-gray-400">
+              <div className="text-sm text-gray-600">
                 This announcement will be visible to all users
               </div>
             </CardFooter>

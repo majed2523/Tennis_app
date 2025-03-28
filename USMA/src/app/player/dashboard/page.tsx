@@ -110,20 +110,20 @@ export default function PlayerDashboard() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-white to-gray-100 flex items-center justify-center">
         <div className="flex flex-col items-center">
           <div className="relative w-16 h-16">
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-green-500/30 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-green-500 rounded-full animate-spin"></div>
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-club-red/30 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-club-red rounded-full animate-spin"></div>
           </div>
-          <p className="mt-4 text-gray-400">Loading your dashboard...</p>
+          <p className="mt-4 text-gray-600">Loading your dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 p-6">
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-100 p-6">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -131,24 +131,24 @@ export default function PlayerDashboard() {
           transition={{ duration: 0.5 }}
           className="relative mb-8 p-6 md:p-8 rounded-xl overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 rounded-xl"></div>
-          <div className="absolute inset-0 bg-gray-800/90 backdrop-blur-sm rounded-xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-club-red/20 via-gray-400/20 to-gray-500/20 rounded-xl"></div>
+          <div className="absolute inset-0 bg-white/90 backdrop-blur-sm rounded-xl border border-gray-200 rounded-xl"></div>
 
           <div className="relative z-10">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-white">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
                   Welcome,{' '}
-                  <span className="text-green-500">{userData?.firstName}</span>!
+                  <span className="text-club-red">{userData?.firstName}</span>!
                 </h1>
-                <p className="text-gray-400 mt-2">
+                <p className="text-gray-600 mt-2">
                   Here's an overview of your tennis activities and upcoming
                   lessons.
                 </p>
               </div>
               <div className="mt-4 md:mt-0">
                 <Link href="/schedule">
-                  <Button className="bg-green-600 hover:bg-green-500 text-white">
+                  <Button className="bg-club-red hover:bg-club-red/90 text-white">
                     View Club Schedule
                   </Button>
                 </Link>
@@ -169,15 +169,15 @@ export default function PlayerDashboard() {
               variants={item}
               className="grid grid-cols-1 md:grid-cols-3 gap-4"
             >
-              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300">
+              <Card className="bg-white border-gray-200 shadow-sm hover:shadow-md transition-all duration-300">
                 <CardContent className="p-6">
                   <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mr-4">
-                      <Calendar className="h-6 w-6 text-green-500" />
+                    <div className="w-12 h-12 rounded-full bg-club-red/20 flex items-center justify-center mr-4">
+                      <Calendar className="h-6 w-6 text-club-red" />
                     </div>
                     <div>
-                      <p className="text-gray-400 text-sm">Upcoming Lessons</p>
-                      <p className="text-2xl font-bold text-white">
+                      <p className="text-gray-600 text-sm">Upcoming Lessons</p>
+                      <p className="text-2xl font-bold text-gray-800">
                         {lessons.length || 0}
                       </p>
                     </div>
@@ -185,15 +185,15 @@ export default function PlayerDashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300">
+              <Card className="bg-white border-gray-200 shadow-sm hover:shadow-md transition-all duration-300">
                 <CardContent className="p-6">
                   <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mr-4">
-                      <Users className="h-6 w-6 text-blue-500" />
+                    <div className="w-12 h-12 rounded-full bg-club-red/20 flex items-center justify-center mr-4">
+                      <Users className="h-6 w-6 text-club-red" />
                     </div>
                     <div>
-                      <p className="text-gray-400 text-sm">My Teams</p>
-                      <p className="text-2xl font-bold text-white">
+                      <p className="text-gray-600 text-sm">My Teams</p>
+                      <p className="text-2xl font-bold text-gray-800">
                         {teams.length || 0}
                       </p>
                     </div>
@@ -201,15 +201,15 @@ export default function PlayerDashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300">
+              <Card className="bg-white border-gray-200 shadow-sm hover:shadow-md transition-all duration-300">
                 <CardContent className="p-6">
                   <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mr-4">
-                      <Clock className="h-6 w-6 text-purple-500" />
+                    <div className="w-12 h-12 rounded-full bg-club-red/20 flex items-center justify-center mr-4">
+                      <Clock className="h-6 w-6 text-club-red" />
                     </div>
                     <div>
-                      <p className="text-gray-400 text-sm">Practice Hours</p>
-                      <p className="text-2xl font-bold text-white">12</p>
+                      <p className="text-gray-600 text-sm">Practice Hours</p>
+                      <p className="text-2xl font-bold text-gray-800">12</p>
                     </div>
                   </div>
                 </CardContent>
@@ -218,12 +218,12 @@ export default function PlayerDashboard() {
 
             {/* Upcoming Lessons */}
             <motion.div variants={item}>
-              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300">
+              <Card className="bg-white border-gray-200 shadow-sm hover:shadow-md transition-all duration-300">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <Calendar className="mr-2 h-5 w-5 text-green-500" />
-                      <CardTitle className="text-white">
+                      <Calendar className="mr-2 h-5 w-5 text-club-red" />
+                      <CardTitle className="text-gray-800">
                         Upcoming Lessons
                       </CardTitle>
                     </div>
@@ -231,7 +231,7 @@ export default function PlayerDashboard() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-gray-400 hover:text-white"
+                        className="text-gray-400 hover:text-gray-800"
                       >
                         View All
                       </Button>
@@ -250,11 +250,11 @@ export default function PlayerDashboard() {
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: index * 0.1 }}
-                          className="bg-gray-700/30 rounded-lg p-4 hover:bg-gray-700/50 transition-colors"
+                          className="bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition-colors"
                         >
                           <div className="flex justify-between items-start">
                             <div>
-                              <h4 className="font-medium text-white">
+                              <h4 className="font-medium text-gray-800">
                                 Lesson with {lesson.coach_name || 'Coach'}
                               </h4>
                               <p className="text-sm text-gray-400">
@@ -267,7 +267,7 @@ export default function PlayerDashboard() {
                                 Court {lesson.court || 1}
                               </p>
                             </div>
-                            <div className="bg-green-500/20 text-green-500 text-xs px-2 py-1 rounded-full">
+                            <div className="bg-club-red/20 text-club-red text-xs px-2 py-1 rounded-full">
                               Confirmed
                             </div>
                           </div>
@@ -289,18 +289,18 @@ export default function PlayerDashboard() {
 
             {/* My Teams */}
             <motion.div variants={item}>
-              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300">
+              <Card className="bg-white border-gray-200 shadow-sm hover:shadow-md transition-all duration-300">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <Users className="mr-2 h-5 w-5 text-blue-500" />
-                      <CardTitle className="text-white">My Teams</CardTitle>
+                      <Users className="mr-2 h-5 w-5 text-club-red" />
+                      <CardTitle className="text-gray-800">My Teams</CardTitle>
                     </div>
                     <Link href="/teams">
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-gray-400 hover:text-white"
+                        className="text-gray-400 hover:text-gray-800"
                       >
                         View All
                       </Button>
@@ -319,11 +319,11 @@ export default function PlayerDashboard() {
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: index * 0.1 }}
-                          className="bg-gray-700/30 rounded-lg p-4 hover:bg-gray-700/50 transition-colors"
+                          className="bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition-colors"
                         >
                           <div className="flex justify-between items-start">
                             <div>
-                              <h4 className="font-medium text-white">
+                              <h4 className="font-medium text-gray-800">
                                 {team.team_name || `Team ${index + 1}`}
                               </h4>
                               <p className="text-sm text-gray-400">
@@ -333,7 +333,7 @@ export default function PlayerDashboard() {
                                 Next practice: Friday, 5:00 PM
                               </p>
                             </div>
-                            <div className="bg-blue-500/20 text-blue-500 text-xs px-2 py-1 rounded-full">
+                            <div className="bg-club-red/20 text-club-red text-xs px-2 py-1 rounded-full">
                               Active
                             </div>
                           </div>
@@ -362,11 +362,13 @@ export default function PlayerDashboard() {
           >
             {/* Notifications */}
             <motion.div variants={item}>
-              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300">
+              <Card className="bg-white border-gray-200 shadow-sm hover:shadow-md transition-all duration-300">
                 <CardHeader className="pb-3">
                   <div className="flex items-center">
-                    <Bell className="mr-2 h-5 w-5 text-amber-500" />
-                    <CardTitle className="text-white">Notifications</CardTitle>
+                    <Bell className="mr-2 h-5 w-5 text-club-red" />
+                    <CardTitle className="text-gray-800">
+                      Notifications
+                    </CardTitle>
                   </div>
                   <CardDescription>
                     Recent updates and reminders
@@ -380,29 +382,20 @@ export default function PlayerDashboard() {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="bg-gray-700/30 rounded-lg p-4 hover:bg-gray-700/50 transition-colors"
+                        className="bg-gray-100 rounded-lg p-4 hover:bg-gray-200 transition-colors"
                       >
                         <div className="flex items-start gap-3">
-                          <div
-                            className={`mt-0.5 p-1.5 rounded-full 
-                            ${
-                              notification.type === 'reminder'
-                                ? 'bg-amber-500/20'
-                                : notification.type === 'update'
-                                ? 'bg-blue-500/20'
-                                : 'bg-green-500/20'
-                            }`}
-                          >
+                          <div className="mt-0.5 p-1.5 rounded-full bg-club-red/20">
                             {notification.type === 'reminder' ? (
-                              <Clock className="h-3.5 w-3.5 text-amber-500" />
+                              <Clock className="h-3.5 w-3.5 text-club-red" />
                             ) : notification.type === 'update' ? (
-                              <TrendingUp className="h-3.5 w-3.5 text-blue-500" />
+                              <TrendingUp className="h-3.5 w-3.5 text-club-red" />
                             ) : (
-                              <Trophy className="h-3.5 w-3.5 text-green-500" />
+                              <Trophy className="h-3.5 w-3.5 text-club-red" />
                             )}
                           </div>
                           <div>
-                            <p className="text-sm text-white">
+                            <p className="text-sm text-gray-800">
                               {notification.message}
                             </p>
                             <p className="text-xs text-gray-500 mt-1">
@@ -414,10 +407,10 @@ export default function PlayerDashboard() {
                     ))}
                   </div>
                 </CardContent>
-                <CardFooter className="border-t border-gray-700 pt-4">
+                <CardFooter className="border-t border-gray-200 pt-4">
                   <Button
                     variant="outline"
-                    className="w-full text-gray-400 hover:text-white"
+                    className="w-full text-gray-400 hover:text-gray-800"
                   >
                     View All Notifications
                   </Button>
@@ -427,11 +420,13 @@ export default function PlayerDashboard() {
 
             {/* Progress Card */}
             <motion.div variants={item}>
-              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300">
+              <Card className="bg-white border-gray-200 shadow-sm hover:shadow-md transition-all duration-300">
                 <CardHeader className="pb-3">
                   <div className="flex items-center">
-                    <TrendingUp className="mr-2 h-5 w-5 text-green-500" />
-                    <CardTitle className="text-white">Your Progress</CardTitle>
+                    <TrendingUp className="mr-2 h-5 w-5 text-club-red" />
+                    <CardTitle className="text-gray-800">
+                      Your Progress
+                    </CardTitle>
                   </div>
                   <CardDescription>
                     Track your tennis improvement
@@ -444,9 +439,9 @@ export default function PlayerDashboard() {
                         <span className="text-sm text-gray-400">Forehand</span>
                         <span className="text-sm text-gray-400">75%</span>
                       </div>
-                      <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
-                          className="bg-green-500 h-2 rounded-full"
+                          className="bg-club-red h-2 rounded-full"
                           style={{ width: '75%' }}
                         ></div>
                       </div>
@@ -456,9 +451,9 @@ export default function PlayerDashboard() {
                         <span className="text-sm text-gray-400">Backhand</span>
                         <span className="text-sm text-gray-400">60%</span>
                       </div>
-                      <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
-                          className="bg-blue-500 h-2 rounded-full"
+                          className="bg-club-red h-2 rounded-full"
                           style={{ width: '60%' }}
                         ></div>
                       </div>
@@ -468,9 +463,9 @@ export default function PlayerDashboard() {
                         <span className="text-sm text-gray-400">Serve</span>
                         <span className="text-sm text-gray-400">80%</span>
                       </div>
-                      <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
-                          className="bg-purple-500 h-2 rounded-full"
+                          className="bg-club-red h-2 rounded-full"
                           style={{ width: '80%' }}
                         ></div>
                       </div>
@@ -480,19 +475,19 @@ export default function PlayerDashboard() {
                         <span className="text-sm text-gray-400">Volley</span>
                         <span className="text-sm text-gray-400">45%</span>
                       </div>
-                      <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
-                          className="bg-amber-500 h-2 rounded-full"
+                          className="bg-club-red h-2 rounded-full"
                           style={{ width: '45%' }}
                         ></div>
                       </div>
                     </div>
                   </div>
                 </CardContent>
-                <CardFooter className="border-t border-gray-700 pt-4">
+                <CardFooter className="border-t border-gray-200 pt-4">
                   <Button
                     variant="outline"
-                    className="w-full text-gray-400 hover:text-white"
+                    className="w-full text-gray-400 hover:text-gray-800"
                   >
                     View Full Progress Report
                   </Button>

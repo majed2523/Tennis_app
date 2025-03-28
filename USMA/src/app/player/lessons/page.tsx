@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { authService } from '../../../services/authService';
-import BookLessonForm from '../../../components/lessons/book-lessons-form'
+import BookLessonForm from '../../../components/lessons/book-lessons-form';
 import LessonsList from '../../../components/lessons/lessons-list';
 import { motion } from 'framer-motion';
 
@@ -24,15 +24,17 @@ export default function PlayerLessonsPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-gray-900 p-8">
+    <div className="min-h-screen bg-white p-8">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="mb-8"
       >
-        <h1 className="text-3xl font-bold text-white">Book Private Lessons</h1>
-        <p className="text-gray-400 mt-2">
+        <h1 className="text-3xl font-bold text-gray-800">
+          Book Private Lessons
+        </h1>
+        <p className="text-gray-600 mt-2">
           Schedule one-on-one sessions with our professional coaches
         </p>
       </motion.div>

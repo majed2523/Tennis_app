@@ -209,7 +209,7 @@ export default function AnnouncementsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 p-6 md:p-8">
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-100 p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -217,17 +217,17 @@ export default function AnnouncementsPage() {
           transition={{ duration: 0.5 }}
           className="relative mb-8 p-6 md:p-8 rounded-xl overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-green-500/20 rounded-xl"></div>
-          <div className="absolute inset-0 bg-gray-800/90 backdrop-blur-sm rounded-xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-club-red/20 via-gray-400/20 to-gray-500/20 rounded-xl"></div>
+          <div className="absolute inset-0 bg-white/90 backdrop-blur-sm rounded-xl border border-gray-200 rounded-xl"></div>
 
           <div className="relative z-10">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-white flex items-center gap-2">
-                  <Megaphone className="h-8 w-8 text-purple-400" />
+                <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
+                  <Megaphone className="h-8 w-8 text-club-red" />
                   Announcements
                 </h1>
-                <p className="text-gray-400 mt-2">
+                <p className="text-gray-600 mt-2">
                   Stay updated with the latest news and information
                 </p>
               </div>
@@ -238,7 +238,7 @@ export default function AnnouncementsPage() {
                   onOpenChange={setIsCreateDialogOpen}
                 >
                   <DialogTrigger asChild>
-                    <Button className="mt-4 md:mt-0 bg-purple-600 hover:bg-purple-500">
+                    <Button className="mt-4 md:mt-0 bg-club-red hover:bg-club-red/90">
                       <Plus className="mr-2 h-4 w-4" />
                       New Announcement
                     </Button>
@@ -325,22 +325,22 @@ export default function AnnouncementsPage() {
           onValueChange={setActiveTab}
           className="w-full mb-6"
         >
-          <TabsList className="bg-gray-800/50 border border-gray-700 p-1">
+          <TabsList className="bg-white border border-gray-200 p-1">
             <TabsTrigger
               value="all"
-              className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-club-red data-[state=active]:text-white"
             >
               All Announcements
             </TabsTrigger>
             <TabsTrigger
               value="important"
-              className="data-[state=active]:bg-amber-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-club-red data-[state=active]:text-white"
             >
               Important
             </TabsTrigger>
             <TabsTrigger
               value="regular"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-club-red data-[state=active]:text-white"
             >
               Regular
             </TabsTrigger>
@@ -371,24 +371,24 @@ export default function AnnouncementsPage() {
                     layout
                   >
                     <Card
-                      className={`bg-gray-800/50 border-gray-700 overflow-hidden ${
+                      className={`bg-white border-gray-200 shadow-sm overflow-hidden ${
                         announcement.important
-                          ? 'border-l-4 border-l-amber-500'
+                          ? 'border-l-4 border-l-club-red'
                           : ''
                       }`}
                     >
                       <CardHeader className="pb-3">
                         <div className="flex justify-between items-start">
                           <div>
-                            <CardTitle className="text-xl text-white flex items-center gap-2">
+                            <CardTitle className="text-xl text-gray-800 flex items-center gap-2">
                               {announcement.title}
                               {announcement.important && (
-                                <Badge className="bg-amber-500/20 text-amber-400 ml-2">
+                                <Badge className="bg-club-red/20 text-club-red ml-2">
                                   Important
                                 </Badge>
                               )}
                             </CardTitle>
-                            <CardDescription className="text-gray-400 flex items-center gap-1 mt-1">
+                            <CardDescription className="text-gray-600 flex items-center gap-1 mt-1">
                               <User className="h-3 w-3" />
                               {announcement.authorName} (
                               {announcement.authorRole})
@@ -411,7 +411,7 @@ export default function AnnouncementsPage() {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-gray-300 whitespace-pre-line">
+                        <p className="text-gray-700 whitespace-pre-line">
                           {announcement.content}
                         </p>
                       </CardContent>
@@ -424,8 +424,8 @@ export default function AnnouncementsPage() {
                   animate={{ opacity: 1 }}
                   className="text-center py-12"
                 >
-                  <Megaphone className="h-12 w-12 text-gray-500 mx-auto mb-4" />
-                  <h3 className="text-xl font-medium text-gray-400">
+                  <Megaphone className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-medium text-gray-600">
                     No announcements found
                   </h3>
                   <p className="text-gray-500 mt-2">
