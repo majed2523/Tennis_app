@@ -33,10 +33,10 @@ const timeSlots = [
   '9H',
   '10H30',
   '12H',
-  '14H-15H30',
+  '14H',
   '15H30',
   '17H',
-  '18H30-20H',
+  '18H30',
 ];
 
 // Function to determine if text should be black or white based on background color

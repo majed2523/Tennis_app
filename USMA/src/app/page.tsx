@@ -50,33 +50,31 @@ export default function HomePage() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center">
-            <div className="h-10 w-10 rounded-md bg-club-red flex items-center justify-center mr-3">
+            <div className="h-10 w-10 rounded-md bg-primary flex items-center justify-center mr-3">
               <span className="text-white font-bold">TC</span>
             </div>
-            <h1 className="text-xl font-bold text-club-dark-grey">
-              Tennis Club
-            </h1>
+            <h1 className="text-xl font-bold text-gray-800">Tennis Club</h1>
           </div>
 
           <nav className="hidden md:flex space-x-8">
-            <button className="text-gray-600 hover:text-club-red transition">
+            <button className="text-gray-600 hover:text-primary transition">
               Home
             </button>
-            <button className="text-gray-600 hover:text-club-red transition">
+            <button className="text-gray-600 hover:text-primary transition">
               Coaches
             </button>
-            <button className="text-gray-600 hover:text-club-red transition">
+            <button className="text-gray-600 hover:text-primary transition">
               Schedule
             </button>
             <button
               onClick={() => scrollToSection(locationRef)}
-              className="text-gray-600 hover:text-club-red transition"
+              className="text-gray-600 hover:text-primary transition"
             >
               Location
             </button>
             <button
               onClick={() => scrollToSection(contactRef)}
-              className="text-gray-600 hover:text-club-red transition"
+              className="text-gray-600 hover:text-primary transition"
             >
               Contact
             </button>
@@ -84,7 +82,7 @@ export default function HomePage() {
 
           <div>
             <Link href="/login">
-              <Button className="bg-club-red hover:bg-club-dark-red text-white">
+              <Button className="bg-primary hover:bg-primary/90 text-white">
                 Sign In
               </Button>
             </Link>
@@ -100,9 +98,9 @@ export default function HomePage() {
           className="text-center max-w-3xl"
         >
           <h1 className="text-6xl md:text-7xl font-extrabold tracking-tight mb-6">
-            <span className="text-club-red">Tennis Club</span>
+            <span className="text-primary">Tennis Club</span>
             <br />
-            <span className="text-club-dark-grey">Management</span>
+            <span className="text-gray-800">Management</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8">
             A comprehensive platform for tennis clubs to manage coaches,
@@ -110,7 +108,7 @@ export default function HomePage() {
           </p>
 
           <Link href="/login">
-            <Button className="bg-club-red hover:bg-club-dark-red text-white text-lg px-8 py-6 rounded-md">
+            <Button className="bg-primary hover:bg-primary/90 text-white text-lg px-8 py-6 rounded-md">
               Get Started
             </Button>
           </Link>
@@ -125,10 +123,10 @@ export default function HomePage() {
           {/* Player Card */}
           <div className="bg-white p-8 rounded-lg border border-gray-200 shadow-md flex flex-col h-full">
             <div className="flex items-center mb-4">
-              <div className="bg-club-red/10 p-3 rounded-lg mr-4">
-                <Calendar className="h-8 w-8 text-club-red" />
+              <div className="bg-primary/10 p-3 rounded-lg mr-4">
+                <Calendar className="h-8 w-8 text-primary" />
               </div>
-              <h2 className="text-xl font-bold text-club-red">For Players</h2>
+              <h2 className="text-xl font-bold text-primary">For Players</h2>
             </div>
             <p className="text-gray-600 mb-6">
               Enhance your tennis experience with our comprehensive player
@@ -137,15 +135,15 @@ export default function HomePage() {
             </p>
             <ul className="space-y-2 text-gray-600 mb-6">
               <li className="flex items-center">
-                <div className="h-1.5 w-1.5 rounded-full bg-club-red mr-2"></div>
+                <div className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></div>
                 Easy lesson scheduling
               </li>
               <li className="flex items-center">
-                <div className="h-1.5 w-1.5 rounded-full bg-club-red mr-2"></div>
+                <div className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></div>
                 Performance tracking
               </li>
               <li className="flex items-center">
-                <div className="h-1.5 w-1.5 rounded-full bg-club-red mr-2"></div>
+                <div className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></div>
                 Team participation
               </li>
             </ul>
@@ -153,7 +151,7 @@ export default function HomePage() {
               <Link href="/registration">
                 <Button
                   variant="outline"
-                  className="border-club-red text-club-red hover:bg-club-red/10"
+                  className="border-primary text-primary hover:bg-primary/10"
                 >
                   Register as Player
                 </Button>
@@ -164,10 +162,10 @@ export default function HomePage() {
           {/* Coach Card */}
           <div className="bg-white p-8 rounded-lg border border-gray-200 shadow-md flex flex-col h-full">
             <div className="flex items-center mb-4">
-              <div className="bg-club-red/10 p-3 rounded-lg mr-4">
-                <Users className="h-8 w-8 text-club-red" />
+              <div className="bg-primary/10 p-3 rounded-lg mr-4">
+                <Users className="h-8 w-8 text-primary" />
               </div>
-              <h2 className="text-xl font-bold text-club-red">For Coaches</h2>
+              <h2 className="text-xl font-bold text-primary">For Coaches</h2>
             </div>
             <p className="text-gray-600 mb-6">
               Streamline your coaching workflow with our powerful tools. Manage
@@ -176,15 +174,15 @@ export default function HomePage() {
             </p>
             <ul className="space-y-2 text-gray-600 mb-6">
               <li className="flex items-center">
-                <div className="h-1.5 w-1.5 rounded-full bg-club-red mr-2"></div>
+                <div className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></div>
                 Availability management
               </li>
               <li className="flex items-center">
-                <div className="h-1.5 w-1.5 rounded-full bg-club-red mr-2"></div>
+                <div className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></div>
                 Student progress tracking
               </li>
               <li className="flex items-center">
-                <div className="h-1.5 w-1.5 rounded-full bg-club-red mr-2"></div>
+                <div className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></div>
                 Team coaching tools
               </li>
             </ul>
@@ -192,7 +190,7 @@ export default function HomePage() {
               <Link href="/login">
                 <Button
                   variant="outline"
-                  className="border-club-red text-club-red hover:bg-club-red/10"
+                  className="border-primary text-primary hover:bg-primary/10"
                 >
                   Coach Login
                 </Button>
@@ -208,15 +206,15 @@ export default function HomePage() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="mt-24 w-full max-w-5xl"
         >
-          <h2 className="text-3xl font-bold text-club-dark-grey mb-8 text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
             Our Facilities
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-md text-center">
-              <div className="bg-club-red/10 p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Trophy className="h-8 w-8 text-club-red" />
+              <div className="bg-primary/10 p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Trophy className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-club-dark-grey mb-2">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
                 12 Premium Courts
               </h3>
               <p className="text-gray-600">
@@ -225,10 +223,10 @@ export default function HomePage() {
             </div>
 
             <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-md text-center">
-              <div className="bg-club-red/10 p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-club-red" />
+              <div className="bg-primary/10 p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Users className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-club-dark-grey mb-2">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
                 Professional Coaches
               </h3>
               <p className="text-gray-600">
@@ -237,10 +235,10 @@ export default function HomePage() {
             </div>
 
             <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-md text-center">
-              <div className="bg-club-red/10 p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Calendar className="h-8 w-8 text-club-red" />
+              <div className="bg-primary/10 p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Calendar className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-club-dark-grey mb-2">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
                 Regular Tournaments
               </h3>
               <p className="text-gray-600">
@@ -258,7 +256,7 @@ export default function HomePage() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="mt-24 w-full max-w-5xl"
         >
-          <h2 className="text-3xl font-bold text-club-dark-grey mb-8 text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
             Our Location
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -268,40 +266,38 @@ export default function HomePage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="bg-white p-8 rounded-lg border border-gray-200 shadow-md"
             >
-              <h3 className="text-xl font-bold text-club-dark-grey mb-6">
-                Find Us
-              </h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-6">Find Us</h3>
 
               <div className="space-y-6">
                 <div className="flex items-start">
-                  <MapPin className="h-6 w-6 text-club-red mr-4 mt-1 flex-shrink-0" />
+                  <MapPin className="h-6 w-6 text-primary mr-4 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="text-club-dark-grey font-medium">Address</p>
+                    <p className="text-gray-800 font-medium">Address</p>
                     <p className="text-gray-600">123 Tennis Court Lane</p>
                     <p className="text-gray-600">New York, NY 10001</p>
                   </div>
                 </div>
 
                 <div className="flex items-start">
-                  <Phone className="h-6 w-6 text-club-red mr-4 mt-1 flex-shrink-0" />
+                  <Phone className="h-6 w-6 text-primary mr-4 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="text-club-dark-grey font-medium">Phone</p>
+                    <p className="text-gray-800 font-medium">Phone</p>
                     <p className="text-gray-600">(123) 456-7890</p>
                   </div>
                 </div>
 
                 <div className="flex items-start">
-                  <Mail className="h-6 w-6 text-club-red mr-4 mt-1 flex-shrink-0" />
+                  <Mail className="h-6 w-6 text-primary mr-4 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="text-club-dark-grey font-medium">Email</p>
+                    <p className="text-gray-800 font-medium">Email</p>
                     <p className="text-gray-600">info@tennisclub.com</p>
                   </div>
                 </div>
 
                 <div className="flex items-start">
-                  <Clock className="h-6 w-6 text-club-red mr-4 mt-1 flex-shrink-0" />
+                  <Clock className="h-6 w-6 text-primary mr-4 mt-1 flex-shrink-0" />
                   <div>
-                    <p className="text-club-dark-grey font-medium">Hours</p>
+                    <p className="text-gray-800 font-medium">Hours</p>
                     <p className="text-gray-600">
                       Monday - Friday: 6:00 AM - 10:00 PM
                     </p>
@@ -322,8 +318,8 @@ export default function HomePage() {
               {/* Map placeholder */}
               <div className="w-full h-full bg-gray-100 border border-gray-200 rounded-lg shadow-md flex items-center justify-center">
                 <div className="text-center">
-                  <MapPin className="h-16 w-16 text-club-red mx-auto mb-4" />
-                  <p className="text-club-dark-grey text-lg">Interactive Map</p>
+                  <MapPin className="h-16 w-16 text-primary mx-auto mb-4" />
+                  <p className="text-gray-800 text-lg">Interactive Map</p>
                   <p className="text-gray-600">Map would be displayed here</p>
                 </div>
               </div>
@@ -339,73 +335,61 @@ export default function HomePage() {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="mt-24 w-full max-w-5xl mb-16"
         >
-          <h2 className="text-3xl font-bold text-club-dark-grey mb-8 text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
             Contact Us
           </h2>
           <div className="bg-white p-8 rounded-lg border border-gray-200 shadow-md">
             <form className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-club-dark-grey mb-2"
-                  >
+                  <label htmlFor="name" className="block text-gray-800 mb-2">
                     Name
                   </label>
                   <input
                     type="text"
                     id="name"
-                    className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md text-club-dark-grey focus:outline-none focus:ring-2 focus:ring-club-red"
+                    className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Your name"
                   />
                 </div>
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-club-dark-grey mb-2"
-                  >
+                  <label htmlFor="email" className="block text-gray-800 mb-2">
                     Email
                   </label>
                   <input
                     type="email"
                     id="email"
-                    className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md text-club-dark-grey focus:outline-none focus:ring-2 focus:ring-club-red"
+                    className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Your email"
                   />
                 </div>
               </div>
 
               <div>
-                <label
-                  htmlFor="subject"
-                  className="block text-club-dark-grey mb-2"
-                >
+                <label htmlFor="subject" className="block text-gray-800 mb-2">
                   Subject
                 </label>
                 <input
                   type="text"
                   id="subject"
-                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md text-club-dark-grey focus:outline-none focus:ring-2 focus:ring-club-red"
+                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="Subject"
                 />
               </div>
 
               <div>
-                <label
-                  htmlFor="message"
-                  className="block text-club-dark-grey mb-2"
-                >
+                <label htmlFor="message" className="block text-gray-800 mb-2">
                   Message
                 </label>
                 <textarea
                   id="message"
                   rows={5}
-                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md text-club-dark-grey focus:outline-none focus:ring-2 focus:ring-club-red"
+                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="Your message"
                 ></textarea>
               </div>
 
-              <Button className="w-full bg-club-red hover:bg-club-dark-red text-white py-3">
+              <Button className="w-full bg-primary hover:bg-primary/90 text-white py-3">
                 Send Message
               </Button>
             </form>
@@ -413,12 +397,12 @@ export default function HomePage() {
         </motion.div>
       </main>
 
-      <footer className="py-8 px-8 bg-club-red text-white">
+      <footer className="py-8 px-8 bg-primary text-white">
         <div className="container mx-auto max-w-5xl">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
               <div className="h-8 w-8 rounded-md bg-white flex items-center justify-center mr-2">
-                <span className="text-club-red font-bold text-xs">TC</span>
+                <span className="text-primary font-bold text-xs">TC</span>
               </div>
               <span className="text-white font-semibold">Tennis Club</span>
             </div>

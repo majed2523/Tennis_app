@@ -81,15 +81,15 @@ export default function RegisterForm({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-white p-8 rounded-lg shadow-md">
       <div className="space-y-2 text-center">
-        <h2 className="text-2xl font-bold text-white">Create an account</h2>
-        <p className="text-gray-400">Enter your information to sign up</p>
+        <h2 className="text-2xl font-bold text-gray-800">Create an account</h2>
+        <p className="text-gray-600">Enter your information to sign up</p>
       </div>
 
       <Alert
         variant="destructive"
-        className="bg-amber-500/20 text-amber-400 border-amber-500/50"
+        className="bg-amber-50 text-amber-600 border border-amber-200"
       >
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Registration Notice</AlertTitle>
@@ -100,7 +100,7 @@ export default function RegisterForm({
       </Alert>
 
       {error && (
-        <div className="bg-red-500/20 text-red-400 p-3 rounded-md text-sm">
+        <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm border border-red-200">
           {error}
         </div>
       )}
@@ -108,32 +108,38 @@ export default function RegisterForm({
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="firstName">First Name</Label>
+            <Label htmlFor="firstName" className="text-gray-700">
+              First Name
+            </Label>
             <Input
               id="firstName"
               placeholder="Enter your first name"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               required
-              className="bg-gray-800 border-gray-700"
+              className="bg-white border-gray-300 text-gray-800 focus:ring-primary focus:border-primary"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="lastName">Last Name</Label>
+            <Label htmlFor="lastName" className="text-gray-700">
+              Last Name
+            </Label>
             <Input
               id="lastName"
               placeholder="Enter your last name"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               required
-              className="bg-gray-800 border-gray-700"
+              className="bg-white border-gray-300 text-gray-800 focus:ring-primary focus:border-primary"
             />
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="registerPassword">Password</Label>
+          <Label htmlFor="registerPassword" className="text-gray-700">
+            Password
+          </Label>
           <div className="relative">
             <Input
               id="registerPassword"
@@ -142,13 +148,13 @@ export default function RegisterForm({
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="bg-gray-800 border-gray-700 pr-10"
+              className="bg-white border-gray-300 text-gray-800 focus:ring-primary focus:border-primary pr-10"
             />
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="absolute right-0 top-0 h-full px-3 text-gray-400 hover:text-white"
+              className="absolute right-0 top-0 h-full px-3 text-gray-400 hover:text-gray-700"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
@@ -164,7 +170,9 @@ export default function RegisterForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <Label htmlFor="confirmPassword" className="text-gray-700">
+            Confirm Password
+          </Label>
           <Input
             id="confirmPassword"
             type={showPassword ? 'text' : 'password'}
@@ -172,13 +180,13 @@ export default function RegisterForm({
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
-            className="bg-gray-800 border-gray-700"
+            className="bg-white border-gray-300 text-gray-800 focus:ring-primary focus:border-primary"
           />
         </div>
 
         <Button
           type="submit"
-          className="w-full bg-green-600 hover:bg-green-500 text-white"
+          className="w-full bg-primary hover:bg-primary/90 text-white"
           disabled={isLoading}
         >
           {isLoading ? 'Creating account...' : 'Sign Up'}
@@ -186,10 +194,10 @@ export default function RegisterForm({
       </form>
 
       <div className="text-center text-sm">
-        <span className="text-gray-400">Already have an account?</span>{' '}
+        <span className="text-gray-600">Already have an account?</span>{' '}
         <Button
           variant="link"
-          className="p-0 h-auto text-green-400 hover:text-green-300"
+          className="p-0 h-auto text-primary hover:text-primary/80"
           onClick={onLoginClick}
         >
           Sign in

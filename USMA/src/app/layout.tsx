@@ -1,3 +1,4 @@
+import type React from 'react';
 import { Montserrat } from 'next/font/google';
 import './globals.css';
 import Navbar from '../components/Navbar'; // ✅ Import Navbar globally
@@ -14,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={montserrat.className}>
-      <body className="bg-gray-900 text-white">
+      <body className="bg-white text-gray-800">
         <Navbar />
         <main>{children}</main>
       </body>

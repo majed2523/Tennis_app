@@ -1,7 +1,6 @@
 'use client';
 
 import type React from 'react';
-
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
@@ -50,23 +49,25 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="space-y-6 w-full max-w-md mx-auto">
+    <div className="space-y-6 w-full max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
       <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-bold text-white">
+        <h1 className="text-3xl font-bold text-gray-800">
           Welcome to Tennis Club
         </h1>
-        <p className="text-gray-400">Sign in to access your account</p>
+        <p className="text-gray-600">Sign in to access your account</p>
       </div>
 
       {error && (
-        <Alert className="bg-red-500/20 text-red-400 border-red-500/50">
+        <Alert className="bg-red-50 text-red-500 border border-red-200">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="userId">User ID</Label>
+          <Label htmlFor="userId" className="text-gray-700">
+            User ID
+          </Label>
           <Input
             id="userId"
             type="text"
@@ -74,17 +75,19 @@ export default function LoginForm() {
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
             required
-            className="bg-gray-800 border-gray-700"
+            className="bg-white border-gray-300 text-gray-800 focus:ring-primary focus:border-primary"
           />
         </div>
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="text-gray-700">
+              Password
+            </Label>
             <Button
               type="button"
               variant="link"
-              className="text-xs text-gray-400 hover:text-green-400 p-0 h-auto"
+              className="text-xs text-gray-500 hover:text-primary p-0 h-auto"
             >
               Forgot password?
             </Button>
@@ -97,13 +100,13 @@ export default function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="bg-gray-800 border-gray-700 pr-10"
+              className="bg-white border-gray-300 text-gray-800 focus:ring-primary focus:border-primary pr-10"
             />
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="absolute right-0 top-0 h-full px-3 text-gray-400 hover:text-white"
+              className="absolute right-0 top-0 h-full px-3 text-gray-400 hover:text-gray-700"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
@@ -120,14 +123,14 @@ export default function LoginForm() {
 
         <Button
           type="submit"
-          className="w-full bg-green-600 hover:bg-green-500 text-white"
+          className="w-full bg-primary hover:bg-primary/90 text-white"
           disabled={isLoading}
         >
           {isLoading ? 'Signing in...' : 'Sign In'}
         </Button>
       </form>
 
-      <div className="text-center text-sm text-gray-400">
+      <div className="text-center text-sm text-gray-600">
         <p>Need an account? Please contact the club administrator.</p>
       </div>
     </div>
