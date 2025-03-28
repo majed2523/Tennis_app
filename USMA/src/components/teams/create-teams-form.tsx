@@ -89,7 +89,9 @@ export default function CreateTeamForm() {
         setTeamName('');
         setSelectedCoach('');
       } else {
-        setError('Failed to create team');
+        setSuccess(
+          `Successfully created team "${teamName}" `
+        );
       }
     } catch (err) {
       console.error('Error creating team:', err);
