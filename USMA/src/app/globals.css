@@ -1,20 +1,134 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* 
-/* Smooth Scrolling */
-html {
-  scroll-behavior: smooth;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 20%;
+
+    --primary: 358 93% 48%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 20%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 20%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 358 93% 48%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 15%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 20%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 20%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 358 93% 48%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 25%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 25%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 0 0% 25%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 25%;
+    --input: 0 0% 25%;
+    --ring: 358 93% 48%;
+  }
 }
 
-/* Mobile Menu Styling */
-.mobile-menu {
-  transition: all 0.3s ease-in-out;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
-/* Smooth Background */
-body {
-  background-color: #111827;
-  color: white;
+/* Import Inter font */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+/* Custom utility classes */
+.club-red {
+  @apply bg-primary text-primary-foreground;
+}
+
+.club-red-text {
+  @apply text-primary;
+}
+
+.club-red-border {
+  @apply border-primary;
+}
+
+.club-red-hover:hover {
+  @apply bg-primary/90 text-primary-foreground;
+}
+
+.club-grey {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+.club-dark-grey {
+  @apply bg-gray-200 dark:bg-gray-700;
+}
+
+/* Animation utilities */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 

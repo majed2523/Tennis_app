@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import LoginForm from '../../components/login-form';
 import { authService } from '../../services/authService';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -24,7 +25,7 @@ export default function LoginPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col justify-center items-center p-4">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -32,21 +33,15 @@ export default function LoginPage() {
         className="mb-8"
       >
         <div className="flex items-center justify-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-12 w-12 text-green-400"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-            <line x1="9" y1="9" x2="9.01" y2="9" />
-            <line x1="15" y1="9" x2="15.01" y2="9" />
-          </svg>
+          <div className="w-16 h-16 relative">
+            <Image
+              src="/logo.png"
+              alt="Tennis Club Logo"
+              width={64}
+              height={64}
+              className="object-contain"
+            />
+          </div>
         </div>
       </motion.div>
 
@@ -56,7 +51,10 @@ export default function LoginPage() {
         transition={{ duration: 0.5, delay: 0.1 }}
         className="w-full max-w-md"
       >
-        <div className="bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-700">
+        <div className="bg-white p-8 rounded-lg shadow-xl border border-gray-200">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+            Welcome Back
+          </h2>
           <LoginForm />
         </div>
       </motion.div>
