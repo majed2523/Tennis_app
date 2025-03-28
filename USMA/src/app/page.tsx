@@ -60,12 +60,12 @@ export default function HomePage() {
           className="text-center max-w-3xl"
         >
           <h1 className="text-6xl md:text-7xl font-extrabold tracking-tight mb-6">
-            <span className="text-primary">Tennis Club</span>
+            <span className="text-primary">USMA Tennis Club </span>
             <br />
             <span className="text-gray-800">Management</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            A comprehensive platform for tennis clubs to manage coaches,
+            A comprehensive platform for USMA tennis clubs to manage coaches,
             players, lessons, and teams.
           </p>
 

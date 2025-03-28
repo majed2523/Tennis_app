@@ -142,7 +142,7 @@ export default function Navbar() {
                 className="object-cover"
               />
             </div>
-            <span className="text-xl font-bold text-gray-800">Tennis Club</span>
+            <span className="text-xl font-bold text-gray-800">USMAnnaba Tennis club </span>
           </Link>
         </div>
 

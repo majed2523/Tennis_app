@@ -23,7 +23,7 @@ import { userService } from '../../services/userService';
 import { AlertCircle, CheckCircle, Users } from 'lucide-react';
 
 interface Coach {
-  id: number; // Numeric ID
+  id: number;
   first_name: string;
   last_name: string;
 }
@@ -31,11 +31,7 @@ interface Coach {
 export default function CreateTeamForm() {
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [teamName, setTeamName] = useState('');
-  /**
-   * We'll store the selected coach ID as a string so Radix Select works properly.
-   * Then we'll parse it back to a number when creating the team.
-   */
-  const [selectedCoach, setSelectedCoach] = useState('');
+  const [selectedCoach, setSelectedCoach] = useState(''); // stored as string
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingCoaches, setIsLoadingCoaches] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +42,6 @@ export default function CreateTeamForm() {
       try {
         setIsLoadingCoaches(true);
         const result = await userService.getAllCoaches();
-        // Must be an array on success
         if (Array.isArray(result)) {
           setCoaches(result);
         } else {
@@ -76,14 +71,13 @@ export default function CreateTeamForm() {
     setIsLoading(true);
 
     try {
-      // Convert the string back to a numeric ID for your backend
+      // Convert selectedCoach to number
       const numericCoachId = parseInt(selectedCoach, 10);
 
-      // Example: Suppose teamService.createTeam returns { success: boolean }
       const result = await teamService.createTeam(teamName, numericCoachId);
 
-      if (result.success) {
-        // Display the coach's name in success message
+      // Instead of checking result.success, check for an id or other property
+      if (result && result.id) {
         const coach = coaches.find((c) => c.id === numericCoachId);
         const coachName = coach
           ? `${coach.first_name} ${coach.last_name}`
@@ -92,7 +86,6 @@ export default function CreateTeamForm() {
         setSuccess(
           `Successfully created team "${teamName}" with ${coachName} as coach`
         );
-        // Reset form
         setTeamName('');
         setSelectedCoach('');
       } else {
@@ -134,7 +127,6 @@ export default function CreateTeamForm() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Team Name Field */}
           <div className="space-y-2">
             <Label htmlFor="teamName">Team Name</Label>
             <Input
@@ -147,11 +139,9 @@ export default function CreateTeamForm() {
             />
           </div>
 
-          {/* Assign Coach Field */}
           <div className="space-y-2">
             <Label htmlFor="coach">Assign Coach</Label>
             <Select
-              // The select is storing a numeric ID as a string
               value={selectedCoach}
               onValueChange={(value) => {
                 console.log('Selected coach:', value);
@@ -170,11 +160,9 @@ export default function CreateTeamForm() {
                   className="text-gray-900"
                 />
               </SelectTrigger>
-
               <SelectContent className="bg-white border border-gray-200">
                 {coaches.map((coach) => (
                   <SelectItem
-                    // Convert numeric ID to string
                     key={coach.id}
                     value={String(coach.id)}
                     className="
@@ -191,7 +179,6 @@ export default function CreateTeamForm() {
             </Select>
           </div>
 
-          {/* Submit Button */}
           <Button
             type="submit"
             className="w-full bg-red-600 hover:bg-red-700 text-white"
