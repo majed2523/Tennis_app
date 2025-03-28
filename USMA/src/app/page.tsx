@@ -321,8 +321,8 @@ export default function HomePage() {
                   <MapPin className="h-6 w-6 text-primary mr-4 mt-1 flex-shrink-0" />
                   <div>
                     <p className="text-gray-800 font-medium">Address</p>
-                    <p className="text-gray-600">123 Tennis Court Lane</p>
-                    <p className="text-gray-600">New York, NY 10001</p>
+                    <p className="text-gray-600">Tabacoop</p>
+                    <p className="text-gray-600">VPPX+MW6, Annaba, Algérie</p>
                   </div>
                 </div>
 
@@ -330,7 +330,7 @@ export default function HomePage() {
                   <Phone className="h-6 w-6 text-primary mr-4 mt-1 flex-shrink-0" />
                   <div>
                     <p className="text-gray-800 font-medium">Phone</p>
-                    <p className="text-gray-600">(123) 456-7890</p>
+                    <p className="text-gray-600">07719112590</p>
                   </div>
                 </div>
 
@@ -368,7 +368,7 @@ export default function HomePage() {
                 <div className="text-center">
                   <MapPin className="h-16 w-16 text-primary mx-auto mb-4" />
                   <p className="text-gray-800 text-lg">Interactive Map</p>
-                  <p className="text-gray-600">Map would be displayed here</p>
+                  <p className="text-gray-600">Map</p>
                 </div>
               </div>
             </motion.div>
