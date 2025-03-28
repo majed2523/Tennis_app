@@ -56,6 +56,7 @@ export default function CreateTeamForm() {
         setIsLoadingCoaches(false);
       }
     };
+
     fetchCoaches();
   }, []);
 
@@ -63,13 +64,17 @@ export default function CreateTeamForm() {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+
     if (!teamName || !selectedCoach) {
       setError('All fields are required');
       return;
     }
+
     setIsLoading(true);
+
     try {
       const result = await teamService.createTeam(teamName, selectedCoach);
+
       if (result.error) {
         setError(result.error);
       } else {
@@ -77,9 +82,11 @@ export default function CreateTeamForm() {
         const coachName = coach
           ? `${coach.first_name} ${coach.last_name}`
           : 'the selected coach';
+
         setSuccess(
           `Successfully created team "${teamName}" with ${coachName} as coach`
         );
+        // Reset form
         setTeamName('');
         setSelectedCoach('');
       }
@@ -102,6 +109,7 @@ export default function CreateTeamForm() {
           Form a new team and assign a coach
         </CardDescription>
       </CardHeader>
+
       <CardContent>
         {error && (
           <div className="bg-red-100 text-red-600 p-3 rounded-md text-sm mb-4 flex items-start">
@@ -109,12 +117,14 @@ export default function CreateTeamForm() {
             <span>{error}</span>
           </div>
         )}
+
         {success && (
           <div className="bg-green-100 text-green-600 p-3 rounded-md text-sm mb-4 flex items-start">
             <CheckCircle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
             <span>{success}</span>
           </div>
         )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="teamName">Team Name</Label>
@@ -127,6 +137,7 @@ export default function CreateTeamForm() {
               required
             />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="coach">Assign Coach</Label>
             <Select
@@ -134,22 +145,28 @@ export default function CreateTeamForm() {
               onValueChange={setSelectedCoach}
               disabled={isLoadingCoaches}
             >
-              <SelectTrigger className="bg-gray-100 border border-gray-300">
+              <SelectTrigger className="bg-gray-100 border border-gray-300 text-gray-900">
                 <SelectValue
                   placeholder={
                     isLoadingCoaches ? 'Loading coaches...' : 'Select a coach'
                   }
+                  className="text-gray-900"
                 />
               </SelectTrigger>
               <SelectContent className="bg-white border border-gray-200">
                 {coaches.map((coach) => (
-                  <SelectItem key={coach.id} value={coach.id}>
+                  <SelectItem
+                    key={coach.id}
+                    value={coach.id}
+                    className="data-[state=active]:bg-club-red/10"
+                  >
                     {coach.first_name} {coach.last_name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
+
           <Button
             type="submit"
             className="w-full bg-club-red hover:bg-club-red/90 text-white"

@@ -67,6 +67,7 @@ export default function AssignPlayerForm({
         setIsLoadingPlayers(false);
       }
     };
+
     fetchPlayers();
   }, []);
 
@@ -74,21 +75,26 @@ export default function AssignPlayerForm({
     e.preventDefault();
     setError(null);
     setSuccess(null);
+
     if (!selectedPlayer || !selectedTeam) {
       setError('Please select both a player and a team');
       return;
     }
+
     setIsLoading(true);
+
     try {
       const result = await teamService.assignPlayerToTeam(
         selectedTeam,
         selectedPlayer
       );
+
       if (result.error) {
         setError(result.error);
       } else {
         const player = players.find((p) => p.id === selectedPlayer);
         const team = teams.find((t) => t.id === selectedTeam);
+
         if (player && team) {
           setSuccess(
             `Successfully assigned ${player.first_name} ${player.last_name} to team "${team.team_name}"`
@@ -96,6 +102,7 @@ export default function AssignPlayerForm({
           // Reset form
           setSelectedPlayer('');
           setSelectedTeam('');
+          // Notify parent component
           if (onPlayerAssigned) {
             onPlayerAssigned();
           }
@@ -120,6 +127,7 @@ export default function AssignPlayerForm({
           Add players to existing teams
         </CardDescription>
       </CardHeader>
+
       <CardContent>
         {error && (
           <Alert
@@ -130,12 +138,14 @@ export default function AssignPlayerForm({
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
+
         {success && (
           <Alert className="mb-4 bg-green-100 border border-green-200 text-green-600">
             <CheckCircle className="h-4 w-4" />
             <AlertDescription>{success}</AlertDescription>
           </Alert>
         )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="player">Select Player</Label>
@@ -146,41 +156,55 @@ export default function AssignPlayerForm({
             >
               <SelectTrigger
                 id="player"
-                className="bg-gray-100 border border-gray-300"
+                className="bg-gray-100 border border-gray-300 text-gray-900"
               >
                 <SelectValue
                   placeholder={
                     isLoadingPlayers ? 'Loading players...' : 'Select a player'
                   }
+                  className="text-gray-900"
                 />
               </SelectTrigger>
               <SelectContent className="bg-white border border-gray-200">
                 {players.map((player) => (
-                  <SelectItem key={player.id} value={player.id}>
+                  <SelectItem
+                    key={player.id}
+                    value={player.id}
+                    className="data-[state=active]:bg-club-red/10"
+                  >
                     {player.first_name} {player.last_name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="team">Select Team</Label>
             <Select value={selectedTeam} onValueChange={setSelectedTeam}>
               <SelectTrigger
                 id="team"
-                className="bg-gray-100 border border-gray-300"
+                className="bg-gray-100 border border-gray-300 text-gray-900"
               >
-                <SelectValue placeholder="Select a team" />
+                <SelectValue
+                  placeholder="Select a team"
+                  className="text-gray-900"
+                />
               </SelectTrigger>
               <SelectContent className="bg-white border border-gray-200">
                 {teams.map((team) => (
-                  <SelectItem key={team.id} value={team.id}>
+                  <SelectItem
+                    key={team.id}
+                    value={team.id}
+                    className="data-[state=active]:bg-club-red/10"
+                  >
                     {team.team_name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
+
           <Button
             type="submit"
             className="w-full bg-club-red hover:bg-club-red/90 text-white"
