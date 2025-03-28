@@ -37,7 +37,6 @@ export default function CreateTeamForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // Fetch coaches from the backend API
   useEffect(() => {
     const fetchCoaches = async () => {
       try {
@@ -57,7 +56,6 @@ export default function CreateTeamForm() {
         setIsLoadingCoaches(false);
       }
     };
-
     fetchCoaches();
   }, []);
 
@@ -65,30 +63,23 @@ export default function CreateTeamForm() {
     e.preventDefault();
     setError(null);
     setSuccess(null);
-
     if (!teamName || !selectedCoach) {
       setError('All fields are required');
       return;
     }
-
     setIsLoading(true);
-
     try {
       const result = await teamService.createTeam(teamName, selectedCoach);
-
       if (result.error) {
         setError(result.error);
       } else {
-        // Find the coach from the fetched data
         const coach = coaches.find((c) => c.id === selectedCoach);
         const coachName = coach
           ? `${coach.first_name} ${coach.last_name}`
           : 'the selected coach';
-
         setSuccess(
           `Successfully created team "${teamName}" with ${coachName} as coach`
         );
-        // Reset form
         setTeamName('');
         setSelectedCoach('');
       }
@@ -101,32 +92,29 @@ export default function CreateTeamForm() {
   };
 
   return (
-    <Card className="w-full max-w-md bg-gray-800 border-gray-700">
+    <Card className="w-full max-w-md bg-white border border-gray-200 shadow-sm">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-green-400 flex items-center gap-2">
+        <CardTitle className="text-2xl font-bold text-club-red flex items-center gap-2">
           <Users className="h-5 w-5" />
           Create New Team
         </CardTitle>
-        <CardDescription className="text-gray-400">
+        <CardDescription className="text-gray-600">
           Form a new team and assign a coach
         </CardDescription>
       </CardHeader>
-
       <CardContent>
         {error && (
-          <div className="bg-red-500/20 text-red-400 p-3 rounded-md text-sm mb-4 flex items-start">
+          <div className="bg-red-100 text-red-600 p-3 rounded-md text-sm mb-4 flex items-start">
             <AlertCircle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
             <span>{error}</span>
           </div>
         )}
-
         {success && (
-          <div className="bg-green-500/20 text-green-400 p-3 rounded-md text-sm mb-4 flex items-start">
+          <div className="bg-green-100 text-green-600 p-3 rounded-md text-sm mb-4 flex items-start">
             <CheckCircle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
             <span>{success}</span>
           </div>
         )}
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="teamName">Team Name</Label>
@@ -134,12 +122,11 @@ export default function CreateTeamForm() {
               id="teamName"
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
-              className="bg-gray-700 border-gray-600"
+              className="bg-gray-100 border border-gray-300"
               placeholder="Enter team name"
               required
             />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="coach">Assign Coach</Label>
             <Select
@@ -147,14 +134,14 @@ export default function CreateTeamForm() {
               onValueChange={setSelectedCoach}
               disabled={isLoadingCoaches}
             >
-              <SelectTrigger className="bg-gray-700 border-gray-600">
+              <SelectTrigger className="bg-gray-100 border border-gray-300">
                 <SelectValue
                   placeholder={
                     isLoadingCoaches ? 'Loading coaches...' : 'Select a coach'
                   }
                 />
               </SelectTrigger>
-              <SelectContent className="bg-gray-800 border-gray-700">
+              <SelectContent className="bg-white border border-gray-200">
                 {coaches.map((coach) => (
                   <SelectItem key={coach.id} value={coach.id}>
                     {coach.first_name} {coach.last_name}
@@ -163,10 +150,9 @@ export default function CreateTeamForm() {
               </SelectContent>
             </Select>
           </div>
-
           <Button
             type="submit"
-            className="w-full bg-green-600 hover:bg-green-500"
+            className="w-full bg-club-red hover:bg-club-red/90 text-white"
             disabled={isLoading || isLoadingCoaches}
           >
             {isLoading ? 'Creating...' : 'Create Team'}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image'; // <-- Import the Image component
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '../components/ui/button';
@@ -25,7 +25,6 @@ import {
   Calendar,
   Users,
   Megaphone,
-  // Bike,   <-- Remove Bike import
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -131,16 +130,16 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center">
+        {/* Logo Section */}
         <div className="flex items-center">
           <Link href="/" className="flex items-center">
-            {/* Replace Bike icon with an Image pointing to /public/assets/logo.png */}
-            <div className="w-10 h-10 relative mr-3">
+            <div className="w-10 h-10 relative mr-3 overflow-hidden rounded-full">
               <Image
-                src="/assets/download.jpeg" // <-- your logo file
+                src="/assets/download.jpeg" // Your logo file
                 alt="Tennis Club Logo"
-                width={40}
-                height={40}
-                priority // optional, helps Next.js optimize loading
+                fill
+                priority
+                className="object-cover"
               />
             </div>
             <span className="text-xl font-bold text-gray-800">Tennis Club</span>

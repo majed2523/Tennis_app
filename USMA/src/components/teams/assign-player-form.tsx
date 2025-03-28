@@ -1,8 +1,6 @@
 'use client';
 
-import type React from 'react';
-
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import {
   Card,
@@ -57,7 +55,6 @@ export default function AssignPlayerForm({
       try {
         setIsLoadingPlayers(true);
         const result = await userService.getAllPlayers();
-
         if (result.error) {
           setError(result.error);
         } else {
@@ -70,7 +67,6 @@ export default function AssignPlayerForm({
         setIsLoadingPlayers(false);
       }
     };
-
     fetchPlayers();
   }, []);
 
@@ -78,36 +74,28 @@ export default function AssignPlayerForm({
     e.preventDefault();
     setError(null);
     setSuccess(null);
-
     if (!selectedPlayer || !selectedTeam) {
       setError('Please select both a player and a team');
       return;
     }
-
     setIsLoading(true);
-
     try {
       const result = await teamService.assignPlayerToTeam(
         selectedTeam,
         selectedPlayer
       );
-
       if (result.error) {
         setError(result.error);
       } else {
         const player = players.find((p) => p.id === selectedPlayer);
         const team = teams.find((t) => t.id === selectedTeam);
-
         if (player && team) {
           setSuccess(
             `Successfully assigned ${player.first_name} ${player.last_name} to team "${team.team_name}"`
           );
-
           // Reset form
           setSelectedPlayer('');
           setSelectedTeam('');
-
-          // Notify parent component
           if (onPlayerAssigned) {
             onPlayerAssigned();
           }
@@ -122,35 +110,32 @@ export default function AssignPlayerForm({
   };
 
   return (
-    <Card className="w-full bg-gray-800 border-gray-700">
+    <Card className="w-full bg-white border border-gray-200 shadow-sm">
       <CardHeader>
-        <CardTitle className="text-xl font-bold text-green-400 flex items-center gap-2">
+        <CardTitle className="text-xl font-bold text-club-red flex items-center gap-2">
           <UserPlus className="h-5 w-5" />
           Assign Player to Team
         </CardTitle>
-        <CardDescription className="text-gray-400">
+        <CardDescription className="text-gray-600">
           Add players to existing teams
         </CardDescription>
       </CardHeader>
-
       <CardContent>
         {error && (
           <Alert
             variant="destructive"
-            className="mb-4 bg-red-500/10 border-red-500/20 text-red-400"
+            className="mb-4 bg-red-100 border border-red-200 text-red-600"
           >
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
-
         {success && (
-          <Alert className="mb-4 bg-green-500/10 border-green-500/20 text-green-400">
+          <Alert className="mb-4 bg-green-100 border border-green-200 text-green-600">
             <CheckCircle className="h-4 w-4" />
             <AlertDescription>{success}</AlertDescription>
           </Alert>
         )}
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="player">Select Player</Label>
@@ -161,7 +146,7 @@ export default function AssignPlayerForm({
             >
               <SelectTrigger
                 id="player"
-                className="bg-gray-700 border-gray-600"
+                className="bg-gray-100 border border-gray-300"
               >
                 <SelectValue
                   placeholder={
@@ -169,7 +154,7 @@ export default function AssignPlayerForm({
                   }
                 />
               </SelectTrigger>
-              <SelectContent className="bg-gray-800 border-gray-700">
+              <SelectContent className="bg-white border border-gray-200">
                 {players.map((player) => (
                   <SelectItem key={player.id} value={player.id}>
                     {player.first_name} {player.last_name}
@@ -178,14 +163,16 @@ export default function AssignPlayerForm({
               </SelectContent>
             </Select>
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="team">Select Team</Label>
             <Select value={selectedTeam} onValueChange={setSelectedTeam}>
-              <SelectTrigger id="team" className="bg-gray-700 border-gray-600">
+              <SelectTrigger
+                id="team"
+                className="bg-gray-100 border border-gray-300"
+              >
                 <SelectValue placeholder="Select a team" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-800 border-gray-700">
+              <SelectContent className="bg-white border border-gray-200">
                 {teams.map((team) => (
                   <SelectItem key={team.id} value={team.id}>
                     {team.team_name}
@@ -194,10 +181,9 @@ export default function AssignPlayerForm({
               </SelectContent>
             </Select>
           </div>
-
           <Button
             type="submit"
-            className="w-full bg-green-600 hover:bg-green-500"
+            className="w-full bg-club-red hover:bg-club-red/90 text-white"
             disabled={isLoading || isLoadingPlayers}
           >
             {isLoading ? 'Assigning...' : 'Assign Player'}
