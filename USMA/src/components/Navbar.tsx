@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image'; // <-- Import the Image component
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '../components/ui/button';
@@ -23,10 +24,8 @@ import {
   Home,
   Calendar,
   Users,
-  Info,
   Megaphone,
-  MapPin,
-  Bike,
+  // Bike,   <-- Remove Bike import
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -123,8 +122,6 @@ export default function Navbar() {
     { name: 'Coaches', href: '/coaches', icon: Users },
     { name: 'Schedule', href: '/schedule', icon: Calendar },
     { name: 'Announcements', href: '/announcements', icon: Megaphone },
-    { name: 'Location', href: '/location', icon: MapPin },
-    { name: 'About', href: '/about', icon: Info },
   ];
 
   return (
@@ -136,10 +133,15 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex items-center">
           <Link href="/" className="flex items-center">
+            {/* Replace Bike icon with an Image pointing to /public/assets/logo.png */}
             <div className="w-10 h-10 relative mr-3">
-              <div className="w-10 h-10 bg-primary rounded-md flex items-center justify-center">
-                <Bike className="h-5 w-5 text-white" />
-              </div>
+              <Image
+                src="/assets/download.jpeg" // <-- your logo file
+                alt="Tennis Club Logo"
+                width={40}
+                height={40}
+                priority // optional, helps Next.js optimize loading
+              />
             </div>
             <span className="text-xl font-bold text-gray-800">Tennis Club</span>
           </Link>
