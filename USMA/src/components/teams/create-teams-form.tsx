@@ -23,7 +23,7 @@ import { userService } from '../../services/userService';
 import { AlertCircle, CheckCircle, Users } from 'lucide-react';
 
 interface Coach {
-  id: string;
+  id: string; // Make sure this is actually a string if you're using it as a string value
   first_name: string;
   last_name: string;
 }
@@ -31,7 +31,7 @@ interface Coach {
 export default function CreateTeamForm() {
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [teamName, setTeamName] = useState('');
-  const [selectedCoach, setSelectedCoach] = useState('');
+  const [selectedCoach, setSelectedCoach] = useState(''); // Must be a string if coach.id is string
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingCoaches, setIsLoadingCoaches] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,6 +64,8 @@ export default function CreateTeamForm() {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+
+    // Debugging tip: console.log('Selected Coach:', selectedCoach);
 
     if (!teamName || !selectedCoach) {
       setError('All fields are required');
@@ -146,11 +148,16 @@ export default function CreateTeamForm() {
               disabled={isLoadingCoaches}
             >
               <SelectTrigger className="bg-gray-100 border border-gray-300 text-gray-900">
+                {/* 
+                  Important: 
+                  data-[placeholder]:text-gray-400 ensures the placeholder 
+                  is gray while a valid selection is dark text.
+                */}
                 <SelectValue
                   placeholder={
                     isLoadingCoaches ? 'Loading coaches...' : 'Select a coach'
                   }
-                  className="text-gray-900"
+                  className="text-gray-900 data-[placeholder]:text-gray-400"
                 />
               </SelectTrigger>
               <SelectContent className="bg-white border border-gray-200">
@@ -158,9 +165,13 @@ export default function CreateTeamForm() {
                   <SelectItem
                     key={coach.id}
                     value={coach.id}
+                    /* 
+                      data-[state=checked] highlights the selected item
+                      data-[state=active] highlights hover/focus 
+                    */
                     className="
-                      data-[state=active]:bg-club-red/10 
-                      data-[state=checked]:bg-club-red/10 
+                      data-[state=active]:bg-club-red/10
+                      data-[state=checked]:bg-club-red/10
                       data-[state=checked]:text-club-red
                     "
                   >
