@@ -25,6 +25,8 @@ import {
   Users,
   Info,
   Megaphone,
+  MapPin,
+  Bike,
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -121,6 +123,7 @@ export default function Navbar() {
     { name: 'Coaches', href: '/coaches', icon: Users },
     { name: 'Schedule', href: '/schedule', icon: Calendar },
     { name: 'Announcements', href: '/announcements', icon: Megaphone },
+    { name: 'Location', href: '/location', icon: MapPin },
     { name: 'About', href: '/about', icon: Info },
   ];
 
@@ -135,30 +138,30 @@ export default function Navbar() {
           <Link href="/" className="flex items-center">
             <div className="w-10 h-10 relative mr-3">
               <div className="w-10 h-10 bg-primary rounded-md flex items-center justify-center">
-                <span className="text-white font-bold">TC</span>
+                <Bike className="h-5 w-5 text-white" />
               </div>
             </div>
             <span className="text-xl font-bold text-gray-800">Tennis Club</span>
           </Link>
+        </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex ml-10 space-x-1">
-            {navLinks.map((link) => (
-              <Link key={link.name} href={link.href}>
-                <Button
-                  variant="ghost"
-                  className={`text-base px-4 ${
-                    pathname === link.href
-                      ? 'text-primary bg-gray-100'
-                      : 'text-gray-700 hover:text-primary hover:bg-gray-100'
-                  }`}
-                >
-                  <link.icon className="mr-2 h-4 w-4" />
-                  {link.name}
-                </Button>
-              </Link>
-            ))}
-          </div>
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-1">
+          {navLinks.map((link) => (
+            <Link key={link.name} href={link.href}>
+              <Button
+                variant="ghost"
+                className={`text-base px-4 ${
+                  pathname === link.href
+                    ? 'text-primary'
+                    : 'text-gray-700 hover:text-primary'
+                }`}
+              >
+                <link.icon className="mr-2 h-4 w-4" />
+                {link.name}
+              </Button>
+            </Link>
+          ))}
         </div>
 
         {/* Authentication Section */}
@@ -286,18 +289,10 @@ export default function Navbar() {
               </DropdownMenu>
             </div>
           ) : (
-            <div className="flex space-x-3">
+            <div>
               <Link href="/login">
-                <Button
-                  variant="ghost"
-                  className="text-gray-700 hover:bg-gray-100"
-                >
-                  Sign In
-                </Button>
-              </Link>
-              <Link href="/register">
                 <Button className="bg-primary hover:bg-primary/90 text-white">
-                  Sign Up
+                  Sign In
                 </Button>
               </Link>
             </div>
