@@ -129,28 +129,25 @@ export default function AdminDashboard() {
       value: stats.totalPlayers,
       change: stats.playerGrowth,
       icon: Users,
-      color: 'bg-blue-500',
     },
     {
       title: 'Active Coaches',
       value: stats.totalCoaches,
       change: stats.coachGrowth,
       icon: UserPlus,
-      color: 'bg-green-500',
+      
     },
     {
       title: 'Courts',
       value: '6',
       change: '100%',
       icon: Server,
-      color: 'bg-purple-500',
     },
     {
       title: 'Weekly Sessions',
       value: stats.weeklySessions,
       change: stats.sessionGrowth,
       icon: Calendar,
-      color: 'bg-amber-500',
     },
   ];
 

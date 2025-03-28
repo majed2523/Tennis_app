@@ -35,7 +35,7 @@ export default function LoginPage() {
         <div className="flex items-center justify-center">
           <div className="w-16 h-16 relative">
             <Image
-              src="/logo.png"
+              src="/assets/download.jpeg" // Ensure you have this image in your public folder or adjust the path accordingly
               alt="Tennis Club Logo"
               width={64}
               height={64}
