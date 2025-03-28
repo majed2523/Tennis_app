@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -21,7 +23,7 @@ import { userService } from '../../services/userService';
 import { AlertCircle, CheckCircle, Users } from 'lucide-react';
 
 interface Coach {
-  id: string;
+  id: number; // Numeric ID
   first_name: string;
   last_name: string;
 }
@@ -29,6 +31,10 @@ interface Coach {
 export default function CreateTeamForm() {
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [teamName, setTeamName] = useState('');
+  /**
+   * We'll store the selected coach ID as a string so Radix Select works properly.
+   * Then we'll parse it back to a number when creating the team.
+   */
   const [selectedCoach, setSelectedCoach] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingCoaches, setIsLoadingCoaches] = useState(true);
@@ -40,6 +46,7 @@ export default function CreateTeamForm() {
       try {
         setIsLoadingCoaches(true);
         const result = await userService.getAllCoaches();
+        // Must be an array on success
         if (Array.isArray(result)) {
           setCoaches(result);
         } else {
@@ -69,11 +76,15 @@ export default function CreateTeamForm() {
     setIsLoading(true);
 
     try {
-      const result = await teamService.createTeam(teamName, selectedCoach);
+      // Convert the string back to a numeric ID for your backend
+      const numericCoachId = parseInt(selectedCoach, 10);
 
-      // Since our simplified teamService doesn't have error property, we just check for success
+      // Example: Suppose teamService.createTeam returns { success: boolean }
+      const result = await teamService.createTeam(teamName, numericCoachId);
+
       if (result.success) {
-        const coach = coaches.find((c) => c.id === selectedCoach);
+        // Display the coach's name in success message
+        const coach = coaches.find((c) => c.id === numericCoachId);
         const coachName = coach
           ? `${coach.first_name} ${coach.last_name}`
           : 'the selected coach';
@@ -93,13 +104,6 @@ export default function CreateTeamForm() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  // Get the coach name for display
-  const getSelectedCoachName = () => {
-    if (!selectedCoach) return null;
-    const coach = coaches.find((c) => c.id === selectedCoach);
-    return coach ? `${coach.first_name} ${coach.last_name}` : null;
   };
 
   return (
@@ -130,6 +134,7 @@ export default function CreateTeamForm() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Team Name Field */}
           <div className="space-y-2">
             <Label htmlFor="teamName">Team Name</Label>
             <Input
@@ -142,9 +147,11 @@ export default function CreateTeamForm() {
             />
           </div>
 
+          {/* Assign Coach Field */}
           <div className="space-y-2">
             <Label htmlFor="coach">Assign Coach</Label>
             <Select
+              // The select is storing a numeric ID as a string
               value={selectedCoach}
               onValueChange={(value) => {
                 console.log('Selected coach:', value);
@@ -160,16 +167,22 @@ export default function CreateTeamForm() {
                   placeholder={
                     isLoadingCoaches ? 'Loading coaches...' : 'Select a coach'
                   }
-                >
-                  {getSelectedCoachName()}
-                </SelectValue>
+                  className="text-gray-900"
+                />
               </SelectTrigger>
+
               <SelectContent className="bg-white border border-gray-200">
                 {coaches.map((coach) => (
                   <SelectItem
+                    // Convert numeric ID to string
                     key={coach.id}
-                    value={coach.id}
-                    className="hover:bg-red-50 cursor-pointer"
+                    value={String(coach.id)}
+                    className="
+                      hover:bg-red-50 
+                      data-[state=active]:bg-red-50 
+                      data-[state=checked]:bg-red-50 
+                      data-[state=checked]:text-red-600
+                    "
                   >
                     {coach.first_name} {coach.last_name}
                   </SelectItem>
@@ -178,6 +191,7 @@ export default function CreateTeamForm() {
             </Select>
           </div>
 
+          {/* Submit Button */}
           <Button
             type="submit"
             className="w-full bg-red-600 hover:bg-red-700 text-white"
