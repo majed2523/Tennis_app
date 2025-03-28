@@ -27,7 +27,12 @@ import {
   DialogFooter,
 } from '../../components/ui/dialog';
 import { Badge } from '../../components/ui/badge';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/tabs';
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from '../../components/ui/tabs';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
@@ -179,9 +184,9 @@ export default function CoachesPage() {
         transition={{ duration: 1 }}
         className="relative h-[60vh] flex items-center justify-center overflow-hidden"
       >
-        {/* Background Image */}
-        <div className="absolute inset-0 bg-[url('/assets/download.jpeg')] bg-cover bg-center">
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-white/0" />
+        {/* Background Image with clearer display */}
+        <div className="absolute inset-0 bg-[url('/assets/download.jpeg')] bg-cover bg-center bg-no-repeat">
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-transparent" />
         </div>
 
         <div className="relative z-10 text-center px-4 max-w-4xl">
@@ -225,7 +230,7 @@ export default function CoachesPage() {
           </motion.div>
         </div>
 
-        {/* Animated decorative elements */}
+        {/* Animated decorative element */}
         <motion.div
           className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent"
           initial={{ opacity: 0 }}
