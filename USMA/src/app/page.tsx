@@ -14,14 +14,20 @@ import {
   Mail,
   Phone,
   Clock,
+  Bike,
 } from 'lucide-react';
 
 export default function HomePage() {
   const router = useRouter();
   const locationRef = useRef(null);
   const contactRef = useRef(null);
+  const registrationRef = useRef(null);
   const isLocationInView = useInView(locationRef, { once: true, amount: 0.3 });
   const isContactInView = useInView(contactRef, { once: true, amount: 0.3 });
+  const isRegistrationInView = useInView(registrationRef, {
+    once: true,
+    amount: 0.3,
+  });
 
   useEffect(() => {
     // Check if user is already logged in
@@ -46,50 +52,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      {/* Navigation */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <div className="h-10 w-10 rounded-md bg-primary flex items-center justify-center mr-3">
-              <span className="text-white font-bold">TC</span>
-            </div>
-            <h1 className="text-xl font-bold text-gray-800">Tennis Club</h1>
-          </div>
-
-          <nav className="hidden md:flex space-x-8">
-            <button className="text-gray-600 hover:text-primary transition">
-              Home
-            </button>
-            <button className="text-gray-600 hover:text-primary transition">
-              Coaches
-            </button>
-            <button className="text-gray-600 hover:text-primary transition">
-              Schedule
-            </button>
-            <button
-              onClick={() => scrollToSection(locationRef)}
-              className="text-gray-600 hover:text-primary transition"
-            >
-              Location
-            </button>
-            <button
-              onClick={() => scrollToSection(contactRef)}
-              className="text-gray-600 hover:text-primary transition"
-            >
-              Contact
-            </button>
-          </nav>
-
-          <div>
-            <Link href="/login">
-              <Button className="bg-primary hover:bg-primary/90 text-white">
-                Sign In
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
-
       <main className="flex-1 flex flex-col items-center justify-center p-8 pt-24">
         <motion.div
           initial={{ opacity: 0, y: -30 }}
@@ -248,6 +210,92 @@ export default function HomePage() {
           </div>
         </motion.div>
 
+        {/* Registration Section */}
+        <motion.div
+          ref={registrationRef}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="mt-24 w-full max-w-5xl"
+        >
+          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+            Join Our Tennis Club
+          </h2>
+          <div className="bg-gradient-to-r from-primary/10 to-gray-100 p-8 rounded-xl border border-gray-200 shadow-md">
+            <div className="flex flex-col md:flex-row items-center gap-8">
+              <div className="w-full md:w-1/2">
+                <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                  Ready to improve your game?
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Join our tennis club today and get access to professional
+                  coaching, premium courts, and a vibrant community of tennis
+                  enthusiasts. Whether you're a beginner or an experienced
+                  player, we have programs tailored to your skill level.
+                </p>
+                <div className="space-y-4">
+                  <div className="flex items-center">
+                    <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center mr-3">
+                      <Trophy className="h-4 w-4 text-primary" />
+                    </div>
+                    <p className="text-gray-700">
+                      Access to all club facilities
+                    </p>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center mr-3">
+                      <Users className="h-4 w-4 text-primary" />
+                    </div>
+                    <p className="text-gray-700">Group and private lessons</p>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center mr-3">
+                      <Calendar className="h-4 w-4 text-primary" />
+                    </div>
+                    <p className="text-gray-700">
+                      Participate in tournaments and events
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="w-full md:w-1/2 flex flex-col items-center">
+                <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+                  <h4 className="text-xl font-bold text-gray-800 mb-4 text-center">
+                    Registration Options
+                  </h4>
+                  <div className="space-y-4">
+                    <Link href="/registration">
+                      <Button className="w-full bg-primary hover:bg-primary/90 text-white py-3 flex items-center justify-center">
+                        <Users className="mr-2 h-5 w-5" />
+                        Register as Player
+                      </Button>
+                    </Link>
+                    <p className="text-center text-gray-500 text-sm">or</p>
+                    <Link href="/contact">
+                      <Button
+                        variant="outline"
+                        className="w-full border-primary text-primary hover:bg-primary/10 py-3 flex items-center justify-center"
+                      >
+                        <Mail className="mr-2 h-5 w-5" />
+                        Contact for Coach Position
+                      </Button>
+                    </Link>
+                  </div>
+                  <p className="mt-4 text-sm text-gray-500 text-center">
+                    Already a member?{' '}
+                    <Link
+                      href="/login"
+                      className="text-primary hover:underline"
+                    >
+                      Sign in here
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Location Section */}
         <motion.div
           ref={locationRef}
@@ -402,7 +450,7 @@ export default function HomePage() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
               <div className="h-8 w-8 rounded-md bg-white flex items-center justify-center mr-2">
-                <span className="text-primary font-bold text-xs">TC</span>
+                <Bike className="h-4 w-4 text-primary" />
               </div>
               <span className="text-white font-semibold">Tennis Club</span>
             </div>
