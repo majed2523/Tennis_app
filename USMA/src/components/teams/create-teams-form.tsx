@@ -1,29 +1,27 @@
-'use client';
-
 import React, { useState, useEffect } from 'react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../ui/card';
+} from '../../components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
+} from '../../components/ui/select';
 import { teamService } from '../../services/teamService';
 import { userService } from '../../services/userService';
 import { AlertCircle, CheckCircle, Users } from 'lucide-react';
 
 interface Coach {
-  id: string; // Make sure this is actually a string if you're using it as a string value
+  id: string;
   first_name: string;
   last_name: string;
 }
@@ -31,7 +29,7 @@ interface Coach {
 export default function CreateTeamForm() {
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const [teamName, setTeamName] = useState('');
-  const [selectedCoach, setSelectedCoach] = useState(''); // Must be a string if coach.id is string
+  const [selectedCoach, setSelectedCoach] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingCoaches, setIsLoadingCoaches] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,9 +40,7 @@ export default function CreateTeamForm() {
       try {
         setIsLoadingCoaches(true);
         const result = await userService.getAllCoaches();
-        if (result.error) {
-          setError(result.error);
-        } else if (Array.isArray(result)) {
+        if (Array.isArray(result)) {
           setCoaches(result);
         } else {
           setError('Unexpected response while fetching coaches.');
@@ -65,8 +61,6 @@ export default function CreateTeamForm() {
     setError(null);
     setSuccess(null);
 
-    // Debugging tip: console.log('Selected Coach:', selectedCoach);
-
     if (!teamName || !selectedCoach) {
       setError('All fields are required');
       return;
@@ -77,9 +71,8 @@ export default function CreateTeamForm() {
     try {
       const result = await teamService.createTeam(teamName, selectedCoach);
 
-      if (result.error) {
-        setError(result.error);
-      } else {
+      // Since our simplified teamService doesn't have error property, we just check for success
+      if (result.success) {
         const coach = coaches.find((c) => c.id === selectedCoach);
         const coachName = coach
           ? `${coach.first_name} ${coach.last_name}`
@@ -91,6 +84,8 @@ export default function CreateTeamForm() {
         // Reset form
         setTeamName('');
         setSelectedCoach('');
+      } else {
+        setError('Failed to create team');
       }
     } catch (err) {
       console.error('Error creating team:', err);
@@ -100,10 +95,17 @@ export default function CreateTeamForm() {
     }
   };
 
+  // Get the coach name for display
+  const getSelectedCoachName = () => {
+    if (!selectedCoach) return null;
+    const coach = coaches.find((c) => c.id === selectedCoach);
+    return coach ? `${coach.first_name} ${coach.last_name}` : null;
+  };
+
   return (
     <Card className="w-full max-w-md bg-white border border-gray-200 shadow-sm">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-club-red flex items-center gap-2">
+        <CardTitle className="text-2xl font-bold text-red-600 flex items-center gap-2">
           <Users className="h-5 w-5" />
           Create New Team
         </CardTitle>
@@ -144,36 +146,30 @@ export default function CreateTeamForm() {
             <Label htmlFor="coach">Assign Coach</Label>
             <Select
               value={selectedCoach}
-              onValueChange={setSelectedCoach}
+              onValueChange={(value) => {
+                console.log('Selected coach:', value);
+                setSelectedCoach(value);
+              }}
               disabled={isLoadingCoaches}
             >
-              <SelectTrigger className="bg-gray-100 border border-gray-300 text-gray-900">
-                {/* 
-                  Important: 
-                  data-[placeholder]:text-gray-400 ensures the placeholder 
-                  is gray while a valid selection is dark text.
-                */}
+              <SelectTrigger
+                id="coach"
+                className="bg-gray-100 border border-gray-300 w-full"
+              >
                 <SelectValue
                   placeholder={
                     isLoadingCoaches ? 'Loading coaches...' : 'Select a coach'
                   }
-                  className="text-gray-900 data-[placeholder]:text-gray-400"
-                />
+                >
+                  {getSelectedCoachName()}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent className="bg-white border border-gray-200">
                 {coaches.map((coach) => (
                   <SelectItem
                     key={coach.id}
                     value={coach.id}
-                    /* 
-                      data-[state=checked] highlights the selected item
-                      data-[state=active] highlights hover/focus 
-                    */
-                    className="
-                      data-[state=active]:bg-club-red/10
-                      data-[state=checked]:bg-club-red/10
-                      data-[state=checked]:text-club-red
-                    "
+                    className="hover:bg-red-50 cursor-pointer"
                   >
                     {coach.first_name} {coach.last_name}
                   </SelectItem>
@@ -184,7 +180,7 @@ export default function CreateTeamForm() {
 
           <Button
             type="submit"
-            className="w-full bg-club-red hover:bg-club-red/90 text-white"
+            className="w-full bg-red-600 hover:bg-red-700 text-white"
             disabled={isLoading || isLoadingCoaches}
           >
             {isLoading ? 'Creating...' : 'Create Team'}
