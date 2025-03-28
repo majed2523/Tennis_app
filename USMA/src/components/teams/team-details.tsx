@@ -68,7 +68,6 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
   }, []);
 
   useEffect(() => {
-    // Check if user is admin
     const userData = authService.getCurrentUser();
     setIsAdmin(userData?.role === 'admin');
 
@@ -82,7 +81,7 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
           return;
         }
 
-        console.log('🔹 Updating UI with team:', teamData); // Debugging
+        console.log('🔹 Updating UI with team:', teamData);
         setTeam(teamData);
       } catch (err) {
         console.error('Error fetching team details:', err);
@@ -127,7 +126,6 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
           } from the team`
         );
 
-        // Update the team data by removing the player
         if (team.players) {
           const updatedPlayers = team.players.filter(
             (p) => p.id !== removingPlayer.id
@@ -139,7 +137,6 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
           });
         }
 
-        // Close dialog after a short delay
         setTimeout(() => {
           setIsRemoveDialogOpen(false);
         }, 1500);
@@ -159,7 +156,6 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
         setError(result.error);
         setDeleteDialogOpen(false);
       } else {
-        // Redirect to teams page after successful deletion
         router.push('/admin/teams');
       }
     } catch (err) {
@@ -176,7 +172,8 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
       <Card className="w-full bg-gray-800 border-gray-700">
         <CardContent className="pt-6">
           <div className="flex justify-center items-center h-40">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-400"></div>
+            {/* Loading spinner changed to red */}
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-red-400"></div>
           </div>
         </CardContent>
       </Card>
@@ -230,7 +227,8 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
             Back
           </Button>
           <div>
-            <CardTitle className="text-2xl font-bold text-green-400">
+            {/* Title changed to red */}
+            <CardTitle className="text-2xl font-bold text-red-400">
               {team?.team_name || 'Team Details'}
             </CardTitle>
             <CardDescription className="text-gray-400">
@@ -242,6 +240,7 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
           <Button
             variant="destructive"
             onClick={() => setDeleteDialogOpen(true)}
+            // Button changed to red
             className="bg-red-600 hover:bg-red-700"
             disabled={isLoading}
           >
@@ -280,7 +279,8 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
                   className="flex items-center justify-between p-3 bg-gray-700/30 rounded-md hover:bg-gray-700/50 transition-colors"
                 >
                   <div className="flex items-center">
-                    <Avatar className="h-10 w-10 bg-green-600 text-white">
+                    {/* If you'd like the avatar to be red, you can change from bg-green-600 to bg-red-600 */}
+                    <Avatar className="h-10 w-10 bg-red-600 text-white">
                       <AvatarFallback>
                         {(player.first_name || player.firstName || '').charAt(
                           0
@@ -303,6 +303,7 @@ export default function TeamDetails({ teamId, onBack }: TeamDetailsProps) {
                     <Button
                       variant="ghost"
                       size="icon"
+                      // "Remove" icon also changed from green to red
                       className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
                       onClick={() => handleRemovePlayerClick(player)}
                     >

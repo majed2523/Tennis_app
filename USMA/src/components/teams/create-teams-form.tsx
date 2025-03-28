@@ -158,7 +158,11 @@ export default function CreateTeamForm() {
                   <SelectItem
                     key={coach.id}
                     value={coach.id}
-                    className="data-[state=active]:bg-club-red/10"
+                    className="
+                      data-[state=active]:bg-club-red/10 
+                      data-[state=checked]:bg-club-red/10 
+                      data-[state=checked]:text-club-red
+                    "
                   >
                     {coach.first_name} {coach.last_name}
                   </SelectItem>

@@ -1,7 +1,6 @@
 'use client';
 
 import type React from 'react';
-
 import { useEffect, useState } from 'react';
 import {
   Card,
@@ -143,7 +142,8 @@ export default function TeamsList() {
       <Card className="w-full bg-gray-800 border-gray-700">
         <CardContent className="pt-6">
           <div className="flex justify-center items-center h-40">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-400"></div>
+            {/* Spinning border changed to red */}
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-red-400"></div>
           </div>
         </CardContent>
       </Card>
@@ -172,7 +172,8 @@ export default function TeamsList() {
       <Card className="w-full bg-gray-800 border-gray-700">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <div>
-            <CardTitle className="text-2xl font-bold text-green-400 flex items-center gap-2">
+            {/* Title changed to red */}
+            <CardTitle className="text-2xl font-bold text-red-400 flex items-center gap-2">
               <Users className="h-5 w-5" />
               Tennis Teams
             </CardTitle>
@@ -180,10 +181,11 @@ export default function TeamsList() {
               All active teams and their coaches
             </CardDescription>
           </div>
+          {/* "Assign Player" button changed from green to red */}
           <Button
             onClick={handleToggleAssignForm}
             className={
-              showAssignForm ? 'bg-gray-700' : 'bg-green-600 hover:bg-green-500'
+              showAssignForm ? 'bg-gray-700' : 'bg-red-600 hover:bg-red-500'
             }
           >
             <UserPlus className="h-4 w-4 mr-2" />
@@ -217,20 +219,23 @@ export default function TeamsList() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9, y: 20 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-gray-700/50 p-4 rounded-md border border-gray-600 hover:border-green-400 transition-colors"
+                    // Hover border changed from green to red
+                    className="bg-gray-700/50 p-4 rounded-md border border-gray-600 hover:border-red-400 transition-colors"
                   >
                     <div className="flex justify-between items-start mb-3">
                       <h3 className="font-bold text-white text-lg">
                         {team.team_name}
                       </h3>
                       <div className="flex items-center gap-2">
-                        <Badge className="bg-green-400/20 text-green-400">
+                        {/* Badge changed from green to red */}
+                        <Badge className="bg-red-400/20 text-red-400">
                           {team.player_count ?? 0} Members
                         </Badge>
                         {isAdmin && (
                           <Button
                             variant="ghost"
                             size="icon"
+                            // Trash icon changed from green to red
                             className="h-8 w-8 text-red-400 hover:text-red-300 hover:bg-red-900/20"
                             onClick={(e) => handleDeleteClick(team, e)}
                             disabled={team.isDeleting}
@@ -246,13 +251,15 @@ export default function TeamsList() {
                     </div>
 
                     <div className="flex items-center text-gray-300 mb-4">
-                      <User className="h-4 w-4 text-green-400 mr-2" />
+                      {/* The user icon can remain as is or be changed to red. 
+                          We'll match it with red for consistency: */}
+                      <User className="h-4 w-4 text-red-400 mr-2" />
                       <span>Coach: {team.coach_name || 'Unknown'}</span>
                     </div>
 
                     <Button
                       variant="ghost"
-                      className="w-full justify-between text-gray-300 hover:text-green-400 hover:bg-gray-700"
+                      className="w-full justify-between text-gray-300 hover:text-red-400 hover:bg-gray-700"
                       onClick={() => handleViewTeam(team.id)}
                     >
                       View Team Details
