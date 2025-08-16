@@ -2,7 +2,7 @@
 
 A full-stack web application for managing tennis club operations, including lessons, courts, teams, and users. Built to streamline workflows and improve member experience.
 
-Features
+## Features
 
 User Management: Multi-role system (Admin, Coach, Player) with secure authentication (JWT).
 
@@ -16,7 +16,7 @@ Admin Dashboard: Comprehensive tools for managing teams, schedules, and resource
 
 Responsive UI: Modern, mobile-friendly interface with smooth animations.
 
-Tech Stack
+## Tech Stack
 
 Frontend: Next.js 15, React 19, TypeScript, Tailwind CSS, Radix UI, Headless UI, Framer Motion
 
@@ -26,7 +26,7 @@ Database: SQLite (with PostgreSQL support capability)
 
 Infrastructure: Docker multi-service architecture
 
-Highlights
+## Highlights
 
 Built a scalable microservices architecture with Docker.
 
@@ -47,10 +47,11 @@ Navigate to backend and frontend directories, install dependencies, and run with
 
 Access the app in your browser and start managing the club operations.
 
-Future Improvements
+## Future Improvements
 
 Add AI-based player performance tracking and analytics.
 
 Integrate payment system for lessons and memberships.
 
 Expand notifications and reminders using real-time updates.
+
