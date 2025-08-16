@@ -1,4 +1,4 @@
-USMA Tennis Club Management System
+## USMA Tennis Club Management System
 
 A full-stack web application for managing tennis club operations, including lessons, courts, teams, and users. Built to streamline workflows and improve member experience.
 
